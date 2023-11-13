@@ -1,3 +1,4 @@
+using API.TransferModels;
 using Microsoft.AspNetCore.Mvc;
 using Service;
 
@@ -21,5 +22,18 @@ public class Controller : ControllerBase
     public bool isEven([FromRoute]int number)
     {
         return (number % 2) == 0;
+    }
+    
+    [HttpPost]
+    [Route("/api/account/login")]
+    public ResponseDto Login([FromBody] LoginDto dto)
+    {
+        var user = _service.Authenticate(dto.Email, dto.Password);
+        var token = _jwtService.IssueToken(SessionData.FromUser(user!));
+        return new ResponseDto
+        {
+            MessageToClient = "Login Successfull",
+            ResponseData = new { token },
+        };
     }
 }
