@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Service;
 
 namespace API.Controllers;
 
@@ -8,10 +9,12 @@ public class Controller : ControllerBase
 {
 
     private readonly ILogger<Controller> _logger;
+    private readonly JwtService _jwtService;
 
-    public Controller(ILogger<Controller> logger)
+    public Controller(ILogger<Controller> logger, JwtService jwtService)
     {
         _logger = logger;
+        _jwtService = jwtService;
     }
 
     [HttpGet("/IsEven{number}")]
