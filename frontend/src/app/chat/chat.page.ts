@@ -21,26 +21,30 @@ import {FormControl, Validators} from "@angular/forms";
 
 
           <div id="Textcontainer">
-            <ion-card id="textCard" *ngFor="let message of messages" [ngClass]="{'ion-card-end': message.isSender, 'ion-card-start': !message.isSender}">
-              <ion-tab-bar [ngStyle]="{ 'background-color': message.isSender ? '#001087' : '#870000' }">
-                <ion-text>{{ message.user }}</ion-text>
-                <ion-title>{{ message.message }}</ion-title>
-              </ion-tab-bar>
-            </ion-card>
+              <ion-card id="textCard" *ngFor="let message of messages"
+                        [ngClass]="{'left-card': !message.isSender, 'right-card': message.isSender}">
+                  <ion-tab-bar [ngStyle]="{ 'background-color': message.isSender ? '#001087' : '#870000' }">
+                      <ion-text style="margin-left: 1%">{{ message.user }}</ion-text>
+                      <ion-title>{{ message.message }}</ion-title>
+                  </ion-tab-bar>
+              </ion-card>
           </div>
 
       </ion-content>
       <ion-item>
           <ion-input placeholder="  text...  " [formControl]="message" id="messageInput"></ion-input>
-          <ion-button (click)="sendMessage()" id="button"  slot="end">Send message</ion-button>
-      </ion-item >
+          <ion-button (click)="sendMessage()" id="button" slot="end">
+            <ion-icon name="send-outline"></ion-icon>
+            <p>&#160; send message</p>
+          </ion-button>
+      </ion-item>
   `,
   styleUrls: ['chat.page.scss'],
 })
 export class ChatPage {
   displayname: string = "@displayname"
 
-  message: FormControl<string | null> = new FormControl("", [Validators.required,Validators.minLength(3),Validators.maxLength(500)]);
+  message: FormControl<string | null> = new FormControl("", [Validators.required,Validators.minLength(3),Validators.maxLength(50)]);
 
   messages: Message[] = [];
 

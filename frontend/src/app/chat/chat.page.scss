@@ -1,17 +1,30 @@
 #messageInput {
   background-color: #656565;
   border-radius: 30px;
-  padding: 50px;
-  margin-bottom: 20px;
-  margin-left: 20px;
-  margin-top: 20px
+  padding: 5%;
+  margin-bottom: 2%;
+  margin-left: 2%;
+  margin-top: 2%
 }
 
 #button {
-  border-radius: 55px;
-  margin-right: 12px;
+  border-radius: 20px;
+  margin-right: 3%;
 }
 
 #textCard {
   transform: scale(0.8);
+  border-radius: 30px;
+}
+
+.Textcontainer {
+  display: flex;
+}
+
+.left-card {
+  margin-right: 20%;
+}
+
+.right-card {
+  margin-left: 20%;
 }
