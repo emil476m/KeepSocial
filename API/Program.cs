@@ -1,14 +1,20 @@
 using API;
+using Infastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddNpgsqlDataSource(Utilities.ProperlyFormattedConnectionString,
+    dataSourceBuilder => dataSourceBuilder.EnableParameterLogging()); 
 
 builder.Services.AddControllers();
 builder.Services.AddJwtService();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGenWithBearerJWT();
+builder.Services.AddSingleton<Service.AccountService>();
+builder.Services.AddSingleton<Infastructure.AccountRepository>();
+
 
 var app = builder.Build();
 
