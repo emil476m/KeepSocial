@@ -11,8 +11,7 @@ public class User
     public int userId { get; set; }
     public string userDisplayName { get; set; }
     public string userEmail { get; set; }
-    public DateOnly userBirthday { get; set; }
-    public string userPassword { get; set; }
+    public DateTime userBirthday { get; set; }
     
     public string? AvatarUrl { get; set; }
     

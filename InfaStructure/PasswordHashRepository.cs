@@ -20,8 +20,8 @@ SELECT
     hash as {nameof(PasswordHash.Hash)},
     salt as {nameof(PasswordHash.Salt)},
     algorithm as {nameof(PasswordHash.Algorithm)}
-FROM KeepSocial.password_hash
-JOIN KeepSocial.users ON KeepSocial.password_hash.user_id = KeepSocial.users.id
+FROM keepsocial.password_hash
+JOIN keepsocial.users ON keepsocial.password_hash.user_id = keepsocial.users.id
 WHERE email = @email;
 ";
         using var connection = _dataSource.OpenConnection();
@@ -31,7 +31,7 @@ WHERE email = @email;
     public void Create(int userId, string hash, string salt, string algorithm)
     {
         const string sql = $@"
-INSERT INTO KeepSocial.password_hash (user_id, hash, salt, algorithm)
+INSERT INTO keepsocial.password_hash (user_id, hash, salt, algorithm)
 VALUES (@userId, @hash, @salt, @algorithm)
 ";
         using var connection = _dataSource.OpenConnection();
@@ -41,7 +41,7 @@ VALUES (@userId, @hash, @salt, @algorithm)
     public void Update(int userId, string hash, string salt, string algorithm)
     {
         const string sql = $@"
-UPDATE password_hash
+UPDATE keepsocial.password_hash
 SET hash = @hash, salt = @salt, algorithm = @algorithm
 WHERE user_id = @userId
 ";

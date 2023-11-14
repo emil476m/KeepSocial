@@ -14,10 +14,10 @@ public class AccountRepository
     }
     
     
-    public User CreateUser(string userDisplayName, string userEmail, DateOnly userBirthday)
+    public User CreateUser(string userDisplayName, string userEmail, DateTime userBirthday)
     {
         var sql =
-            $@"INSERT INTO KeepSocial.users (name, email, birthday, isDeleted) VALUES(@userDisplayName, @userEmail,@userBirthday, false) RETURNING 
+            $@"INSERT INTO keepsocial.users (name, email, birthday, isDeleted) VALUES(@userDisplayName, @userEmail,@userBirthday, false) RETURNING 
         id as {nameof(User.userId)}, 
         name as {nameof(User.userDisplayName)},
         email as {nameof(User.userEmail)}, 

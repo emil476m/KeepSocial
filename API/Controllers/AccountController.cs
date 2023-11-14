@@ -18,11 +18,11 @@ public class AccountController : ControllerBase
 
     
     [HttpPost]
-    [Route("/api/account/register")]
-    public ResponseDTO.ResponseDto Register([FromBody] RegisterUserDto dto)
+    [Route("/api/account/createuser")]
+    public ResponseDto CreateUser([FromBody] RegisterUserDto dto)
     {
-        var user = _accountService.CreateUser(dto.FullName, dto.Email, dto.Password, dto.userBirthday);
-        return new ResponseDTO.ResponseDto
+        var user = _accountService.CreateUser(dto.Name, dto.Email, dto.Password, dto.Userbirthday);
+        return new ResponseDto
         {
             MessageToClient = "Successfully registered"
         };
