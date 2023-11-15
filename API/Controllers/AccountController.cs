@@ -5,8 +5,9 @@ using Service;
 
 namespace API.Controllers;
 
+
+[Route("api/[controller]")]
 [ApiController]
-[Route("[controller]")]
 public class AccountController : ControllerBase
 {
     private readonly AccountService _accountService;
@@ -18,7 +19,7 @@ public class AccountController : ControllerBase
 
     
     [HttpPost]
-    [Route("/api/account/createuser")]
+    [Route("/account/createuser")]
     public ResponseDto CreateUser([FromBody] RegisterUserDto dto)
     {
         var user = _accountService.CreateUser(dto.Name, dto.Email, dto.Password, dto.Userbirthday);
@@ -26,5 +27,12 @@ public class AccountController : ControllerBase
         {
             MessageToClient = "Successfully registered"
         };
+    }
+    
+    [HttpGet]
+    [Route("/account/getAllUsers")]
+    public IEnumerable<User> getTest()
+    {
+        return _accountService.getUserName();
     }
 }

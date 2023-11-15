@@ -25,4 +25,10 @@ public class AccountService
         _passwordHashRepository.Create(user.userId, hash, salt, hashAlgorithm.GetName());
         return user;
     }
+
+
+    public IEnumerable<User> getUserName()
+    {
+        return _accountRepository.getUserName();
+    }
 }
