@@ -7,8 +7,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddNpgsqlDataSource(Utilities.ProperlyFormattedConnectionString,
     dataSourceBuilder => dataSourceBuilder.EnableParameterLogging()); 
 builder.Services.AddSingleton<AccountRepository>();
+builder.Services.AddSingleton<ChatReposetory>();
 builder.Services.AddSingleton<PasswordHashRepository>();
 builder.Services.AddSingleton<Service.AccountService>();
+builder.Services.AddSingleton<Service.ChatService>();
 builder.Services.AddControllers();
 builder.Services.AddJwtService();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
