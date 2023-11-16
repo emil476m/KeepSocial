@@ -33,7 +33,13 @@ public class AccountRepository
     public IEnumerable<User> getUserName()
     {
         var sql =
-            $@"SELECT * FROM keepsocial.users";
+            $@"SELECT  
+        id as {nameof(User.userId)}, 
+        name as {nameof(User.userDisplayName)},
+        email as {nameof(User.userEmail)}, 
+        birthday as {nameof(User.userBirthday)}
+        FROM keepsocial.users WHERE isDeleted = false
+       ;";
 
         using (var conn = _dataSource.OpenConnection())
         {
