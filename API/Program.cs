@@ -15,6 +15,9 @@ builder.Services.AddJwtService();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGenWithBearerJWT();
 
+var frontEndRelativePath = "../frontend/www";
+builder.Services.AddSpaStaticFiles(conf => conf.RootPath = frontEndRelativePath);
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -32,13 +35,14 @@ app.UseCors(options =>
         .AllowCredentials();
 });
 
+app.UseSpaStaticFiles();
+app.UseSpa(conf =>
+{
+    conf.Options.SourcePath = frontEndRelativePath;
+});
 
 app.UseSecurityHeaders();
-
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();
