@@ -1,3 +1,4 @@
+
 using API.TransferModels;
 using Microsoft.AspNetCore.Mvc;
 using Service;
@@ -11,11 +12,13 @@ public class Controller : ControllerBase
 
     private readonly ILogger<Controller> _logger;
     private readonly JwtService _jwtService;
+    private readonly HttpClientService _clientService;
 
-    public Controller(ILogger<Controller> logger, JwtService jwtService)
+    public Controller(ILogger<Controller> logger, JwtService jwtService, HttpClientService clientService)
     {
         _logger = logger;
         _jwtService = jwtService;
+        _clientService = clientService;
     }
 
     [HttpGet("/IsEven{number}")]
@@ -34,6 +37,29 @@ public class Controller : ControllerBase
         {
             MessageToClient = "Login Successfull",
         //    ResponseData = new { token },
+        };
+    }
+    
+    
+    [HttpGet]
+    [Route("/api/skey")]
+    public ResponseDto getSitekey()
+    {
+        var key = Environment.GetEnvironmentVariable("rekey");
+        return new ResponseDto
+        {
+            ResponseData = new { key },
+        };
+    }
+
+    [HttpPost]
+    [Route("/api/ishuman")]
+    public async Task<ResponseDto> ishuman([FromBody] RecaptchaTokenDTO dto)
+    {
+        var ishuman = await _clientService.verifyHuman(dto.token);
+        return new ResponseDto
+        {
+            ResponseData = new {ishuman}
         };
     }
 }

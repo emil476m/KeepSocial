@@ -3,7 +3,8 @@ using API;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+builder.Services.AddSingleton <HttpClient>();
+builder.Services.AddSingleton<HttpClientService>();
 builder.Services.AddControllers();
 builder.Services.AddJwtService();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -19,6 +20,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors(options =>
+{
+    options.SetIsOriginAllowed(origin => true)
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .AllowCredentials();
+});
 
 app.UseSecurityHeaders();
 
