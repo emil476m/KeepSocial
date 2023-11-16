@@ -1,6 +1,6 @@
 using Dapper;
-using Infastructure;
 using Npgsql;
+
 
 namespace Infastructure;
 
@@ -27,6 +27,23 @@ public class AccountRepository
         using (var conn = _dataSource.OpenConnection())
         {
             return conn.QueryFirst<User>(sql, new { userDisplayName, userEmail, userBirthday});
+        }
+    }
+
+    public IEnumerable<User> getUserName()
+    {
+        var sql =
+            $@"SELECT  
+        id as {nameof(User.userId)}, 
+        name as {nameof(User.userDisplayName)},
+        email as {nameof(User.userEmail)}, 
+        birthday as {nameof(User.userBirthday)}
+        FROM keepsocial.users WHERE isDeleted = false
+       ;";
+
+        using (var conn = _dataSource.OpenConnection())
+        {
+            return conn.Query<User>(sql);
         }
     }
 }
