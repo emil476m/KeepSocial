@@ -1,0 +1,21 @@
+.profilebutton {
+  z-index: 2;
+
+}
+.profilepic {
+  border:1px solid #000;
+  width: 20%;
+}
+
+
+.profilepic-border {
+  position: relative;
+  background: #a3a3a3;
+}
+.grid-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+

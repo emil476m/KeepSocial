@@ -16,9 +16,10 @@ import {LoginComponent} from "./login/login.component";
 import {ReactiveFormsModule} from "@angular/forms";
 import {NgxCaptchaModule} from "ngx-captcha";
 import {ReCapchaV3Service} from "./services/reCapchaV3.service";
+import {RegisterPage} from "./register/register.page";
 
 @NgModule({
-  declarations: [AppComponent, HomePage, TabsComponent, LoginComponent],
+  declarations: [AppComponent, HomePage, TabsComponent, LoginComponent, RegisterPage],
     imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, ReactiveFormsModule, NgxCaptchaModule, HttpClientModule],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }, { provide: HTTP_INTERCEPTORS, useClass: ErrorHttpInterceptor, multi: true },{ provide: HTTP_INTERCEPTORS, useClass: AuthHttpInterceptor, multi: true },TokenService, ReCapchaV3Service],
   bootstrap: [AppComponent],
