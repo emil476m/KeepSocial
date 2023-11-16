@@ -24,7 +24,7 @@ import {FormControl, Validators} from "@angular/forms";
               <ion-card id="textCard" *ngFor="let message of messages"
                         [ngClass]="{'left-card': !message.isSender, 'right-card': message.isSender}">
                   <ion-tab-bar [ngStyle]="{ 'background-color': message.isSender ? '#001087' : '#870000' }">
-                      <ion-text style="margin-left: 1%">{{ message.user }}</ion-text>
+                      <ion-text style="margin-left: 1%">{{ message.user.username.toString() }}</ion-text>
                       <ion-title>{{ message.message }}</ion-title>
                   </ion-tab-bar>
               </ion-card>
@@ -46,13 +46,46 @@ export class ChatPage {
 
   message: FormControl<string | null> = new FormControl("", [Validators.required,Validators.minLength(3),Validators.maxLength(50)]);
 
-  messages: Message[] = [];
+  messages: Message[] = [
+    {
+    message: "Mock",
+    isSender: false,
+    user: {username: "@user"}
+    },
+    {
+      message: "Mock",
+      isSender: true,
+      user: {username: "@user"}
+    },
+    {
+      message: "Mock",
+      isSender: false,
+      user: {username: "@user"}
+    },
+    {
+      message: "Mock",
+      isSender: true,
+      user: {username: "@user"}
+    },
+    {
+      message: "Mock",
+      isSender: false,
+      user: {username: "@user"}
+    },
+    {
+      message: "Mock",
+      isSender: true,
+      user: {username: "@user"}
+    },
+
+  ];
 
   constructor() {
+
     let testMessage: Message = {
       message: "Holla freind",
       isSender: false,
-      user: "@user"
+      user: {username: "@user"}
     }
 
     this.messages.push(testMessage);
@@ -64,7 +97,7 @@ export class ChatPage {
       let sendMessage: Message = {
         message: this.message.value,
         isSender: true,
-        user: "me"
+        user: {username: "@me"}
       }
       this.messages.push(sendMessage)
     }
@@ -76,5 +109,9 @@ export class ChatPage {
 export interface Message {
   message: string;
   isSender: boolean;
-  user: string;
+  user: User;
+}
+
+export interface User {
+  username: string;
 }
