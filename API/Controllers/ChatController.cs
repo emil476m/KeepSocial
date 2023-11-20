@@ -17,18 +17,28 @@ public class ChatController : ControllerBase
         _chatService = chatService;
     }
     
-    [HttpGet("/Rooms{userId}")]
-    public IEnumerable<Rooms> getAllRooms([FromRoute]int userID, int offSet)
+    [HttpGet("/Rooms")]
+    public IEnumerable<Rooms> getAllRooms(int pageNumber)
     {
         //var session = HttpContext.GetSessionData()!;
+        int userid = 101;
         int limit = 10;
-        throw new NotImplementedException();
+        return _chatService.getChatRooms(pageNumber, userid);
     }
 
-    [HttpGet("/ChatRoom{roomId}")]
-    public IEnumerable<Message> getMessagesInChat([FromRoute] int roomId, int pageNumber, int userId)
+    [HttpGet("/ChatMessages{roomId}")]
+    public IEnumerable<Message> getMessagesInChat([FromRoute] int roomId, int pageNumber)
     {
         //var session = HttpContext.GetSessionData()!;
+        int userId = 101;
         return _chatService.getChats(roomId, pageNumber, userId);
+    }
+    
+    [HttpPost("/SenndMessage")]
+    public Message snedMessagesInChat([FromBody]Message message)
+    {
+        //var session = HttpContext.GetSessionData()!;
+        int userId = 101;
+        return _chatService.sendMessage(message, userId);
     }
 }

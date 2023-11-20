@@ -17,8 +17,9 @@ public class Rooms
 
 public class Message
 {
+    public int room_id { get; set; }
     public string message { get; set; }
     public bool isSender { get; set; }
     public int User_id { get; set; }
-    //public DateTime sendAt { get; set; }
+    public DateTime sendAt { get; set; }
 }
