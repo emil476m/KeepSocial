@@ -52,13 +52,14 @@ public class ChatReposetory
     }
 
     public IEnumerable<Rooms> getChatRoooms(int offset, int userId)
-    { //TODO finish this
+    { 
         var sql = $@"
-            select rom_id as {nameof(Rooms.rom_id)}
-            
-            from keepsocial.chatroomUsersRealation
-            
-            WHERE user_id = @userId LIMIT 10 OFFSET @offset;
+            select 
+            keepsocial.chatrooms.rom_id as {nameof(Rooms.rom_id)},
+            rom_name as {nameof(Rooms.rom_name)}
+            FROM keepsocial.chatrooms JOIN keepsocial.chatroomUsersRealation ON chatroomUsersRealation.rom_id = chatrooms.rom_id
+            WHERE user_id = @userId
+            LIMIT 10 OFFSET @offset;
         ";
         
         using (var conn = _dataSource.OpenConnection())

@@ -11,7 +11,7 @@ public class Rooms
 {
     public int rom_id { get; set; }
     public string rom_name { get; set; }
-    public User ArrayList { get; set; }
+    //public User ArrayList { get; set; }
     
 }
 
