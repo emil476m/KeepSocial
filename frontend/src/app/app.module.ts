@@ -14,10 +14,11 @@ import {TokenService} from "./services/token.service";
 import {AuthHttpInterceptor} from "../interceptors/auth-http-interceptor";
 import {LoginComponent} from "./login/login.component";
 import {RegisterPage} from "./register/register.page";
+import {ReactiveFormsModule} from "@angular/forms";
 
 @NgModule({
   declarations: [AppComponent, HomePage, TabsComponent, LoginComponent, RegisterPage],
-  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule],
+  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, ReactiveFormsModule],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }, { provide: HTTP_INTERCEPTORS, useClass: ErrorHttpInterceptor, multi: true },{ provide: HTTP_INTERCEPTORS, useClass: AuthHttpInterceptor, multi: true },TokenService],
   bootstrap: [AppComponent],
 })
