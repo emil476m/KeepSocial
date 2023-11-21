@@ -2,11 +2,26 @@ using System.Net;
 using System.Net.Http.Json;
 using FluentAssertions;
 using FluentAssertions.Execution;
-using Infastructure;
 using Newtonsoft.Json;
 using Npgsql;
 
 namespace test;
+public class ResponseDto
+{ 
+    public string MessageToClient { get; set; } 
+    public object? ResponseData { get; set; }
+    
+}
+
+
+public class testUserObject
+{
+    public string userDisplayName { get; set; }
+    public string userEmail { get; set; }
+    public DateTime userBirthday { get; set; }
+    public string password { get; set; }
+    public string? AvatarUrl { get; set; }
+}
 
 public class CreateUserTest
 {
@@ -64,28 +79,34 @@ create table if not exists keepsocial.messages (
     public void Setup()
     {
         _httpClient = new HttpClient();
-        apirUrl = "http://localhost:5000/api/account/register";
+        apirUrl = "http://localhost:5000/api/account/createuser";
     }
 
     
     
     [Test]
-    public async Task ShouldSuccessfullyCreateBox()
+    public async Task ShouldSuccessfullyCreateUser()
     {
         Helper.TriggerRebuild(resetbd);
-        var user = new User()
+        var user = new testUserObject()
         {
-            userId =-101,
             userDisplayName = "testingcreateName",
             userEmail = "testingmail@gmail.com",
             userBirthday = new DateTime(2000, 1, 1),
+            
+            password = "12345678",
     
             AvatarUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png",
-    
-            isDeleted = false,
         };
+        
+        ResponseDto expectedResponseDTO = new ResponseDto
+        {
+            MessageToClient = "Successfully registered"
+        };
+        
+        
 
-        var url = "https://exersiceweek43.azurewebsites.net/box";
+        var url = "http://localhost:5000/api/account/createuser";
         
         HttpResponseMessage response;
         
@@ -98,22 +119,24 @@ create table if not exists keepsocial.messages (
         {
             throw new Exception(Helper.NoResponseMessage, e);
         }
-        
-        User responseObject;
+
+        ResponseDto responseObj;
         try
         {
-            responseObject = JsonConvert.DeserializeObject<User>(
-                await response.Content.ReadAsStringAsync()) ?? throw new InvalidOperationException();
+            responseObj = JsonConvert.DeserializeObject<ResponseDto>(await response.Content.ReadAsStringAsync()) ??
+                          throw new InvalidOperationException();
         }
         catch (Exception e)
         {
-            throw new Exception(Helper.BadResponseBody(await response.Content.ReadAsStringAsync()), e); 
+            throw new Exception(Helper.BadResponseBody(await response.Content.ReadAsStringAsync()), e);
         }
+        
+        
         
         using (new AssertionScope())
         {
-            response.IsSuccessStatusCode.Should().BeTrue();
-            responseObject.Should().BeEquivalentTo(user, Helper.MyBecause(responseObject, user));
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            responseObj.MessageToClient.Should().Be(expectedResponseDTO.MessageToClient);
         }
     }
 
@@ -121,7 +144,7 @@ create table if not exists keepsocial.messages (
     [TestCase("testingName1", "testingmail123@gmail.com", testcase1Date , "12345678", "url")]
     public async Task ShouldFailDueToDataValidation(string name, string email, DateTime birthday, string password, string avatarUrl)
     {
-        var article = new User()
+        var user = new testUserObject()
         {
             userId =-101,
             userDisplayName = "testingcreateName",
@@ -136,7 +159,7 @@ create table if not exists keepsocial.messages (
         HttpResponseMessage response;
         try
         {
-            response = await _httpClient.PostAsJsonAsync("https://exersiceweek43.azurewebsites.net/api/articles", article);
+            response = await _httpClient.PostAsJsonAsync("http://localhost:5000/api/account/createuser", user);
             TestContext.WriteLine("THE FULL BODY RESPONSE: " + await response.Content.ReadAsStringAsync());
         }
         catch (Exception e)

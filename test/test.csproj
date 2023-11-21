@@ -21,7 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Infastructure\Infastructure.csproj" />
   </ItemGroup>
 
 </Project>
