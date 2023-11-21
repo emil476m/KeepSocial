@@ -22,16 +22,15 @@ import {firstValueFrom} from "rxjs";
       </ion-header>
 
 
-      <div id="Textcontainer">
+      <ion-content id="Textcontainer" [scrollEvents]="true" (ionScroll)="onScroll($event)">
         <ion-card id="textCard" *ngFor="let message of messages"
                   [ngClass]="{'left-card': !message.isSender, 'right-card': message.isSender}">
           <ion-tab-bar [ngStyle]="{ 'background-color': message.isSender ? '#001087' : '#870000' }">
-            <ion-text style="margin-left: 1%">{{ message.User_id.toString() }}</ion-text>
+            <ion-text style="margin-left: 1%">{{ message.User_id }}</ion-text>
             <ion-title>{{ message.message }}</ion-title>
           </ion-tab-bar>
         </ion-card>
-      </div>
-
+      </ion-content>
     </ion-content>
     <ion-item>
       <ion-input placeholder="  text...  " [formControl]="message" id="messageInput"></ion-input>
@@ -46,12 +45,14 @@ import {firstValueFrom} from "rxjs";
 export class ChatPage {
   displayname: string = "@displayname"
 
+  page: number = 1;
+
   message: FormControl<string | null> = new FormControl("", [Validators.required,Validators.minLength(3),Validators.maxLength(50)]);
 
   messages: Message[] = [];
 
   constructor(private http: HttpClient) {
-    this.getMessages(); //TODO Note side dont work with HttpClient at the momment
+    this.getMessages();
   }
 
   async sendMessage() {
@@ -66,12 +67,12 @@ export class ChatPage {
         //user: {userId: 0, userDisplayName: "@me", userEmail: "email", userBirthday: "22:22:22", AvatarUrl:"", isDeleted:false}
 
       }
-      this.messages.push(sendMessage)
 
       try {
         const call = this.http.post<Message>("http://localhost:5000/SenndMessage", this.message.value)
         const reault = await firstValueFrom(call);
         this.message.reset()
+        this.messages.push(reault)
       } catch (error) {
       }
     }
@@ -80,11 +81,20 @@ export class ChatPage {
 
   async getMessages(){
     try {
-      const result = this.http.get<Message[]>("http://localhost:5000/ChatMessages" + 101 + "?pageNumber=" + 1);
-      result.subscribe((resData: Message[]) => {
-        this.messages = resData;
+      const call = this.http.get<Message[]>("http://localhost:5000/ChatMessages" + 101 + "?pageNumber=" + this.page);
+      this.page = this.page + 1;
+      //this.messages = await firstValueFrom<Message[]>(call);
+      call.subscribe((resData: Message[]) => {
+         this.messages.unshift(...resData);
       })
     } catch (error){}
+  }
+
+  onScroll(event: CustomEvent) {
+    const scrollTop = event.detail.scrollTop;
+    if (scrollTop === 0) {
+      this.getMessages();
+    }
   }
 
 }

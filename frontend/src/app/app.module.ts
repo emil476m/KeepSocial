@@ -9,7 +9,7 @@ import { AppRoutingModule } from './app-routing.module';
 import {HomePage} from "./home/home.page";
 import {TabsComponent} from "./tabs.component";
 import {ErrorHttpInterceptor} from "../interceptors/error-http-interceptors";
-import {HTTP_INTERCEPTORS} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {TokenService} from "./services/token.service";
 import {AuthHttpInterceptor} from "../interceptors/auth-http-interceptor";
 import {LoginComponent} from "./login/login.component";

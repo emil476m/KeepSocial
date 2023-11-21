@@ -23,7 +23,9 @@ public class ChatReposetory
             CASE WHEN user_id = @userId THEN true ELSE false END as {nameof(Message.isSender)}
             from keepsocial.messages
             
-            WHERE rom_id = @romId LIMIT 10 OFFSET @offSetNumber;
+            WHERE rom_id = @romId 
+            ORDER BY time_Send DESC
+            LIMIT 10 OFFSET @offSetNumber;
         ";
         
         using (var conn = _dataSource.OpenConnection())

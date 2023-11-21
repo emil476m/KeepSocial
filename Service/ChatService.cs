@@ -16,7 +16,7 @@ public class ChatService
         try
         {
             int offset = (10 * pageNumber)-10;
-            return _chatReposetory.getChats(roomId, offset, userId);
+            return _chatReposetory.getChats(roomId, offset, userId).Reverse();
         }
         catch (Exception e)
         {
