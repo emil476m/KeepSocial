@@ -39,3 +39,4 @@ jobs:
         run: cd API && dotnet build && dotnet run & (sleep 60 && cd test && dotnet test && kill -9 $(lsof -t -i:5000))
         env:
           pgconn: ${{secrets.pgconn}}
+          JwtSecret: ${{secrets.JwtSecret}}
