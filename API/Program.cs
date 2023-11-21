@@ -9,6 +9,8 @@ builder.Services.AddNpgsqlDataSource(Utilities.ProperlyFormattedConnectionString
 builder.Services.AddSingleton<AccountRepository>();
 builder.Services.AddSingleton<PasswordHashRepository>();
 builder.Services.AddSingleton<Service.AccountService>();
+builder.Services.AddSingleton<HttpClient>();
+builder.Services.AddSingleton<HttpClientService>();
 builder.Services.AddControllers();
 builder.Services.AddJwtService();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
