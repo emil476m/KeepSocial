@@ -6,7 +6,7 @@ using Service;
 namespace API.Controllers;
 
 
-[Route("api/[controller]")]
+[Route("/api/account/")]
 [ApiController]
 public class AccountController : ControllerBase
 {
@@ -19,10 +19,10 @@ public class AccountController : ControllerBase
 
     
     [HttpPost]
-    [Route("/account/createuser")]
+    [Route("/api/account/createuser")]
     public ResponseDto CreateUser([FromBody] RegisterUserDto dto)
     {
-        var user = _accountService.CreateUser(dto.Name, dto.Email, dto.Password, dto.Userbirthday);
+        var user = _accountService.CreateUser(dto.userDisplayName, dto.userEmail, dto.password, dto.userBirthday);
         return new ResponseDto
         {
             MessageToClient = "Successfully registered"

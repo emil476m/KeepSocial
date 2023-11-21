@@ -1,6 +1,7 @@
 export interface newAccount {
-  name: string
-  email: string
-  birthday: Date
+  userDisplayName: string
+  userEmail: string
+  userBirthday: Date
   password: string
+  AvatarUrl: string
 }

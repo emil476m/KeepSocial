@@ -11,16 +11,12 @@ import {calendarNumber} from "ionicons/icons";
   styleUrls: ['register.css'],
   template:
     `
-
-
       <ion-content>
-
         <ion-header>
           <ion-toolbar>
             <ion-title align="center">Register Account</ion-title>
           </ion-toolbar>
         </ion-header>
-
         <ion-grid>
           <ion-row>
             <ion-col>
@@ -37,12 +33,7 @@ import {calendarNumber} from "ionicons/icons";
                 </div>
               </ion-item>
               <ion-item >
-                <ion-input [formControl]="AYear" data-testid="accountYear_" type="number" label-placement="floating" label="Year" ></ion-input>
-                <ion-input [formControl]="AMonth" data-testid="accountMonth_" type="number" label-placement="floating" label="Month" ></ion-input>
-                <ion-input [formControl]="ADay" data-testid="accountDay_" type="number" label-placement="floating" label="Day" ></ion-input>
-                <div *ngIf="AYear.invalid && AYear.touched && AMonth.invalid && AMonth.touched && ADay.invalid && ADay.touched" class="error">
-                  Please enter a valid date
-                </div>
+                <ion-input type="date" [formControl]="ADate"></ion-input>
               </ion-item>
               <ion-item >
                 <ion-input [formControl]="APassword" data-testid="accountPassword_" type="text" onpaste="return false;" ondrop="return false;" autocomplete="off" label-placement="floating" label="password" [type]="hide ? 'password' : 'text'" required></ion-input>
@@ -57,14 +48,15 @@ import {calendarNumber} from "ionicons/icons";
                   Both passwords must match
                 </div>
               </ion-item>
-
+              <ion-item>
+                <ion-button (click)="createAccount()" data-testid="accountCreateBTN_">Create Account</ion-button>
+              </ion-item>
             </ion-col>
-
             <ion-col>
               <ion-grid >
                 <ion-row >
                   <ion-col class="grid-item">
-                    <ion-img class="profile-img" style="width: 30%" src='https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png'/>
+                    <ion-img class="profile-img" style="width: 30%" [src]="currentAvatarUrl"/>
                   </ion-col>
                 </ion-row>
                 <ion-row>
@@ -84,16 +76,17 @@ import {calendarNumber} from "ionicons/icons";
 export class RegisterPage implements OnInit{
 
   hide = true;
+  defaultAvatarUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png";
+  currentAvatarUrl = this.defaultAvatarUrl;
 
 
   AName = new FormControl("",[Validators.required,Validators.minLength(1),Validators.maxLength(100)]);
   AEmail = new FormControl("",[Validators.required, Validators.email]);
-  AYear = new FormControl("",[Validators.required, Validators.minLength(4), Validators.maxLength(4)]);
-  AMonth = new FormControl("",[Validators.required,Validators.minLength(1),Validators.maxLength(12)]);
-  ADay = new FormControl("",[Validators.required,Validators.minLength(1),Validators.maxLength(31)]);
+  ADate = new FormControl(Date,[Validators.required,Validators.minLength(1),Validators.maxLength(31)]);
   APassword = new FormControl("",[Validators.required,Validators.minLength(8),Validators.maxLength(32)]);
   APasswordRepeat = new FormControl("",[Validators.required]);
 
+  //TODO implement this
   private MatchPassword(): boolean {
       const password = this.APassword.value as string;
       const passwordRepeat = this.APasswordRepeat.value as string;
@@ -106,43 +99,43 @@ export class RegisterPage implements OnInit{
   }
 
 
-  constructor(private http: HttpClient, public toastController: ToastController) {
+  constructor(private http: HttpClient, public toastControl: ToastController) {
 
   }
 
   async createAccount() {
     try {
-      var day = this.ADay;
+      console.log("")
+      const oberservable = this.http.post<newAccount>('http://localhost:5000/api/account/createuser', {
+        userDisplayName: this.AName.value,
+        userEmail: this.AEmail.value,
+        userBirthday: this.ADate.value,
+        password: this.APassword.value,
 
-      
-      //const d = new Date(parseInt(this.AYear), (this.AMonth-1).valueOf(), this.ADay)
-
-
-
-      const oberservable = this.http.post<any>('http://localhost:5000/api/order', {
-        name: this.AName,
-        email: this.AEmail,
-        birthday: null,
-        password: this.APassword,
       });
-      const result = await firstValueFrom<any>(oberservable);
-      const toast = await this.toastController.create({
-        message: result.message,
-        color: "succes",
-        duration: 5000
+      const result = await firstValueFrom<newAccount>(oberservable);
+      this.toastControl.create(
+        {
+          color: "success",
+          duration: 2000,
+          message: "Success"
+        }
+      ).then(res =>{
+        res.present();
       })
-      toast.present();
     }
-    catch (e){
-      console.log(e)
-      if (e instanceof HttpErrorResponse){
-        const toast = await this.toastController.create({
-          message: e.message,
-          color: "succes",
-          duration: 5000
-        });
-        toast.present();
-      }
+    catch (error)
+    {
+      console.log(error)
+      this.toastControl.create(
+        {
+          color: "warning",
+          duration: 2000,
+          message: "failed to create account"
+        }
+      ).then(res =>{
+        res.present();
+      })
 
     }
   }

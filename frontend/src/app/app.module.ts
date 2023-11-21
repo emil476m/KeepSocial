@@ -9,7 +9,7 @@ import { AppRoutingModule } from './app-routing.module';
 import {HomePage} from "./home/home.page";
 import {TabsComponent} from "./tabs.component";
 import {ErrorHttpInterceptor} from "../interceptors/error-http-interceptors";
-import {HTTP_INTERCEPTORS} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {TokenService} from "./services/token.service";
 import {AuthHttpInterceptor} from "../interceptors/auth-http-interceptor";
 import {LoginComponent} from "./login/login.component";
@@ -18,7 +18,7 @@ import {ReactiveFormsModule} from "@angular/forms";
 
 @NgModule({
   declarations: [AppComponent, HomePage, TabsComponent, LoginComponent, RegisterPage],
-  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, ReactiveFormsModule],
+  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, ReactiveFormsModule, HttpClientModule],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }, { provide: HTTP_INTERCEPTORS, useClass: ErrorHttpInterceptor, multi: true },{ provide: HTTP_INTERCEPTORS, useClass: AuthHttpInterceptor, multi: true },TokenService],
   bootstrap: [AppComponent],
 })
