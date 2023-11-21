@@ -17,7 +17,6 @@ import {ReactiveFormsModule} from "@angular/forms";
 import {NgxCaptchaModule} from "ngx-captcha";
 import {ReCapchaV3Service} from "./services/reCapchaV3.service";
 import {RegisterPage} from "./register/register.page";
-import {ReactiveFormsModule} from "@angular/forms";
 import {AccountService} from "./services/account.service";
 
 @NgModule({

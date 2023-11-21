@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Newtonsoft.Json;
 using Npgsql;
 
 namespace test;
@@ -47,5 +48,26 @@ public class Helper
                 throw new Exception("failed to rebuild database", e);
             }
         }
+    }
+    
+    public static string NoResponseMessage = $@"
+failed to get a response from the API.
+";
+    
+    public static string BadResponseBody(string content)
+    {
+        return $@"
+RESPONSE BODY: {content}
+
+EXCEPTION:
+";
+    }
+    
+    public static string MyBecause(object actual, object expected)
+    {
+        string expectedJson = JsonConvert.SerializeObject(expected, Formatting.Indented);
+        string actualJson = JsonConvert.SerializeObject(actual, Formatting.Indented);
+
+        return $"because we want these objects to be equivalent:\nExpected:\n{expectedJson}\nActual:\n{actualJson}";
     }
 }
