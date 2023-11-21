@@ -33,7 +33,9 @@ jobs:
           dotnet-version: |
             8.0.x
       #Runs the api and the test, once finished it wil terminate the api so the proces can finish
+
+      - run: cd test && dotnet build
       - name: Run the APITest
-        run: cd API && dotnet run & (sleep 20 && cd test && dotnet test && kill -9 $(lsof -t -i:5000))
+        run: cd API && dotnet build && dotnet run & (sleep 60 && cd test && dotnet test && kill -9 $(lsof -t -i:5000))
         env:
           pgconn: ${{secrets.pgconn}}
