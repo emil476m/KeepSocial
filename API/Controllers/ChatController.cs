@@ -21,7 +21,7 @@ public class ChatController : ControllerBase
     public IEnumerable<Rooms> getAllRooms(int pageNumber)
     {
         //var session = HttpContext.GetSessionData()!;
-        int userid = 101;
+        int userid = 111;
         int limit = 10;
         return _chatService.getChatRooms(pageNumber, userid);
     }
@@ -30,7 +30,7 @@ public class ChatController : ControllerBase
     public IEnumerable<Message> getMessagesInChat([FromRoute] int roomId, int pageNumber)
     {
         //var session = HttpContext.GetSessionData()!;
-        int userId = 101;
+        int userId = 111;
         return _chatService.getChats(roomId, pageNumber, userId);
     }
     
@@ -38,7 +38,7 @@ public class ChatController : ControllerBase
     public Message snedMessagesInChat([FromBody]Message message)
     {
         //var session = HttpContext.GetSessionData()!;
-        int userId = 101;
+        int userId = 111;
         return _chatService.sendMessage(message, userId);
     }
 }
