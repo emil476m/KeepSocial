@@ -34,7 +34,7 @@ import {Router} from "@angular/router";
         <ion-checkbox data-action="login" (ionChange)="checkifhuman()" [formControl]="human">I'm not a robot</ion-checkbox>
       </ion-item>
       <ion-item lines="none" class="buttonitem">
-        <ion-button color="primary" shape="round" (click)="login()" [disabled]="input.invalid && !this.state.ishuman || !this.state.ishuman">Login</ion-button>
+        <ion-button color="primary" shape="round" (click)="login()" [disabled]="input.invalid && !this.state.ishuman || !this.state.ishuman || input.invalid">Login</ion-button>
         <ion-button color="primary" shape="round">sign-up</ion-button>
       </ion-item>
 
