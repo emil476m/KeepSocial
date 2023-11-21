@@ -17,11 +17,30 @@ import {ReactiveFormsModule} from "@angular/forms";
 import {NgxCaptchaModule} from "ngx-captcha";
 import {ReCapchaV3Service} from "./services/reCapchaV3.service";
 import {RegisterPage} from "./register/register.page";
+import {AccountService} from "./services/account.service";
 
 @NgModule({
-  declarations: [AppComponent, HomePage, TabsComponent, LoginComponent, RegisterPage],
-    imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, ReactiveFormsModule, NgxCaptchaModule, HttpClientModule],
-  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }, { provide: HTTP_INTERCEPTORS, useClass: ErrorHttpInterceptor, multi: true },{ provide: HTTP_INTERCEPTORS, useClass: AuthHttpInterceptor, multi: true },TokenService, ReCapchaV3Service],
+  declarations:
+    [AppComponent,
+    HomePage,
+    TabsComponent,
+    LoginComponent,
+    RegisterPage
+  ],
+    imports:
+      [BrowserModule,
+      IonicModule.forRoot(),
+      AppRoutingModule,
+      ReactiveFormsModule,
+      NgxCaptchaModule,
+      HttpClientModule,
+    ],
+  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    { provide: HTTP_INTERCEPTORS, useClass: AuthHttpInterceptor, multi: true },
+    TokenService,
+    ReCapchaV3Service,
+    AccountService,
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

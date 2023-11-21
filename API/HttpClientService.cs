@@ -24,8 +24,12 @@ public class HttpClientService
         }));
         var responsebody = await apiResponse.Content.ReadAsStringAsync();
         var recaptchaResponce = JsonConvert.DeserializeObject<dynamic>(responsebody);
-        return recaptchaResponce.success;
+        if (recaptchaResponce.score <= 0.5)
+        {
+            return false;
+        }
 
+        return recaptchaResponce.success;
     }
 }
 

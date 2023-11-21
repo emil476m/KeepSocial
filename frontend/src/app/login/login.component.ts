@@ -1,11 +1,15 @@
 import {Component} from "@angular/core";
-import {FormControl, Validators} from "@angular/forms";
+import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {ReCapchaV3Service} from "../services/reCapchaV3.service";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import {environment} from "../../environments/environment.prod";
 import {firstValueFrom} from "rxjs";
 import {ResponsdtoModel} from "../models/responsdto.model";
 import {Globalstate} from "../services/states/globalstate";
+import {AccountService, Credentials} from "../services/account.service";
+import {TokenService} from "../services/token.service";
+import {ToastController} from "@ionic/angular";
+import {Router} from "@angular/router";
 
 @Component({
     template: `
@@ -27,10 +31,10 @@ import {Globalstate} from "../services/states/globalstate";
         </div>
       </ion-item>
       <ion-item lines="none" class="ishuman">
-        <ion-checkbox data-action="login" (ionChange)="checkifhuman()">I'm human</ion-checkbox>
+        <ion-checkbox data-action="login" (ionChange)="checkifhuman()" [formControl]="human">I'm not a robot</ion-checkbox>
       </ion-item>
       <ion-item lines="none" class="buttonitem">
-        <ion-button color="primary" shape="round">Login</ion-button>
+        <ion-button color="primary" shape="round" (click)="login()" [disabled]="input.invalid && !this.state.ishuman || !this.state.ishuman">Login</ion-button>
         <ion-button color="primary" shape="round">sign-up</ion-button>
       </ion-item>
 
@@ -43,8 +47,22 @@ import {Globalstate} from "../services/states/globalstate";
 export class LoginComponent {
     email = new FormControl("", [Validators.required, Validators.minLength(6)]);
     password = new FormControl("", [Validators.required, Validators.minLength(8)]);
+    human = new FormControl(false,[Validators.required]);
+    input = new FormGroup(
+      {
+        email: this.email,
+        password: this.password,
+        })
 
-    constructor(private recapcha: ReCapchaV3Service, private http: HttpClient, private state: Globalstate) {
+
+    constructor(private recapcha: ReCapchaV3Service,
+                private http: HttpClient,
+                public state: Globalstate,
+                private readonly service: AccountService,
+                private readonly token: TokenService,
+                private readonly toast: ToastController,
+                private readonly router: Router,
+                ) {
     }
 
 
@@ -53,4 +71,26 @@ export class LoginComponent {
     const result = await firstValueFrom<ResponsdtoModel>(call);
     this.recapcha.execute(result.responseData.key)
   }
+
+
+  async login() {
+      try{
+        const {token} = await firstValueFrom(this.service.login(this.input.value as Credentials));
+        this.token.setToken(token);
+        this.router.navigateByUrl('home');
+
+        (await this.toast.create({
+          message: "Login successful",
+          color: "success",
+          duration: 5000
+        })).present();
+    } catch (e)
+      {
+        (await this.toast.create({
+          message: "Email or password was wrong please try again",
+          color: "danger",
+          duration: 5000,
+        })).present();
+      }
+    }
 }

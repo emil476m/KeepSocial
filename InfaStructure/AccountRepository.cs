@@ -46,4 +46,16 @@ public class AccountRepository
             return conn.Query<User>(sql);
         }
     }
+
+    public User? GetById(int id)
+    {
+        var sql = $@"select
+           id as {nameof(User.userId)},
+           name as {nameof(User.userDisplayName)},
+           email as {nameof(User.userEmail)},
+           birthday as {nameof(User.userBirthday)}
+           from keepsocial.users where id = @id and isDeleted = false";
+        using var connection = _dataSource.OpenConnection();
+        return connection.QueryFirst<User>(sql, new { id });
+    }
 }
