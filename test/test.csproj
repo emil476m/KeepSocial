@@ -21,8 +21,4 @@
     <PackageReference Include="coverlet.collector" Version="6.0.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Infastructure\Infastructure.csproj" />
-  </ItemGroup>
-
 </Project>
