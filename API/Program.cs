@@ -11,11 +11,16 @@ builder.Services.AddSingleton<ChatReposetory>();
 builder.Services.AddSingleton<PasswordHashRepository>();
 builder.Services.AddSingleton<Service.AccountService>();
 builder.Services.AddSingleton<Service.ChatService>();
+builder.Services.AddSingleton<HttpClient>();
+builder.Services.AddSingleton<HttpClientService>();
 builder.Services.AddControllers();
 builder.Services.AddJwtService();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGenWithBearerJWT();
+
+var frontEndRelativePath = "../frontend/www";
+builder.Services.AddSpaStaticFiles(conf => conf.RootPath = frontEndRelativePath);
 
 var app = builder.Build();
 
@@ -34,13 +39,14 @@ app.UseCors(options =>
         .AllowCredentials();
 });
 
+app.UseSpaStaticFiles();
+app.UseSpa(conf =>
+{
+    conf.Options.SourcePath = frontEndRelativePath;
+});
 
 app.UseSecurityHeaders();
-
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();

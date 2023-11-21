@@ -4,6 +4,7 @@ import { HomePage } from './home/home.page';
 import { ChatPage } from './chat/chat.page';
 import {TabsComponent} from "./tabs.component";
 import {LoginComponent} from "./login/login.component";
+import {RegisterPage} from "./register/register.page";
 
 const routes: Routes = [
   {
@@ -23,6 +24,10 @@ const routes: Routes = [
   {
     path: "login",
     component: LoginComponent,
+  },
+  {
+    path: "register",
+    component: RegisterPage,
   }
 ];
 
