@@ -7,17 +7,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
       <PackageReference Include="Konscious.Security.Cryptography.Argon2" Version="1.3.0" />
       <PackageReference Include="MimeKit" Version="4.3.0" />
-      <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
       <PackageReference Include="Konscious.Security.Cryptography.Argon2" Version="1.3.0" />
       <PackageReference Include="MimeKit" Version="4.3.0" />
       <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.0.3" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\Infastructure\Infastructure.csproj" />
     </ItemGroup>
 
 
