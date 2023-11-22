@@ -19,6 +19,7 @@ import {ReCapchaV3Service} from "./services/reCapchaV3.service";
 import {RegisterPage} from "./register/register.page";
 import {AccountService} from "./services/account.service";
 import {ChatPage} from "./chat/chat.page";
+import {RoomsPage} from "./chat/rooms.page";
 
 
 @NgModule({
@@ -28,7 +29,8 @@ import {ChatPage} from "./chat/chat.page";
     TabsComponent,
     LoginComponent,
     RegisterPage,
-      ChatPage
+      ChatPage,
+      RoomsPage
   ],
     imports:
       [BrowserModule,

@@ -3,6 +3,7 @@ import {HttpClient} from "@angular/common/http";
 import {FormControl, Validators} from "@angular/forms";
 import {firstValueFrom, max} from "rxjs";
 import {IonContent} from "@ionic/angular";
+import {Message} from "../models/Message.model";
 
 @Component({
     selector: 'app-chat',
@@ -110,22 +111,4 @@ export class ChatPage implements OnInit {
         }
     }
 
-}
-
-export interface Message {
-    room_id: number;
-    message: string;
-    isSender: boolean;
-    User_id: number;
-    sendAt: string;
-
-}
-
-export interface User {
-    userId: number;
-    userDisplayName: string;
-    userEmail: string;
-    userBirthday: string;
-    AvatarUrl: string;
-    isDeleted: boolean;
 }
