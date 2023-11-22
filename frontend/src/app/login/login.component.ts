@@ -35,7 +35,7 @@ import {NavigationStart, Router} from "@angular/router";
       </ion-item>
       <ion-item lines="none" class="buttonitem">
         <ion-button color="primary" shape="round" (click)="login()" [disabled]="input.invalid && !this.state.ishuman || !this.state.ishuman || input.invalid">Login</ion-button>
-        <ion-button color="primary" shape="round">sign-up</ion-button>
+        <ion-button routerLink="/register" color="primary" shape="round">sign-up</ion-button>
       </ion-item>
 
 

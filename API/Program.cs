@@ -8,8 +8,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddNpgsqlDataSource(Utilities.ProperlyFormattedConnectionString,
     dataSourceBuilder => dataSourceBuilder.EnableParameterLogging()); 
 builder.Services.AddSingleton<AccountRepository>();
+builder.Services.AddSingleton<ChatReposetory>();
 builder.Services.AddSingleton<PasswordHashRepository>();
 builder.Services.AddSingleton<Service.AccountService>();
+builder.Services.AddSingleton<Service.ChatService>();
 builder.Services.AddSingleton<HttpClient>();
 builder.Services.AddSingleton<HttpClientService>();
 builder.Services.AddControllers();
@@ -22,6 +24,7 @@ var frontEndRelativePath = "../frontend/www";
 builder.Services.AddSpaStaticFiles(conf => conf.RootPath = frontEndRelativePath);
 
 var app = builder.Build();
+app.UseRouting();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
