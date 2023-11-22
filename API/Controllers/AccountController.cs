@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using API.Filters;
 using API.TransferModels;
 using Infastructure;
 using Microsoft.AspNetCore.Mvc;
@@ -37,10 +38,14 @@ public class AccountController : ControllerBase
     }
     
     [HttpGet]
+    [RequireAuthentication]
     [Route("/account/getAllUsers")]
-    public IEnumerable<User> getTest()
+    public ResponseDto getTest()
     {
-        return _accountService.getUserName();
+        return new ResponseDto
+        {
+            MessageToClient = "yes"
+        };
     }
     
     [HttpPost]
@@ -75,4 +80,5 @@ public class AccountController : ControllerBase
             ResponseData = new {ishuman}
         };
     }
+    
 }

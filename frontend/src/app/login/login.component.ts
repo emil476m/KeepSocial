@@ -9,7 +9,7 @@ import {Globalstate} from "../services/states/globalstate";
 import {AccountService, Credentials} from "../services/account.service";
 import {TokenService} from "../services/token.service";
 import {ToastController} from "@ionic/angular";
-import {Router} from "@angular/router";
+import {NavigationStart, Router} from "@angular/router";
 
 @Component({
     template: `
@@ -62,7 +62,14 @@ export class LoginComponent {
                 private readonly token: TokenService,
                 private readonly toast: ToastController,
                 private readonly router: Router,
-                ) {
+                )
+    {
+      this.router.events.subscribe(event =>    {
+        if(event instanceof NavigationStart) {
+          this.email.setValue("");
+          this.password.setValue("");
+        }
+      })
     }
 
 
