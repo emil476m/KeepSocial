@@ -1,4 +1,5 @@
 using API;
+using API.Middleware;
 using Infastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -49,4 +50,5 @@ app.UseSecurityHeaders();
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
+app.UseMiddleware<JwtBearerHandler>();
 app.Run();

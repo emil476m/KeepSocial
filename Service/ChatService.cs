@@ -11,12 +11,13 @@ public class ChatService
         _chatReposetory = chatReposetory;
     }
 
-    public IEnumerable<Message> getChats(int roomId, int pageNumber, int userId)
+    public IEnumerable<Message> getChats(int roomId, int pageNumber, SessionData data)
     {
         try
         {
             int offset = (10 * pageNumber)-10;
-            return _chatReposetory.getChats(roomId, offset, userId).Reverse();
+
+            return _chatReposetory.getChats(roomId, offset, data.UserId).Reverse();
         }
         catch (Exception e)
         {
@@ -25,11 +26,11 @@ public class ChatService
         }
     }
 
-    public Message sendMessage(Message message, int userId)
+    public Message sendMessage(Message message, SessionData data)
     {
         try
         {
-            return _chatReposetory.sendMessage(message.room_id, message.message,userId);
+            return _chatReposetory.sendMessage(message.room_id, message.message,data.UserId);
         }
         catch (Exception e)
         {
@@ -38,12 +39,12 @@ public class ChatService
         }
     }
 
-    public IEnumerable<Rooms> getChatRooms(int pageNumber, int userId)
+    public IEnumerable<Rooms> getChatRooms(int pageNumber, SessionData data)
     {
         try
         {
             int offset = (10 * pageNumber)-10;
-            return _chatReposetory.getChatRoooms( offset, userId);
+            return _chatReposetory.getChatRoooms( offset, data.UserId);
         }
         catch (Exception e)
         {

@@ -45,6 +45,7 @@ import {IonContent} from "@ionic/angular";
 })
 export class ChatPage implements OnInit {
     displayname: string = "@displayname";
+    chatroom_num: number = 101;
 
     @ViewChild('textWindow', {static: false}) textWindow!: IonContent;
 
@@ -69,7 +70,7 @@ export class ChatPage implements OnInit {
         console.log(this.message.value)
         if (this.message.value != null) {
             let text: Message = {
-                room_id: 101, //TODO change this later
+                room_id: this.chatroom_num, //TODO change this later
                 message: this.message.value,
                 isSender: true,
                 User_id: -1,
@@ -92,7 +93,7 @@ export class ChatPage implements OnInit {
 
     async getMessages() {
         try {
-            const call = this.http.get<Message[]>("http://localhost:5000/ChatMessages" + 101 + "?pageNumber=" + this.page);
+            const call = this.http.get<Message[]>("http://localhost:5000/ChatMessages" + this.chatroom_num + "?pageNumber=" + this.page);
             this.page = this.page + 1;
             //this.messages = await firstValueFrom<Message[]>(call);
             call.subscribe((resData: Message[]) => {
