@@ -18,6 +18,7 @@ import {NgxCaptchaModule} from "ngx-captcha";
 import {ReCapchaV3Service} from "./services/reCapchaV3.service";
 import {RegisterPage} from "./register/register.page";
 import {AccountService} from "./services/account.service";
+import {ChatPage} from "./chat/chat.page";
 import {AccountPage} from "./account/account.page";
 
 @NgModule({
@@ -28,6 +29,7 @@ import {AccountPage} from "./account/account.page";
     LoginComponent,
     RegisterPage,
     AccountPage,
+      ChatPage
   ],
     imports:
       [BrowserModule,
@@ -38,6 +40,7 @@ import {AccountPage} from "./account/account.page";
       HttpClientModule,
     ],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorHttpInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: AuthHttpInterceptor, multi: true },
     TokenService,
     ReCapchaV3Service,
