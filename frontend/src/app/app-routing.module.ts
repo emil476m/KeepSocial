@@ -19,6 +19,10 @@ const routes: Routes = [
       {
         path: "chat",
         component: ChatPage,
+      },
+      {
+        path: "account",
+        component: AccountPage,
       }
     ]
   },
