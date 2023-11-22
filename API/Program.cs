@@ -1,4 +1,5 @@
 using API;
+using API.Middleware;
 using Infastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,8 +8,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddNpgsqlDataSource(Utilities.ProperlyFormattedConnectionString,
     dataSourceBuilder => dataSourceBuilder.EnableParameterLogging()); 
 builder.Services.AddSingleton<AccountRepository>();
+builder.Services.AddSingleton<ChatReposetory>();
 builder.Services.AddSingleton<PasswordHashRepository>();
 builder.Services.AddSingleton<Service.AccountService>();
+builder.Services.AddSingleton<Service.ChatService>();
 builder.Services.AddSingleton<HttpClient>();
 builder.Services.AddSingleton<HttpClientService>();
 builder.Services.AddControllers();
@@ -48,4 +51,5 @@ app.UseSecurityHeaders();
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
+app.UseMiddleware<JwtBearerHandler>();
 app.Run();
