@@ -5,6 +5,7 @@ import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import {newAccount} from "../accountInterface";
 import {ToastController} from "@ionic/angular";
 import {calendarNumber} from "ionicons/icons";
+import {Router, UrlTree} from "@angular/router";
 
 @Component({
   selector: 'app-boxdetailed',
@@ -99,7 +100,7 @@ export class RegisterPage implements OnInit{
   }
 
 
-  constructor(private http: HttpClient, public toastControl: ToastController) {
+  constructor(private http: HttpClient, public toastControl: ToastController, private router: Router) {
 
   }
 
@@ -138,6 +139,7 @@ export class RegisterPage implements OnInit{
       })
 
     }
+    this.router.navigateByUrl("login");
   }
 
   ngOnInit() {
