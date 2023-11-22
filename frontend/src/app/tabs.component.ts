@@ -12,7 +12,7 @@ import { Component } from "@angular/core";
                   <ion-icon name="library-outline"></ion-icon>
                   Posts
               </ion-tab-button>
-              <ion-tab-button tab="account">
+              <ion-tab-button tab="account" routerLink="account">
                   <ion-icon name="person-outline"></ion-icon>
                   Account
               </ion-tab-button>

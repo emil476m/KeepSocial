@@ -18,6 +18,7 @@ import {NgxCaptchaModule} from "ngx-captcha";
 import {ReCapchaV3Service} from "./services/reCapchaV3.service";
 import {RegisterPage} from "./register/register.page";
 import {AccountService} from "./services/account.service";
+import {AccountPage} from "./account/account.page";
 
 @NgModule({
   declarations:
@@ -25,7 +26,8 @@ import {AccountService} from "./services/account.service";
     HomePage,
     TabsComponent,
     LoginComponent,
-    RegisterPage
+    RegisterPage,
+    AccountPage,
   ],
     imports:
       [BrowserModule,

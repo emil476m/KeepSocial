@@ -51,4 +51,9 @@ public class AccountService
 
         return null;
     }
+
+    public User? whoAmI(int id)
+    {
+        return _accountRepository.GetById(id);
+    }
 }
