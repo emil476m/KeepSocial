@@ -55,6 +55,8 @@ public class ChatReposetory
 
     public IEnumerable<Rooms> getChatRoooms(int offset, int userId)
     { 
+        Console.WriteLine(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"+userId);
+        
         var sql = $@"
             select 
             keepsocial.chatrooms.rom_id as {nameof(Rooms.rom_id)},
