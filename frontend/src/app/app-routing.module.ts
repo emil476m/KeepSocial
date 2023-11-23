@@ -1,11 +1,12 @@
-import { NgModule } from '@angular/core';
-import {PreloadAllModules, RouterModule, Routes } from '@angular/router';
-import { HomePage } from './home/home.page';
-import { ChatPage } from './chat/chat.page';
+import {NgModule} from '@angular/core';
+import {PreloadAllModules, RouterModule, Routes} from '@angular/router';
+import {HomePage} from './home/home.page';
+import {ChatPage} from './chat/chat.page';
 import { RoomsPage } from './chat/rooms.page';
 import {TabsComponent} from "./tabs.component";
 import {LoginComponent} from "./login/login.component";
 import {RegisterPage} from "./register/register.page";
+import {AccountPage} from "./account/account.page";
 
 const routes: Routes = [
   {
@@ -24,6 +25,11 @@ const routes: Routes = [
       {
         path: "rooms",
         component: RoomsPage,
+
+      },
+      {
+        path: "account",
+        component: AccountPage,
       }
     ]
   },
@@ -34,6 +40,10 @@ const routes: Routes = [
   {
     path: "register",
     component: RegisterPage,
+  },
+  {
+    path: "account",
+    component: AccountPage,
   }
 ];
 

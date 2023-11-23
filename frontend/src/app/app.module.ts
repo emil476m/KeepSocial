@@ -21,6 +21,7 @@ import {AccountService} from "./services/account.service";
 import {ChatPage} from "./chat/chat.page";
 import {RoomsPage} from "./chat/rooms.page";
 
+import {AccountPage} from "./account/account.page";
 
 @NgModule({
   declarations:
@@ -29,6 +30,8 @@ import {RoomsPage} from "./chat/rooms.page";
     TabsComponent,
     LoginComponent,
     RegisterPage,
+    AccountPage,
+      ChatPage
       ChatPage,
       RoomsPage
   ],
