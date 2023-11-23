@@ -73,7 +73,6 @@ public class AccountController : ControllerBase
     [Route("/api/whoami")]
     public User whoAmI()
     {
-        var ye = HttpContext.Request.Headers.Authorization.FirstOrDefault();
         int id = HttpContext.GetSessionData().UserId;
         return _accountService.whoAmI(id);
     }
