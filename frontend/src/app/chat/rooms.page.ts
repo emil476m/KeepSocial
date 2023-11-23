@@ -18,21 +18,21 @@ import {Rooms} from "../models/Rooms.model";
       <ion-content [fullscreen]="true">
           <ion-content>
               <ion-card *ngFor="let room of roomList">
-                  <ion-title>
+                  <ion-title style="margin-left: 0.2%">
                       {{room.rom_name}}
                   </ion-title>
-                  <ion-text>
+                  <ion-text style="margin-left: 1.5%">
                       @user {{room.rom_id}}
                   </ion-text>
                   <ion-title></ion-title>
-                  <ion-button (click)="goToChat(101)">
+                  <ion-button style="margin-left: 1.5%" (click)="goToChat(room.rom_id)">
                       <ion-icon name="chevron-forward-outline"></ion-icon>
                   </ion-button>
               </ion-card>
 
               <ion-item>
-                  <ion-button [disabled]="page<2" (click)="previousPage()">Previous page</ion-button>
-                  <ion-button (click)="nextPage()">Next page</ion-button>
+                  <ion-button style="margin-left: 40%" [disabled]="page<2" (click)="previousPage()">Previous page</ion-button>
+                  <ion-button style="margin-left: 3%"[disabled]="roomList.length<9" (click)="nextPage()">Next page</ion-button>
               </ion-item>
           </ion-content>
       </ion-content>
