@@ -5,6 +5,7 @@ import { ChatPage } from './chat/chat.page';
 import {TabsComponent} from "./tabs.component";
 import {LoginComponent} from "./login/login.component";
 import {RegisterPage} from "./register/register.page";
+import {AccountPage} from "./account/account.page";
 
 const routes: Routes = [
   {
@@ -18,6 +19,10 @@ const routes: Routes = [
       {
         path: "chat",
         component: ChatPage,
+      },
+      {
+        path: "account",
+        component: AccountPage,
       }
     ]
   },
@@ -28,6 +33,10 @@ const routes: Routes = [
   {
     path: "register",
     component: RegisterPage,
+  },
+  {
+    path: "account",
+    component: AccountPage,
   }
 ];
 
