@@ -34,6 +34,21 @@ public class ChatReposetory
         }
     }
 
+    public bool isUserInRoom(int roomId, int userId)
+    {
+        var sql = $@"
+            SELECT rom_id from keepsocial.chatroomUsersRealation where rom_id = @roomId AND user_id = @userId;
+        ";
+        
+        using (var conn = _dataSource.OpenConnection())
+        {
+            int number = conn.QuerySingle<int>(sql, new {roomId, userId});
+            if (number == roomId) return true;
+        }
+
+        return false;
+    }
+    
     public Message sendMessage(int roomId, string message, int userId)
     {
         var sql = $@"
@@ -55,8 +70,6 @@ public class ChatReposetory
 
     public IEnumerable<Rooms> getChatRoooms(int offset, int userId)
     { 
-        Console.WriteLine(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"+userId);
-        
         var sql = $@"
             select 
             keepsocial.chatrooms.rom_id as {nameof(Rooms.rom_id)},
