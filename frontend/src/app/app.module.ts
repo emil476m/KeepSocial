@@ -1,11 +1,11 @@
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { RouteReuseStrategy } from '@angular/router';
+import {NgModule} from '@angular/core';
+import {BrowserModule} from '@angular/platform-browser';
+import {RouteReuseStrategy} from '@angular/router';
 
-import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
+import {IonicModule, IonicRouteStrategy} from '@ionic/angular';
 
-import { AppComponent } from './app.component';
-import { AppRoutingModule } from './app-routing.module';
+import {AppComponent} from './app.component';
+import {AppRoutingModule} from './app-routing.module';
 import {HomePage} from "./home/home.page";
 import {TabsComponent} from "./tabs.component";
 import {ErrorHttpInterceptor} from "../interceptors/error-http-interceptors";
@@ -26,30 +26,30 @@ import {AccountPage} from "./account/account.page";
 @NgModule({
   declarations:
     [AppComponent,
-    HomePage,
-    TabsComponent,
-    LoginComponent,
-    RegisterPage,
-    AccountPage,
-      ChatPage
+      HomePage,
+      TabsComponent,
+      LoginComponent,
+      RegisterPage,
+      AccountPage,
       ChatPage,
       RoomsPage
-  ],
-    imports:
-      [BrowserModule,
+    ],
+  imports:
+    [BrowserModule,
       IonicModule.forRoot(),
       AppRoutingModule,
       ReactiveFormsModule,
       NgxCaptchaModule,
       HttpClientModule,
     ],
-  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    { provide: HTTP_INTERCEPTORS, useClass: ErrorHttpInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: AuthHttpInterceptor, multi: true },
+  providers: [{provide: RouteReuseStrategy, useClass: IonicRouteStrategy},
+    {provide: HTTP_INTERCEPTORS, useClass: ErrorHttpInterceptor, multi: true},
+    {provide: HTTP_INTERCEPTORS, useClass: AuthHttpInterceptor, multi: true},
     TokenService,
     ReCapchaV3Service,
     AccountService,
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule {
+}
