@@ -18,7 +18,7 @@ const routes: Routes = [
       },
       {
 
-        path: "chat/:id",
+        path: "chat/:id/:room_name",
         component: ChatPage,
       },
       {

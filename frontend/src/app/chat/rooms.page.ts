@@ -22,24 +22,33 @@ import {Rooms} from "../models/Rooms.model";
                       {{room.rom_name}}
                   </ion-title>
                   <ion-text style="margin-left: 1.5%">
-                      @user {{room.rom_id}}
+                      @room #{{room.rom_id}}
                   </ion-text>
                   <ion-title></ion-title>
-                  <ion-button style="margin-left: 1.5%" (click)="goToChat(room.rom_id)">
+                  <ion-button style="margin-left: 1.5%" (click)="goToChat(room.rom_id, room.rom_name)">
                       <ion-icon name="chevron-forward-outline"></ion-icon>
                   </ion-button>
               </ion-card>
-
-              <ion-item>
-                  <ion-button style="margin-left: 40%" [disabled]="page<2" (click)="previousPage()">Previous page</ion-button>
-                  <ion-button style="margin-left: 3%"[disabled]="roomList.length<9" (click)="nextPage()">Next page</ion-button>
-              </ion-item>
           </ion-content>
       </ion-content>
 
+      <ion-item>
+          <ion-button class="bottomBtn" style="margin-left: 40%" [disabled]="page<2" (click)="previousPage()">
+              <p>&#160;</p>
+              <ion-icon name="arrow-back-outline"></ion-icon>
+              <p>&#160;</p>
+          </ion-button>
+          <ion-button class="bottomBtn" style="margin-left: 3%" [disabled]="roomList.length<9" (click)="nextPage()">
+              <p>&#160;</p>
+              <ion-icon name="arrow-forward-outline"></ion-icon>
+              <p>&#160;</p>
+          </ion-button>
+      </ion-item>
+
+
 
   `,
-  styleUrls: ['chat.page.scss'],
+  styleUrls: ['room.page.scss'],
 })
 export class RoomsPage implements OnInit {
 
@@ -55,8 +64,8 @@ export class RoomsPage implements OnInit {
     this.getRooms()
   }
 
-  goToChat(number: number) {
-    this.router.navigate(['chat/' + number])
+  goToChat(number: number, Roomname:string) {
+    this.router.navigate(['chat/' + number + '/' + Roomname])
   }
 
 
