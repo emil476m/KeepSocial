@@ -15,9 +15,13 @@ public class ChatService
     {
         try
         {
-            int offset = (10 * pageNumber)-10;
+            if (_chatReposetory.isUserInRoom(roomId, data.UserId))
+            {
+                int offset = (10 * pageNumber)-10;
+                return _chatReposetory.getChats(roomId, offset, data.UserId).Reverse();
+            }
 
-            return _chatReposetory.getChats(roomId, offset, data.UserId).Reverse();
+            throw new Exception("you do not have permision for this action");
         }
         catch (Exception e)
         {
@@ -30,7 +34,12 @@ public class ChatService
     {
         try
         {
-            return _chatReposetory.sendMessage(message.room_id, message.message,data.UserId);
+            if (_chatReposetory.isUserInRoom(message.room_id, data.UserId))
+            {
+                return _chatReposetory.sendMessage(message.room_id, message.message,data.UserId);
+            }
+
+            throw new Exception("you do not have permision for this action");
         }
         catch (Exception e)
         {
