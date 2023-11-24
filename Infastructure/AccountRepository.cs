@@ -12,8 +12,8 @@ public class AccountRepository
     {
         _dataSource = dataSource;
     }
-    
-    
+
+
     public User CreateUser(string userDisplayName, string userEmail, DateTime userBirthday)
     {
         var sql =
@@ -26,7 +26,7 @@ public class AccountRepository
 
         using (var conn = _dataSource.OpenConnection())
         {
-            return conn.QueryFirst<User>(sql, new { userDisplayName, userEmail, userBirthday});
+            return conn.QueryFirst<User>(sql, new { userDisplayName, userEmail, userBirthday });
         }
     }
 
@@ -58,5 +58,28 @@ public class AccountRepository
         using var connection = _dataSource.OpenConnection();
         return connection.QueryFirst<User>(sql, new { id });
     }
-    
+
+    public IEnumerable<User> getFriends(int userId, int offSetNumber)
+    {
+        var sql = $@"
+        select 
+            id as {nameof(User.userId)},
+            name as {nameof(User.userDisplayName)},
+            email as {nameof(User.userEmail)},
+            birthday as {nameof(User.userBirthday)}
+            
+        from keepsocial.users
+        where id != @userId
+        and id in (select distinct u.id
+        from keepsocial.users as u
+        join keepsocial.friendRealeatioj as f on u.id = f.user1_id or u.id = f.user2_id
+        where (f.user1_id = @userId or f.user2_id = @userId));
+        LIMIT 10 OFFSET @offSetNumber;
+        ";
+
+        using (var conn = _dataSource.OpenConnection())
+        {
+            return conn.Query<User>(sql, new {userId, offSetNumber});
+        }
+    }
 }

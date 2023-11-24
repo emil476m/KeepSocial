@@ -22,6 +22,7 @@ import {ChatPage} from "./chat/chat.page";
 import {RoomsPage} from "./chat/rooms.page";
 
 import {AccountPage} from "./account/account.page";
+import {FriendsPage} from "./freind/friends.page";
 
 @NgModule({
   declarations:
@@ -32,7 +33,8 @@ import {AccountPage} from "./account/account.page";
       RegisterPage,
       AccountPage,
       ChatPage,
-      RoomsPage
+      RoomsPage,
+      FriendsPage,
     ],
   imports:
     [BrowserModule,

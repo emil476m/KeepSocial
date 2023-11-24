@@ -5,7 +5,7 @@ import {HttpClient} from "@angular/common/http";
 import {Rooms} from "../models/Rooms.model";
 
 @Component({
-  selector: 'app-chat',
+  selector: 'app-room',
   template: `
       <ion-header [translucent]="true">
           <ion-toolbar>

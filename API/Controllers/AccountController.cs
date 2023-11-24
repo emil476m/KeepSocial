@@ -87,4 +87,14 @@ public class AccountController : ControllerBase
             ResponseData = new {ishuman}
         };
     }
+    
+    [HttpPost]
+    [Route("/api/freinds")]
+    public IEnumerable<User> GetFreinds(int pageNumber)
+    {
+        int userId = HttpContext.GetSessionData().UserId!;
+        return _accountService.getFriends(userId, pageNumber);
+
+        throw new NotImplementedException();
+    }
 }

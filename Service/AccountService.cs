@@ -56,4 +56,18 @@ public class AccountService
     {
         return _accountRepository.GetById(id);
     }
+
+    public IEnumerable<User> getFriends(int userId, int pageNumber)
+    {
+        int offset = (10 * pageNumber)-10;
+        try
+        {
+            return _accountRepository.getFriends(userId, offset);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception("could not fetch friend data");
+        }
+    }
 }

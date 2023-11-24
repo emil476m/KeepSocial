@@ -10,8 +10,13 @@ import { Component } from "@angular/core";
               </ion-tab-button>
 
               <ion-tab-button tab="Chats" routerLink="rooms">
-                <ion-icon name="chatbubbles-outline"></ion-icon>
-                    Chat
+                  <ion-icon name="chatbubbles-outline"></ion-icon>
+                  Chat
+              </ion-tab-button>
+
+              <ion-tab-button tab="friendsList" routerLink="friends">
+                  <ion-icon name="people-outline"></ion-icon>
+                  Friend
               </ion-tab-button>
 
               <ion-tab-button tab="posts">
