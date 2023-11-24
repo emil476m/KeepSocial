@@ -9,6 +9,7 @@ public class JwtService
     private readonly JwtOptions _options;
     
     private const string SignatureAlgorithm = SecurityAlgorithms.HmacSha512;
+    private readonly string _secret = Environment.GetEnvironmentVariable("JwtSecret")!;
 
     public JwtService(JwtOptions options)
     {
@@ -21,7 +22,7 @@ public class JwtService
         var token = jwtHandler.CreateEncodedJwt(new SecurityTokenDescriptor
         {
             SigningCredentials = new SigningCredentials(
-                new SymmetricSecurityKey(Convert.FromBase64String(Environment.GetEnvironmentVariable("JwtSecret"))),
+                new SymmetricSecurityKey(Convert.FromBase64String(_secret)),
                 SignatureAlgorithm
             ),
             Issuer = _options.Address,
@@ -37,7 +38,7 @@ public class JwtService
         var jwtHandler = new JwtSecurityTokenHandler();
         var principal = jwtHandler.ValidateToken(token, new TokenValidationParameters
         {
-            IssuerSigningKey = new SymmetricSecurityKey(Convert.FromBase64String(Environment.GetEnvironmentVariable("JwtSecret"))),
+            IssuerSigningKey = new SymmetricSecurityKey(Convert.FromBase64String(_secret)),
             ValidAlgorithms = new[] { SignatureAlgorithm },
 
             // Default value is true already.
