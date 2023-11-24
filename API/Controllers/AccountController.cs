@@ -59,6 +59,8 @@ public class AccountController : ControllerBase
     }
     
     
+    
+    
     [HttpGet]
     [Route("/api/skey")]
     public ResponseDto getSitekey()
@@ -68,6 +70,15 @@ public class AccountController : ControllerBase
         {
             ResponseData = new { key },
         };
+    }
+
+    [RequireAuthentication]
+    [HttpGet]
+    [Route("/api/whoami")]
+    public User whoAmI()
+    {
+        int id = HttpContext.GetSessionData().UserId;
+        return _accountService.whoAmI(id);
     }
 
     [HttpPost]

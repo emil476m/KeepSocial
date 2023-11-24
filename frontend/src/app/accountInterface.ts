@@ -5,3 +5,10 @@ export interface newAccount {
   password: string
   AvatarUrl: string
 }
+
+export interface Account {
+  userDisplayName: string
+  userEmail: string
+  userBirthday: Date
+  AvatarUrl: string
+}
