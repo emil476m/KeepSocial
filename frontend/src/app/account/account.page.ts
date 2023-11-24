@@ -2,6 +2,7 @@ import {Component, OnInit} from "@angular/core";
 import {Account} from "../accountInterface";
 import {firstValueFrom, window} from "rxjs";
 import {HttpClient} from "@angular/common/http";
+import {environment} from "../../environments/environment.prod";
 
 @Component({
   template:
@@ -78,7 +79,7 @@ export class AccountPage implements OnInit{
   }
 
   async getAccountInfo(){
-    const call = this.http.get<Account>("http://localhost:5000/api/whoami");
+    const call = this.http.get<Account>(environment.baseURL+"whoami");
     const result = await firstValueFrom<Account>(call);
     console.log("this is the user return: " + result);
     this.AName = result.userDisplayName

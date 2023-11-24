@@ -3,6 +3,7 @@ import {Router} from "@angular/router";
 import {Message} from "../models/Message.model";
 import {HttpClient} from "@angular/common/http";
 import {Rooms} from "../models/Rooms.model";
+import {environment} from "../../environments/environment.prod";
 
 @Component({
   selector: 'app-chat',
@@ -71,7 +72,7 @@ export class RoomsPage implements OnInit {
 
   async getRooms() {
     try {
-      const call = this.http.get<Rooms[]>("http://localhost:5000/Rooms?pageNumber=" + this.page);
+      const call = this.http.get<Rooms[]>(environment.baseURL+"Rooms?pageNumber=" + this.page);
       call.subscribe((resData: Rooms[]) => {
         this.roomList = resData;
       })

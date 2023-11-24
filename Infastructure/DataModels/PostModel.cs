@@ -11,4 +11,5 @@ public class Post
     public string text { get; set; }
     public string? imgurl { get; set; }
     public DateTimeOffset created { get; set; }
+    public bool isAuthor { get; set; }
 }

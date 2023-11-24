@@ -25,14 +25,7 @@ public class PostController : ControllerBase
     {
         
         var timestamp = DateTimeOffset.UtcNow;
-        try
-        {
-            Console.WriteLine(HttpContext.GetSessionData()!.UserId);
-        }
-        catch
-        {
-            throw new Exception("could not get user id");
-        }
+        
         
         var post = new Post
         {
@@ -41,6 +34,7 @@ public class PostController : ControllerBase
             text = dto.text,
             imgurl = dto.imgurl,
             created = timestamp,
+            isAuthor = true,
         };
         if (post == null) return BadRequest();
         return Ok(_postService.createPost(post));
