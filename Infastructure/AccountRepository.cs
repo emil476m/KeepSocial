@@ -58,5 +58,15 @@ public class AccountRepository
         using var connection = _dataSource.OpenConnection();
         return connection.QueryFirst<User>(sql, new { id });
     }
-    
+
+    public bool UpdateUserName(int id, string updatedValue)
+    {
+        var sql = @$"
+UPDATE keepsocial.users SET name = @updatedValue  WHERE id = @id";
+
+        using (var conn = _dataSource.OpenConnection())
+        {
+            return conn.Execute(sql, new {id, updatedValue}) == 1;
+        }
+    }
 }

@@ -56,4 +56,14 @@ public class AccountService
     {
         return _accountRepository.GetById(id);
     }
+
+    public bool UpdateUser(int id, string updatedValue, string updatedValueName)
+    {
+        if (updatedValueName == "Account Name")
+        {
+            return _accountRepository.UpdateUserName(id, updatedValue);
+        }
+
+        return false;
+    }
 }
