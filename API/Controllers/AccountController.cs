@@ -40,12 +40,9 @@ public class AccountController : ControllerBase
     [HttpGet]
     [RequireAuthentication]
     [Route("/account/getAllUsers")]
-    public ResponseDto getTest()
+    public IEnumerable<User> getTest()
     {
-        return new ResponseDto
-        {
-            MessageToClient = "yes"
-        };
+        return _accountService.getUserName();
     }
     
     [HttpPost]
