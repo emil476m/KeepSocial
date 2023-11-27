@@ -3,6 +3,7 @@ import {Rooms} from "../models/Rooms.model";
 import {User} from "../models/User.model";
 import {Router} from "@angular/router";
 import {HttpClient} from "@angular/common/http";
+import {environment} from "../../environments/environment.prod";
 
 @Component({
   selector: 'friend',
@@ -62,15 +63,7 @@ export class FriendsPage implements OnInit {
   constructor(private router: Router, private http: HttpClient) {
     this.getFriends()
 
-    let user2: User = {
-      userId: -1,
-      userDisplayName: "Morty",
-      userEmail: "EvilMorty@email.com",
-      userBirthday: "12-1-1999",
-      AvatarUrl: "null",
-      isDeleted: false
-    }
-
+    /*
     let user1: User = {
       userId: -1,
       userDisplayName: "Rick",
@@ -80,13 +73,24 @@ export class FriendsPage implements OnInit {
       isDeleted: false
     }
 
+    let user2: User = {
+      userId: -1,
+      userDisplayName: "Morty",
+      userEmail: "EvilMorty@email.com",
+      userBirthday: "12-1-1999",
+      AvatarUrl: "null",
+      isDeleted: false
+    }
+
     this.friendliest.push(user1);
     this.friendliest.push(user2);
+
+     */
   }
 
   async getFriends() {
     try {
-      const call = this.http.get<User[]>("http://localhost:5000/api/freinds?pageNumber=" + this.page);
+      const call = this.http.get<User[]>(environment.baseURL+"freinds?pageNumber=" + this.page);
       call.subscribe((resData: User[]) => {
         this.friendliest = resData;
       })

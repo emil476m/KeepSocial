@@ -73,7 +73,7 @@ public class AccountRepository
         and id in (select distinct u.id
         from keepsocial.users as u
         join keepsocial.friendRealeatioj as f on u.id = f.user1_id or u.id = f.user2_id
-        where (f.user1_id = @userId or f.user2_id = @userId));
+        where (f.user1_id = @userId or f.user2_id = @userId))
         LIMIT 10 OFFSET @offSetNumber;
         ";
 
