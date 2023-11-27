@@ -10,8 +10,10 @@ builder.Services.AddNpgsqlDataSource(Utilities.ProperlyFormattedConnectionString
 builder.Services.AddSingleton<AccountRepository>();
 builder.Services.AddSingleton<ChatReposetory>();
 builder.Services.AddSingleton<PasswordHashRepository>();
+builder.Services.AddSingleton<PostRepository>();
 builder.Services.AddSingleton<Service.AccountService>();
 builder.Services.AddSingleton<Service.ChatService>();
+builder.Services.AddSingleton<Service.PostService>();
 builder.Services.AddSingleton<HttpClient>();
 builder.Services.AddSingleton<HttpClientService>();
 builder.Services.AddControllers();

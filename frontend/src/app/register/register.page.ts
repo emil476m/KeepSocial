@@ -6,6 +6,8 @@ import {newAccount} from "../accountInterface";
 import {ToastController} from "@ionic/angular";
 import {calendarNumber} from "ionicons/icons";
 import {Router, UrlTree} from "@angular/router";
+import {Environment} from "@angular/cli/lib/config/workspace-schema";
+import {environment} from "../../environments/environment.prod";
 
 @Component({
   selector: 'app-boxdetailed',
@@ -107,7 +109,7 @@ export class RegisterPage implements OnInit{
   async createAccount() {
     try {
       console.log("")
-      const oberservable = this.http.post<newAccount>('http://localhost:5000/api/account/createuser', {
+      const oberservable = this.http.post<newAccount>(environment.baseURL+'account/createuser', {
         userDisplayName: this.AName.value,
         userEmail: this.AEmail.value,
         userBirthday: this.ADate.value,
