@@ -38,6 +38,7 @@ public class AccountController : ControllerBase
     }
     
     [HttpGet]
+    [RequireAuthentication]
     [Route("/account/getAllUsers")]
     public IEnumerable<User> getTest()
     {
@@ -111,4 +112,5 @@ public class AccountController : ControllerBase
             ResponseData = new {ishuman}
         };
     }
+    
 }

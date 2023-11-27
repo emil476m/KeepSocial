@@ -2,6 +2,7 @@ import {Component, OnInit} from "@angular/core";
 import {Account} from "../accountInterface";
 import {firstValueFrom, window} from "rxjs";
 import {HttpClient} from "@angular/common/http";
+import {environment} from "../../environments/environment.prod";
 import {ModalController, ToastController} from "@ionic/angular";
 import {FormControl, Validators} from "@angular/forms";
 import {NewAccountInfoModal} from "../changeAccountInfoModal/AccountInfoModal";
@@ -101,10 +102,7 @@ this.isEnabled = !this.isEnabled;
   }
 
   async getAccountInfo(){
-
-
-
-    const call = this.http.get<Account>("http://localhost:5000/api/whoami");
+    const call = this.http.get<Account>(environment.baseURL+"whoami");
     const result = await firstValueFrom<Account>(call);
     this.AName.setValue(result.userDisplayName);
     this.AEmail = result.userEmail;
