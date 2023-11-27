@@ -78,6 +78,8 @@ public class ChatService
             if (roomId != -1) return roomId;
 
             //TODO Create Room if it dossent exist
+
+            return -1; //TODO Change so this is absant
         }
         catch (Exception e)
         {
