@@ -18,14 +18,14 @@ public class ChatController : ControllerBase
         _chatService = chatService;
     }
     
-    [HttpGet("/Rooms")]
+    [HttpGet("/api/Rooms")]
     public IEnumerable<Rooms> getAllRooms(int pageNumber)
     {
         var session = HttpContext.GetSessionData()!;
         return _chatService.getChatRooms(pageNumber, session);
     }
 
-    [HttpGet("/ChatMessages{roomId}")]
+    [HttpGet("/api/ChatMessages{roomId}")]
     public IEnumerable<Message> getMessagesInChat([FromRoute] int roomId, int pageNumber)
     {
         var session = HttpContext.GetSessionData()!;
@@ -33,7 +33,7 @@ public class ChatController : ControllerBase
         return _chatService.getChats(roomId, pageNumber, session);
     }
     
-    [HttpPost("/SenndMessage")]
+    [HttpPost("/api/SenndMessage")]
     public Message snedMessagesInChat([FromBody]Message message)
     {
         var session = HttpContext.GetSessionData()!;

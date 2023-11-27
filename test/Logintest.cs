@@ -16,7 +16,6 @@ public class Logintest
 {
     private string apirUrl = "";
     private HttpClient _httpClient;
-    private readonly NpgsqlDataSource _dataSource;
 
     private string resetbd = $@"
 DROP SCHEMA IF EXISTS keepsocial CASCADE;

@@ -5,6 +5,7 @@ import {firstValueFrom, max} from "rxjs";
 import {IonContent} from "@ionic/angular";
 import {Message} from "../models/Message.model";
 import {ActivatedRoute} from "@angular/router";
+import {environment} from "../../environments/environment.prod";
 
 @Component({
   selector: 'app-chat',
@@ -97,7 +98,7 @@ export class ChatPage implements OnInit {
       }
 
       try {
-        const call = this.http.post<Message>("http://localhost:5000/SenndMessage", text)
+        const call = this.http.post<Message>(environment.baseURL+"SenndMessage", text)
         const reault = await firstValueFrom(call);
         this.message.reset()
         this.messages.push(reault)
@@ -111,7 +112,7 @@ export class ChatPage implements OnInit {
 
   async getMessages() {
     try {
-      const call = this.http.get<Message[]>("http://localhost:5000/ChatMessages" + this.chatroom_num + "?pageNumber=" + this.page);
+      const call = this.http.get<Message[]>(environment.baseURL+"ChatMessages" + this.chatroom_num + "?pageNumber=" + this.page);
       this.page = this.page + 1;
       //this.messages = await firstValueFrom<Message[]>(call);
       call.subscribe((resData: Message[]) => {

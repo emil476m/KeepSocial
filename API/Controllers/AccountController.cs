@@ -38,6 +38,7 @@ public class AccountController : ControllerBase
     }
     
     [HttpGet]
+    [RequireAuthentication]
     [Route("/account/getAllUsers")]
     public IEnumerable<User> getTest()
     {

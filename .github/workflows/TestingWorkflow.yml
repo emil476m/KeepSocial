@@ -40,3 +40,4 @@ jobs:
         env:
           pgconn: ${{secrets.pgconn}}
           JwtSecret: ${{secrets.JwtSecret}}
+          testToken: ${{secrets.testToken}}
