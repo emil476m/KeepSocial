@@ -76,6 +76,30 @@ public class AccountController : ControllerBase
         int id = HttpContext.GetSessionData().UserId;
         return _accountService.whoAmI(id);
     }
+    
+    
+    
+    [RequireAuthentication]
+    [HttpPost]
+    [Route("/api/account/updateAccount")]
+    public ResponseDto updateAccount([FromBody] UpdateBasicUserDataDto dto)
+    { 
+        bool success = _accountService.UpdateUser(HttpContext.GetSessionData().UserId, dto.updatedValue, dto.updatedValueName);
+        if (success)
+        {
+            return new ResponseDto
+            {
+                MessageToClient = "Successfully updated"
+            };
+        }
+        else
+        {
+            return new ResponseDto
+            {
+                MessageToClient = "Failed to update"
+            };
+        }
+    }
 
     [HttpPost]
     [Route("/api/ishuman")]

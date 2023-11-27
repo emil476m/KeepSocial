@@ -20,6 +20,7 @@ import {RegisterPage} from "./register/register.page";
 import {AccountService} from "./services/account.service";
 import {ChatPage} from "./chat/chat.page";
 import {AccountPage} from "./account/account.page";
+import {NewAccountInfoModal} from "./changeAccountInfoModal/AccountInfoModal";
 
 @NgModule({
   declarations:
@@ -29,7 +30,8 @@ import {AccountPage} from "./account/account.page";
     LoginComponent,
     RegisterPage,
     AccountPage,
-      ChatPage
+    ChatPage,
+    NewAccountInfoModal,
   ],
     imports:
       [BrowserModule,

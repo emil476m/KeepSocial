@@ -106,7 +106,6 @@ export class RegisterPage implements OnInit{
 
   async createAccount() {
     try {
-      console.log("")
       const oberservable = this.http.post<newAccount>('http://localhost:5000/api/account/createuser', {
         userDisplayName: this.AName.value,
         userEmail: this.AEmail.value,
