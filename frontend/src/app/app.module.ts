@@ -22,6 +22,7 @@ import {ChatPage} from "./chat/chat.page";
 import {RoomsPage} from "./chat/rooms.page";
 
 import {AccountPage} from "./account/account.page";
+import {NewAccountInfoModal} from "./changeAccountInfoModal/AccountInfoModal";
 
 @NgModule({
   declarations:
@@ -32,10 +33,11 @@ import {AccountPage} from "./account/account.page";
       RegisterPage,
       AccountPage,
       ChatPage,
-      RoomsPage
-    ],
-  imports:
-    [BrowserModule,
+      RoomsPage,
+      NewAccountInfoModal,
+  ],
+    imports:
+      [BrowserModule,
       IonicModule.forRoot(),
       AppRoutingModule,
       ReactiveFormsModule,

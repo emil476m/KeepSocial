@@ -8,4 +8,6 @@ export class Globalstate
 {
   ishuman = false;
   posts : PostModel[] = [];
+
+  updatingWhatAccountItem: String|null = null;
 }
