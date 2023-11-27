@@ -26,7 +26,7 @@ import {environment} from "../../environments/environment.prod";
             @user #{{friend.userId}}
           </ion-text>
           <ion-title></ion-title>
-          <ion-button class="cardBtn1" (click)="openChat(friend.userId)">
+          <ion-button class="cardBtn1" (click)="openChat(friend.userId)"><!--Open chat with friend or create if they dont have one-->
             <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
           </ion-button>
           <ion-button class="cardBtn" (click)="goFriend(friend.userId)"><!---view acccount--->
@@ -55,37 +55,14 @@ import {environment} from "../../environments/environment.prod";
 export class FriendsPage implements OnInit {
   page: number = 1;
   upcomingPage: number = 2;
+
   friendliest: User[] = [];
 
   ngOnInit(): void {
   }
-
   constructor(private router: Router, private http: HttpClient) {
     this.getFriends()
 
-    /*
-    let user1: User = {
-      userId: -1,
-      userDisplayName: "Rick",
-      userEmail: "ricks@email.com",
-      userBirthday: "12-1-1999",
-      AvatarUrl: "null",
-      isDeleted: false
-    }
-
-    let user2: User = {
-      userId: -1,
-      userDisplayName: "Morty",
-      userEmail: "EvilMorty@email.com",
-      userBirthday: "12-1-1999",
-      AvatarUrl: "null",
-      isDeleted: false
-    }
-
-    this.friendliest.push(user1);
-    this.friendliest.push(user2);
-
-     */
   }
 
   async getFriends() {
@@ -112,6 +89,7 @@ export class FriendsPage implements OnInit {
 
   openChat(userId: number) {
     console.log("writing to #" + userId);
+
   }
 
   goFriend(userId: number) {

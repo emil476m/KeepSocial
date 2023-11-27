@@ -82,4 +82,19 @@ public class AccountRepository
             return conn.Query<User>(sql, new {userId, offSetNumber});
         }
     }
+
+    public bool isFriends(int userId, int friendId)
+    {
+        var sql = $@"
+           SELECT user1_id from keepsocial.friendRealeatioj 
+            where (user1_id = @usserID and user2_id = @friendId) 
+            OR (user1_id = @friendId and user2_id = userId);
+        ";
+        using (var conn = _dataSource.OpenConnection())
+        {
+            int number = conn.QuerySingle<int>(sql, new {userId, friendId});
+            if (number == userId || number == friendId) return true;
+        }
+        return false;
+    }
 }
