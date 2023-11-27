@@ -15,17 +15,17 @@ public class PostRepository
 
     public Post createPost(Post post)
     {
-        var sql = $@"insert into keepsocial.posts(author_id,text,img_url,created) values (@authorid,@text,@imgurl,@created)
+        var insert = $@"insert into keepsocial.posts(author_id,text,img_url,created) values (@authorid,@text,@imgurl,@created)
             returning
-            id as {nameof(post.id)},
-            author_id as {nameof(post.authorId)},
-            text as {nameof(post.text)},
-            img_url as {nameof(post.imgurl)},
-            created as {nameof(post.created)}";
+            id;
+            ";
+        var select =
+            $@"select posts.id,posts.author_id,posts.text,posts.img_url,posts.created,u.name from keepsocial.posts join keepsocial.users u on u.id = posts.author_id where posts.id = @id;";
 
         using (var conn = _dataSource.OpenConnection())
         {
-            return conn.QueryFirst<Post>(sql, new { authorid = post.authorId, text = post.text, imgurl = post.imgurl, created = post.created });
+            var id =  conn.ExecuteScalar<int>(insert, new { authorid = post.author_id, text = post.text, imgurl = post.img_url, created = post.created });
+            return conn.QueryFirst<Post>(select, new  {id = id});
         }
     }
 }

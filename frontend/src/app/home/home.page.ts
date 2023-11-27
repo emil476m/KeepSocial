@@ -8,7 +8,8 @@ import {environment} from "../../environments/environment.prod";
 import {HttpClient} from "@angular/common/http";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {Account} from "../accountInterface";
-import {PostModel} from "../models/PostModel";
+import {PostModel} from '../models/PostModel';
+import {Globalstate} from "../services/states/globalstate";
 
 @Component({
   selector: 'app-home',
@@ -43,6 +44,15 @@ import {PostModel} from "../models/PostModel";
               <ion-button (click)="createPost()">post</ion-button>
           </ion-buttons>
       </ion-card>
+      <ion-infinite-scroll (ionInfinite)="loadMore()">
+        <ion-card *ngFor="let post of state.posts">
+          <ion-toolbar>
+            <ion-text>{{post.name}}</ion-text>
+          </ion-toolbar>
+          <ion-img *ngIf="post.img_url != undefined" [src]="post.img_url"/>
+          <ion-text>{{post.text}}</ion-text>
+        </ion-card>
+      </ion-infinite-scroll>
     </ion-content>
   `,
   styleUrls: ['home.page.scss'],
@@ -51,7 +61,7 @@ export class HomePage implements OnInit{
 
   displayName: string = "";
   profilepic: string = "";
-  textFC = new FormControl("",[Validators.required, Validators.maxLength(500), Validators.minLength(0)]);
+  textFC = new FormControl("",[Validators.required, Validators.maxLength(500), Validators.minLength(3)]);
   imageFC = new FormControl("");
 
   post = new FormGroup(
@@ -62,7 +72,7 @@ export class HomePage implements OnInit{
   )
 
 
-  constructor(public token: TokenService, private router : Router, private readonly toast: ToastController, private aService: AccountService, private http : HttpClient)
+  constructor(public token: TokenService, private router : Router, private readonly toast: ToastController, private aService: AccountService, private http : HttpClient, public state: Globalstate)
   {
     this.router.events.subscribe(event =>    {
       if(event instanceof NavigationStart) {
@@ -73,10 +83,13 @@ export class HomePage implements OnInit{
 
   async whoAmI()
   {
+    if(this.token.getToken())
+    {
     const call = this.http.get<Account>(environment.baseURL+"whoami");
     const result = await firstValueFrom<Account>(call);
     this.displayName = result.userDisplayName;
     this.profilepic = result.AvatarUrl;
+    }
   }
 
 
@@ -105,6 +118,7 @@ export class HomePage implements OnInit{
   ngOnInit(): void
   {
     this.whoAmI();
+    this.loadPosts();
   }
 
   async createPost() {
@@ -130,6 +144,14 @@ export class HomePage implements OnInit{
           }
       )).present();
     }
+  }
+
+  loadMore() {
+    console.log("yes")
+  }
+
+  private loadPosts() {
+    const call = this.http.get<PostModel[]>(environment.baseURL+"getposts", )
   }
 }
 

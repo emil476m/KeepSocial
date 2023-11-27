@@ -30,11 +30,11 @@ public class PostController : ControllerBase
         var post = new Post
         {
             id = dto.id,
-            authorId = HttpContext.GetSessionData()!.UserId,
+            author_id = HttpContext.GetSessionData()!.UserId,
             text = dto.text,
-            imgurl = dto.imgurl,
+            img_url = dto.imgurl,
             created = timestamp,
-            isAuthor = true,
+            name = "",
         };
         if (post == null) return BadRequest();
         return Ok(_postService.createPost(post));

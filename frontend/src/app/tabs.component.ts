@@ -1,4 +1,5 @@
 import { Component } from "@angular/core";
+import {TokenService} from "./services/token.service";
 
 @Component({
   template: `
@@ -9,16 +10,16 @@ import { Component } from "@angular/core";
                   Home
               </ion-tab-button>
 
-              <ion-tab-button tab="Chats" routerLink="rooms">
+              <ion-tab-button tab="Chats" routerLink="rooms" [disabled]="!token.getToken()">
                 <ion-icon name="chatbubbles-outline"></ion-icon>
                     Chat
               </ion-tab-button>
 
-              <ion-tab-button tab="posts">
+              <ion-tab-button tab="posts" [disabled]="!token.getToken()">
                   <ion-icon name="library-outline"></ion-icon>
                   Posts
               </ion-tab-button>
-              <ion-tab-button tab="account" routerLink="account">
+              <ion-tab-button tab="account" routerLink="account" [disabled]="!token.getToken()">
                   <ion-icon name="person-outline"></ion-icon>
                   Account
               </ion-tab-button>
@@ -26,4 +27,8 @@ import { Component } from "@angular/core";
       </ion-tabs>
   `
 })
-export class TabsComponent {}
+export class TabsComponent
+{
+  constructor(public readonly token: TokenService) {
+  }
+}
