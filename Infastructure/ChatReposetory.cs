@@ -97,7 +97,7 @@ public class ChatReposetory
         ";
 
         var sql2 = $@"
-        SELECT user_id FROM keepsocial.chatroomUsersRealation WHERE rom_id = roomId;
+        SELECT user_id FROM keepsocial.chatroomUsersRealation WHERE rom_id = @roomId;
         ";
         
 
@@ -108,10 +108,46 @@ public class ChatReposetory
             foreach (int roomId in roomsListID)
             {
                 List<int> amountOfUsers =  (List<int>)conn.Query<int>(sql2, new { roomId });
-                if (amountOfUsers.Count == 1) return roomId;
+                if (amountOfUsers.Count == 2) return roomId;
             }
         }
 
         return -1;
+    }
+
+    public int createChatroomWithFirend(int userId, int friendId)
+    {
+        var sql1 = $@"
+            INSERT INTO keepsocial.chatrooms(rom_name) 
+            values ((Select name FROM keepsocial.users WHERE keepsocial.users.id = @userId) 
+                || ' ' || 
+                (Select name FROM keepsocial.users WHERE keepsocial.users.id = @friendId))
+            returning rom_id;
+        ";
+
+        var sql2 = $@"
+                INSERT INTO keepsocial.chatroomUsersRealation(rom_id, user_id)
+                values (@roomId, @personId);
+        ";
+        using (var conn = _dataSource.OpenConnection())
+        {
+            var transaction = conn.BeginTransaction();
+            try
+            {
+                int roomId = conn.QuerySingle<int>(sql1, new {userId,friendId});
+
+                int personId = userId;
+                conn.Query(sql2, new { roomId, personId });
+                personId = friendId;
+                conn.Query(sql2, new { roomId, personId });
+                
+                transaction.Commit();
+                return roomId;
+            }catch (Exception e)
+            {
+                transaction.Rollback();
+                throw e;
+            }
+        }
     }
 }

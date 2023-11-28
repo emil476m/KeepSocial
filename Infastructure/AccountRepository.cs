@@ -87,8 +87,8 @@ public class AccountRepository
     {
         var sql = $@"
            SELECT user1_id from keepsocial.friendRealeatioj 
-            where (user1_id = @usserID and user2_id = @friendId) 
-            OR (user1_id = @friendId and user2_id = userId);
+            where (user1_id = @userId and user2_id = @friendId) 
+            OR (user1_id = @friendId and user2_id = @userId);
         ";
         using (var conn = _dataSource.OpenConnection())
         {

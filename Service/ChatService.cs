@@ -70,21 +70,23 @@ public class ChatService
         {
             int userId = data.UserId;
             
-            if (!_accountRepository.isFriends(userId,friendId)) throw new Exception("The two of you arent even friends"); 
-            
+            if (!_accountRepository.isFriends(userId,friendId)) throw new Exception("The two of you arent even friends");
+
 
             int roomId = _chatReposetory.friedUserCHatRoom(userId, friendId);
 
             if (roomId != -1) return roomId;
 
-            //TODO Create Room if it dossent exist
+            roomId = _chatReposetory.createChatroomWithFirend(userId, friendId);
+            
+            if (roomId != -1) return roomId;
 
-            return -1; //TODO Change so this is absant
+            return -1;
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
-            throw new Exception("could not fetch chat data");
+            throw new Exception("could not fetch chat?friend data");
         }
     }
 }

@@ -4,6 +4,7 @@ import {User} from "../models/User.model";
 import {Router} from "@angular/router";
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../environments/environment.prod";
+import {firstValueFrom} from "rxjs";
 
 @Component({
   selector: 'friend',
@@ -87,9 +88,12 @@ export class FriendsPage implements OnInit {
     //get more users
   }
 
-  openChat(userId: number) {
+  async openChat(userId: number) {
     console.log("writing to #" + userId);
-
+    const call = this.http.get<number>(environment.baseURL + "friendChat" + userId);
+    const result = await firstValueFrom(call);
+    this.router.navigate(['chat/' + result + '/' + result]) //call is twice
+    console.log(result);
   }
 
   goFriend(userId: number) {
