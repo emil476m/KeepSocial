@@ -43,6 +43,7 @@ public class ChatReposetory
         using (var conn = _dataSource.OpenConnection())
         {
             int number = conn.QuerySingle<int>(sql, new { roomId, userId });
+            
             if (number == roomId) return true;
         }
 
