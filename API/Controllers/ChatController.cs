@@ -41,7 +41,7 @@ public class ChatController : ControllerBase
     }
     
     [HttpGet("/api/friendChat{friendId}")]
-    public int getMessagesInChat([FromRoute] int friendId)
+    public Rooms getMessagesInChat([FromRoute] int friendId)
     {
         var session = HttpContext.GetSessionData()!;
         

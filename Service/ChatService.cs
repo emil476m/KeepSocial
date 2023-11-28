@@ -64,7 +64,7 @@ public class ChatService
         }
     }
 
-    public int getFriendRoom(int friendId, SessionData data)
+    public Rooms getFriendRoom(int friendId, SessionData data)
     {
         try
         {
@@ -75,13 +75,13 @@ public class ChatService
 
             int roomId = _chatReposetory.friedUserCHatRoom(userId, friendId);
 
-            if (roomId != -1) return roomId;
+            if (roomId != -1) return _chatReposetory.getSingleRooom(roomId);
 
             roomId = _chatReposetory.createChatroomWithFirend(userId, friendId);
             
-            if (roomId != -1) return roomId;
+            if (roomId != -1) return _chatReposetory.getSingleRooom(roomId);
 
-            return -1;
+            return null;
         }
         catch (Exception e)
         {

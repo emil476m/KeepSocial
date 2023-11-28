@@ -150,4 +150,20 @@ public class ChatReposetory
             }
         }
     }
+    
+    public Rooms getSingleRooom(int roomId)
+    {
+        var sql = $@"
+            select 
+            keepsocial.chatrooms.rom_id as {nameof(Rooms.rom_id)},
+            rom_name as {nameof(Rooms.rom_name)}
+            FROM keepsocial.chatrooms
+            WHERE rom_id = @roomId
+        ";
+
+        using (var conn = _dataSource.OpenConnection())
+        {
+            return conn.QueryFirst<Rooms>(sql, new { roomId});
+        }
+    }
 }

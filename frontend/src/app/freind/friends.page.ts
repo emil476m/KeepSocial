@@ -90,9 +90,9 @@ export class FriendsPage implements OnInit {
 
   async openChat(userId: number) {
     console.log("writing to #" + userId);
-    const call = this.http.get<number>(environment.baseURL + "friendChat" + userId);
+    const call = this.http.get<Rooms>(environment.baseURL + "friendChat" + userId);
     const result = await firstValueFrom(call);
-    this.router.navigate(['chat/' + result + '/' + result]) //call is twice
+    this.router.navigate(['chat/' + result.rom_id + '/' + result.rom_name]) //call is twice
     console.log(result);
   }
 
