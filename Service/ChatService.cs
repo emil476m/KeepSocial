@@ -5,12 +5,10 @@ namespace Service;
 public class ChatService
 {
     private readonly ChatReposetory _chatReposetory;
-    private readonly AccountRepository _accountRepository;
 
-    public ChatService(ChatReposetory chatReposetory, AccountRepository accountRepository)
+    public ChatService(ChatReposetory chatReposetory)
     {
         _chatReposetory = chatReposetory;
-        _accountRepository = accountRepository;
     }
 
     public IEnumerable<Message> getChats(int roomId, int pageNumber, SessionData data)
@@ -61,32 +59,6 @@ public class ChatService
         {
             Console.WriteLine(e);
             throw new Exception("could not fetch chat data");
-        }
-    }
-
-    public Rooms getFriendRoom(int friendId, SessionData data)
-    {
-        try
-        {
-            int userId = data.UserId;
-            
-            if (!_accountRepository.isFriends(userId,friendId)) throw new Exception("The two of you arent even friends");
-
-
-            int roomId = _chatReposetory.friedUserCHatRoom(userId, friendId);
-
-            if (roomId != -1) return _chatReposetory.getSingleRooom(roomId);
-
-            roomId = _chatReposetory.createChatroomWithFirend(userId, friendId);
-            
-            if (roomId != -1) return _chatReposetory.getSingleRooom(roomId);
-
-            return null;
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw new Exception("could not fetch chat?friend data");
         }
     }
 }

@@ -15,11 +15,6 @@ import {TokenService} from "./services/token.service";
                     Chat
               </ion-tab-button>
 
-              <ion-tab-button tab="friendsList" routerLink="friends">
-                  <ion-icon name="people-outline"></ion-icon>
-                  Friend
-              </ion-tab-button>
-
               <ion-tab-button tab="posts" [disabled]="!token.getToken()">
                   <ion-icon name="library-outline"></ion-icon>
                   Posts

@@ -28,6 +28,10 @@ import {Globalstate} from "../services/states/globalstate";
 })
 export class NewAccountInfoModal implements OnInit
 {
+  AName = new FormControl("",);
+  AEmail = new FormControl("",[Validators.required, Validators.email]);
+  APassword = new FormControl("",[Validators.required,Validators.minLength(8),Validators.maxLength(32)]);
+  AAvatarUrl : string| null = "";
 
   UserInput : FormControl= new FormControl("");
   InputLabel = this.globalstate.updatingWhatAccountItem;
@@ -39,10 +43,9 @@ export class NewAccountInfoModal implements OnInit
 
   setup(){
     if (this.globalstate.updatingWhatAccountItem == "Account Name"){
-      this.UserInput.setValidators([Validators.required, Validators.minLength(1),Validators.maxLength(100)])
+      this.UserInput.setValidators([Validators.required,Validators.minLength(1),Validators.maxLength(100)])
 
     }else if (this.globalstate.updatingWhatAccountItem == "Account Email"){
-      this.UserInput.setValidators([Validators.required, Validators.email])
 
     }else if (this.globalstate.updatingWhatAccountItem == "Account Password"){
 
@@ -59,7 +62,6 @@ export class NewAccountInfoModal implements OnInit
     this.globalstate.updatingWhatAccountItem=null;
     this.modalController.dismiss();
   }
-
 
   async updateAccount() {
     try {
@@ -81,6 +83,7 @@ export class NewAccountInfoModal implements OnInit
     }
     catch (error)
     {
+      console.log(error)
       this.toastControl.create(
         {
           color: "warning",
@@ -90,6 +93,7 @@ export class NewAccountInfoModal implements OnInit
       ).then(res =>{
         res.present();
       })
+
     }
     this.dismissModal();
   }

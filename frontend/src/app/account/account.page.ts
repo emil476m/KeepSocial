@@ -32,7 +32,7 @@ import {Globalstate} from "../services/states/globalstate";
               <ion-item >
                 <ion-label>Email:</ion-label>
                 <ion-label [textContent]="AEmail"></ion-label>
-                <ion-button (click)="changeEmail()">Change</ion-button>
+                <ion-button>Change</ion-button>
               </ion-item>
               <ion-item >
                 <ion-label >Birthday:</ion-label>
@@ -126,8 +126,6 @@ this.isEnabled = !this.isEnabled;
 
   }
   async changeEmail(){
-    this.globalstate.updatingWhatAccountItem="Account Email";
-    this.openEdit();
 
   }
 

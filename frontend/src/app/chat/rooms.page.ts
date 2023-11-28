@@ -6,7 +6,7 @@ import {Rooms} from "../models/Rooms.model";
 import {environment} from "../../environments/environment.prod";
 
 @Component({
-  selector: 'app-room',
+  selector: 'app-chat',
   template: `
       <ion-header [translucent]="true">
           <ion-toolbar>

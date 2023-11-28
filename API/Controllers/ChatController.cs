@@ -39,13 +39,4 @@ public class ChatController : ControllerBase
         var session = HttpContext.GetSessionData()!;
         return _chatService.sendMessage(message, session);
     }
-    
-    [HttpGet("/api/friendChat{friendId}")]
-    public Rooms getMessagesInChat([FromRoute] int friendId)
-    {
-        var session = HttpContext.GetSessionData()!;
-        
-        return _chatService.getFriendRoom(friendId, session);
-    }
-    
 }
