@@ -24,8 +24,17 @@ public class PostRepository
 
         using (var conn = _dataSource.OpenConnection())
         {
-            var id =  conn.ExecuteScalar<int>(insert, new { authorid = post.author_id, text = post.text, imgurl = post.img_url, created = post.created });
+            var id =  conn.ExecuteScalar<int>(insert, new { authorid = post.author_id, text = post.text, imgurl = post.img_url, created = DateTimeOffset.UtcNow });
             return conn.QueryFirst<Post>(select, new  {id = id});
+        }
+    }
+
+    public object getposts(int limit, int offset)
+    {
+        var sql = $@"select posts.id,posts.author_id,posts.text,posts.img_url,posts.created,u.name from keepsocial.posts join keepsocial.users u on u.id = posts.author_id order by created desc offset @offset limit @limit";
+        using (var conn = _dataSource.OpenConnection())
+        {
+            return conn.Query<Post>(sql, new { offset = offset, limit });
         }
     }
 }

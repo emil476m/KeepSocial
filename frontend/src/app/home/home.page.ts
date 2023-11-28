@@ -10,6 +10,7 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {Account} from "../accountInterface";
 import {PostModel} from '../models/PostModel';
 import {Globalstate} from "../services/states/globalstate";
+import * as ago from "s-ago";
 
 @Component({
   selector: 'app-home',
@@ -46,8 +47,12 @@ import {Globalstate} from "../services/states/globalstate";
       </ion-card>
       <ion-infinite-scroll (ionInfinite)="loadMore()">
         <ion-card *ngFor="let post of state.posts">
-          <ion-toolbar>
+
+          <ion-toolbar><ion-buttons slot="end">
+            <ion-text >created {{getLocalDate(post.created)}}</ion-text>
+          </ion-buttons>
             <ion-text>{{post.name}}</ion-text>
+
           </ion-toolbar>
           <ion-img *ngIf="post.img_url != undefined" [src]="post.img_url"/>
           <ion-text>{{post.text}}</ion-text>
@@ -63,6 +68,7 @@ export class HomePage implements OnInit{
   profilepic: string = "";
   textFC = new FormControl("",[Validators.required, Validators.maxLength(500), Validators.minLength(3)]);
   imageFC = new FormControl("");
+  limitFC = new FormControl(10,[Validators.required])
 
   post = new FormGroup(
       {
@@ -70,6 +76,8 @@ export class HomePage implements OnInit{
         imgurl: this.imageFC,
       }
   )
+
+
 
 
   constructor(public token: TokenService, private router : Router, private readonly toast: ToastController, private aService: AccountService, private http : HttpClient, public state: Globalstate)
@@ -146,12 +154,22 @@ export class HomePage implements OnInit{
     }
   }
 
-  loadMore() {
-    console.log("yes")
+  async loadMore() {
+    const call = this.http.get<PostModel[]>(environment.baseURL + "getmoreposts", {params: {limit: this.limitFC.value!, offset: this.state.posts.length}})
+    const result = await firstValueFrom<PostModel[]>(call);
+    this.state.posts = this.state.posts.concat(result)
   }
 
-  private loadPosts() {
-    const call = this.http.get<PostModel[]>(environment.baseURL+"getposts", )
+  private async loadPosts() {
+    const call = this.http.get<PostModel[]>(environment.baseURL + "getposts",)
+    const result = await firstValueFrom<PostModel[]>(call);
+    this.state.posts = result;
+  }
+
+  getLocalDate(UTCString: string) {
+let date = new Date(UTCString);
+date.setHours(date.getHours()+1)
+    return ago (date);
   }
 }
 
