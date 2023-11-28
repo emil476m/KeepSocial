@@ -1,8 +1,8 @@
 export interface PostModel {
     id: number
-    authorId: number
+    author_id: number
     text: string
-    imgurl: string
+    img_url: string
     created: string
-    isauthor: boolean
+    name: string
  }

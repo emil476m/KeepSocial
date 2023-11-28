@@ -19,4 +19,9 @@ public class PostService
     {
         return _postRepository.createPost(post);
     }
+
+    public object getposts(int limit, int offset)
+    {
+        return _postRepository.getposts(limit, offset);
+    }
 }

@@ -34,6 +34,11 @@ const routes: Routes = [
       {
         path: "account",
         component: AccountPage,
+      },
+      {
+        path: '',
+        redirectTo: '/home',
+        pathMatch: 'full',
       }
     ]
   },
@@ -48,6 +53,11 @@ const routes: Routes = [
   {
     path: "account",
     component: AccountPage,
+  },
+  {
+    path: '',
+    redirectTo: '/home',
+    pathMatch: 'full',
   }
 ];
 

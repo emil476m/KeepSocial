@@ -102,18 +102,7 @@ insert into keepsocial.password_hash(user_id,hash,salt,algorithm) values (111,'6
             text = "stuff and things",
             imgurl = "ewyfhwiurdwfnc",
         };
-        var cred = new Credentials { email = "test@email.com", password = "testtest" };
         
-        HttpResponseMessage loginresponse;
-        try
-        {
-            loginresponse = await _httpClient.PostAsJsonAsync("http://localhost:5000/api/account/login", cred);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
         HttpResponseMessage responseMessage;
         try
         {
@@ -138,10 +127,63 @@ insert into keepsocial.password_hash(user_id,hash,salt,algorithm) values (111,'6
         using (new AssertionScope())
         {
             responseMessage.StatusCode.Should().Be(HttpStatusCode.OK);
-            response.authorId.Should().NotBe(postdto.authorId);
+            response.author_id.Should().NotBe(postdto.authorId);
             response.id.Should().NotBe(postdto.id);
             response.text.Should().Be(postdto.text);
-            response.imgurl.Should().Be(postdto.imgurl);
+            response.img_url.Should().Be(postdto.imgurl);
+        }
+    }
+
+    [Test]
+    public async Task getPosts()
+    {
+        apirUrl = "http://localhost:5000/api/getposts";
+        Helper.TriggerRebuild(resetbd+"insert into keepsocial.posts(id,author_id,text,img_url,created) values (2,111,'yes a test','qwderqdwefrfwf',date('2023-02-28'));");
+        
+        HttpResponseMessage responseMessage;
+        try
+        {
+            responseMessage = await _httpClient.GetAsync(apirUrl);
+            TestContext.WriteLine("full body response: " + await responseMessage.Content.ReadAsStringAsync());
+        }
+        catch (Exception e)
+        {
+            throw new Exception("Failed to get posts", e);
+        }
+
+        using (new AssertionScope())
+        {
+            responseMessage.StatusCode.Should().Be(HttpStatusCode.OK);
+        }
+    }
+
+    [Test]
+    public async Task getMorePosts()
+    {
+        apirUrl = "http://localhost:5000/api/getmoreposts";
+        Helper.TriggerRebuild(resetbd + "insert into keepsocial.posts(id,author_id,text,img_url,created) values (3,111,'yes a test 2','qwderqdwefrfwf',date('2023-02-28'));" +
+                              "insert into keepsocial.posts(id,author_id,text,img_url,created) values (4,111,'yes a test3','qwderqdwefrfwf',date('2023-02-28'));" +
+                              "insert into keepsocial.posts(id,author_id,text,img_url,created) values (5,111,'yes a test4','qwderqdwefrfwf',date('2023-02-28'));" +
+                              "insert into keepsocial.posts(id,author_id,text,img_url,created) values (6,111,'yes a test5','qwderqdwefrfwf',date('2023-02-28'));" +
+                              "insert into keepsocial.posts(id,author_id,text,img_url,created) values (7,111,'yes a test6','qwderqdwefrfwf',date('2023-02-28'));" +
+                              "insert into keepsocial.posts(id,author_id,text,img_url,created) values (8,111,'yes a test8','qwderqdwefrfwf',date('2023-02-28'));" +
+                              "insert into keepsocial.posts(id,author_id,text,img_url,created) values (9,111,'yes a test9','qwderqdwefrfwf',date('2023-02-28'));" +
+                              "insert into keepsocial.posts(id,author_id,text,img_url,created) values (10,111,'yes a test10','qwderqdwefrfwf',date('2023-02-28'))");
+        
+        HttpResponseMessage responseMessage;
+        try
+        {
+            responseMessage = await _httpClient.GetAsync(apirUrl + "?limit=10&offset=2");
+            TestContext.WriteLine("full body response: " + await responseMessage.Content.ReadAsStringAsync());
+        }
+        catch (Exception e)
+        {
+            throw new Exception("Failed to get more posts", e);
+        }
+
+        using (new AssertionScope())
+        {
+            responseMessage.StatusCode.Should().Be(HttpStatusCode.OK);
         }
     }
 }
