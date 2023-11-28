@@ -8,6 +8,7 @@ import {LoginComponent} from "./login/login.component";
 import {RegisterPage} from "./register/register.page";
 import {AccountPage} from "./account/account.page";
 import {PostDetail} from "./PostDetailed/post.page";
+import {FriendsPage} from "./freind/friends.page";
 
 const routes: Routes = [
   {
@@ -26,7 +27,10 @@ const routes: Routes = [
       {
         path: "rooms",
         component: RoomsPage,
-
+      },
+      {
+        path: "friends",
+        component: FriendsPage,
       },
       {
         path: "account",
