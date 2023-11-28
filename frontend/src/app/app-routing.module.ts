@@ -7,6 +7,7 @@ import {TabsComponent} from "./tabs.component";
 import {LoginComponent} from "./login/login.component";
 import {RegisterPage} from "./register/register.page";
 import {AccountPage} from "./account/account.page";
+import {PostDetail} from "./PostDetailed/post.page";
 
 const routes: Routes = [
   {
@@ -30,6 +31,10 @@ const routes: Routes = [
       {
         path: "account",
         component: AccountPage,
+      },
+      {
+        path: "post/:id",
+        component: PostDetail,
       },
       {
         path: '',

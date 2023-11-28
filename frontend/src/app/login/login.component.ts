@@ -45,7 +45,7 @@ import {NavigationStart, Router} from "@angular/router";
 })
 
 export class LoginComponent {
-    email = new FormControl("", [Validators.required, Validators.minLength(6)]);
+    email = new FormControl("", [Validators.required, Validators.minLength(6), Validators.email]);
     password = new FormControl("", [Validators.required, Validators.minLength(8)]);
     human = new FormControl(false,[Validators.required]);
     input = new FormGroup(

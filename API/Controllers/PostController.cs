@@ -64,4 +64,19 @@ public class PostController : ControllerBase
             return BadRequest("failed to get more posts please try again");
         }
     }
+
+    [HttpGet]
+    [Route("/api/post/{id}")]
+    public IActionResult getFullPost([FromRoute] int id)
+    {
+        try
+        {
+            var post = _postService.getpost(id);
+            return Ok(post);
+        }
+        catch
+        {
+            return BadRequest("Failed to get the post you wanted please try again");
+        }
+    }
 }

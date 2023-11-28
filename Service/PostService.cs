@@ -24,4 +24,9 @@ public class PostService
     {
         return _postRepository.getposts(limit, offset);
     }
+
+    public object? getpost(int id)
+    {
+        return _postRepository.getpost(id);
+    }
 }

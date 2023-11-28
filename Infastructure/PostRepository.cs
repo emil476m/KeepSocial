@@ -37,4 +37,14 @@ public class PostRepository
             return conn.Query<Post>(sql, new { offset = offset, limit });
         }
     }
+
+    public object? getpost(int id)
+    {
+        var sql =
+            $@"select posts.id,posts.author_id,posts.text,posts.img_url,posts.created,u.name from keepsocial.posts join keepsocial.users u on u.id = posts.author_id where posts.id = @id;";
+        using (var conn = _dataSource.OpenConnection())
+        {
+            return conn.QueryFirst<Post>(sql, new { id });
+        }
+    }
 }
