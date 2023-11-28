@@ -22,6 +22,7 @@ import {ChatPage} from "./chat/chat.page";
 import {RoomsPage} from "./chat/rooms.page";
 
 import {AccountPage} from "./account/account.page";
+import {FriendsPage} from "./freind/friends.page";
 import {NewAccountInfoModal} from "./changeAccountInfoModal/AccountInfoModal";
 
 @NgModule({
@@ -35,6 +36,7 @@ import {NewAccountInfoModal} from "./changeAccountInfoModal/AccountInfoModal";
       ChatPage,
       RoomsPage,
       NewAccountInfoModal,
+      FriendsPage,
   ],
     imports:
       [BrowserModule,
