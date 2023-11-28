@@ -69,4 +69,26 @@ UPDATE keepsocial.users SET name = @updatedValue  WHERE id = @id";
             return conn.Execute(sql, new {id, updatedValue}) == 1;
         }
     }
+
+    public bool StoreValidation(int userId, int validationNumber)
+    {
+        var sql =
+            $@"INSERT INTO keepsocial.validationnumbers (user_id, validation_number) VALUES(@userId, @validationNumber)";
+
+        using (var conn = _dataSource.OpenConnection())
+        {
+            return conn.Execute(sql, new { userId, validationNumber}) == 1;
+        }
+    }
+
+    public bool UpdateUserEmail(int id, string updatedValue)
+    {
+        var sql = @$"
+UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
+
+        using (var conn = _dataSource.OpenConnection())
+        {
+            return conn.Execute(sql, new {id, updatedValue}) == 1;
+        }
+    }
 }

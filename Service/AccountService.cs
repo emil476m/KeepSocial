@@ -1,3 +1,4 @@
+using API;
 using Infastructure;
 using Microsoft.Extensions.Logging;
 
@@ -8,9 +9,11 @@ public class AccountService
     private readonly AccountRepository _accountRepository;
     private readonly PasswordHashRepository _passwordHashRepository;
     private readonly ILogger<AccountService> _logger;
+    private readonly MailService _mailService;
 
-    public AccountService(AccountRepository accountRepository, PasswordHashRepository passwordHashRepository, ILogger<AccountService> logger)
+    public AccountService(AccountRepository accountRepository, PasswordHashRepository passwordHashRepository, ILogger<AccountService> logger, MailService mailService)
     {
+        _mailService = mailService;
         _logger = logger;
         _accountRepository = accountRepository;
         _passwordHashRepository = passwordHashRepository;
@@ -63,7 +66,33 @@ public class AccountService
         {
             return _accountRepository.UpdateUserName(id, updatedValue);
         }
+        else if (updatedValueName == "Account Email")
+        {
+            string message = "Your email has been linked to an Account at KeepSocial " + "\n"+ "" +
+                             "if you did not link it, then please contact costumer support at www.KeepSocial/notimplemented.com";
+            bool succes = _accountRepository.UpdateUserEmail(id, updatedValue);
+            if (succes)
+            {
+                SendEmailValidation(id, message);
+                return true;
+            }
+        }
 
         return false;
+    }
+
+    public bool SendEmailValidation(int userId, string mes)
+    {
+        string email = whoAmI(userId).userEmail;
+        Random rnd = new Random();
+        int validationNumber= rnd.Next(10000000, 99999999);
+        string message = "This is your validation code for KeepSocial please enter it to continue to make changes to your account: " + validationNumber;
+
+        if (mes != "" && mes != null)
+        {
+            message = mes;
+        }
+        _mailService.SendEmail(message, email);
+        return _accountRepository.StoreValidation(userId, validationNumber);
     }
 }

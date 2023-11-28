@@ -113,4 +113,26 @@ public class AccountController : ControllerBase
         };
     }
     
+    [RequireAuthentication]
+    [HttpPost]
+    [Route("/api/account/validationGeneration")]
+    public ResponseDto ValidationGeneration()
+    {
+        bool success = _accountService.SendEmailValidation(HttpContext.GetSessionData().UserId, null);
+        if (success)
+        {
+            return new ResponseDto
+            {
+                MessageToClient = "Successfully Sent Code"
+            };
+        }
+        else
+        {
+            return new ResponseDto
+            {
+                MessageToClient = "Failed to update"
+            };
+        }
+    }
+    
 }
