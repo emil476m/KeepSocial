@@ -113,4 +113,33 @@ public class AccountController : ControllerBase
         };
     }
     
+    [HttpGet]
+    [Route("/api/freinds")]
+    public IEnumerable<User> GetFreinds(int pageNumber)
+    {
+        int userId = HttpContext.GetSessionData().UserId!;
+        return _accountService.getFriends(userId, pageNumber);
+    }
+    [RequireAuthentication]
+    [HttpPost]
+    [Route("/api/account/validationGeneration")]
+    public ResponseDto ValidationGeneration()
+    {
+        bool success = _accountService.SendEmailValidation(HttpContext.GetSessionData().UserId, null);
+        if (success)
+        {
+            return new ResponseDto
+            {
+                MessageToClient = "Successfully Sent Code"
+            };
+        }
+        else
+        {
+            return new ResponseDto
+            {
+                MessageToClient = "Failed to update"
+            };
+        }
+    }
+    
 }
