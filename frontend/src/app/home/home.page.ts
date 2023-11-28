@@ -133,7 +133,7 @@ export class HomePage implements OnInit{
     try {
       const call = this.http.post<PostModel>(environment.baseURL + "post", this.post.value);
       const result = await firstValueFrom<PostModel>(call);
-      console.log(result);
+      this.state.posts.unshift(result);
       this.post.reset();
       (await this.toast.create(
           {
