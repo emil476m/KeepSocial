@@ -178,4 +178,86 @@ insert into keepsocial.password_hash(user_id,hash,salt,algorithm) values (112,'U
             response.rom_name.Should().Be(Checkroom.rom_name);
         }
     }
+    
+    [Test]
+    public async Task createfriendChatExeptionIfNotfriend()
+    {
+        string apicall = apirUrl + "friendChat112"; 
+        Helper.TriggerRebuild(resetbd);
+        
+        HttpResponseMessage responseMessage;
+        try
+        {
+            responseMessage = await _httpClient.GetAsync(apicall);
+            TestContext.WriteLine("full body response: " + await responseMessage.Content.ReadAsStringAsync());
+        }
+        catch (Exception e)
+        {
+            throw new Exception("Failed to run false friend test", e);
+        }
+        
+        using (new AssertionScope())
+        {
+            responseMessage.StatusCode.Should().NotBe(HttpStatusCode.OK);
+        }
+    }
+    
+    [Test]
+    public async Task OpenfriendExistingChatChat()
+    {
+        string apicall = apirUrl + "friendChat112"; 
+        Helper.TriggerRebuild(resetbd);
+        
+        var sqlSetFriend = $@"INSERT INTO keepsocial.friendRealeatioj(user1_id, user2_id) VALUES (111, 112);";
+        var sqlCreateRoom = $@"INSERT INTO keepsocial.chatrooms(rom_id, rom_name) values (101, (Select name FROM keepsocial.users WHERE keepsocial.users.id = 111) || ' ' || (Select name FROM keepsocial.users WHERE keepsocial.users.id = 112));";
+        var insertUsers = $@"INSERT INTO keepsocial.chatroomUsersRealation(rom_id, user_id) values (101, 111);
+                            INSERT INTO keepsocial.chatroomUsersRealation(rom_id, user_id) values (101, 112);";
+        var sql = $@"
+            select 
+            keepsocial.chatrooms.rom_id as {nameof(Rooms.rom_id)},
+            rom_name as {nameof(Rooms.rom_name)}
+            FROM keepsocial.chatrooms
+            WHERE rom_id = (SELECT b.rom_id
+            FROM keepsocial.chatroomusersrealation as b
+            JOIN keepsocial.chatroomusersrealation as c ON c.rom_id = b.rom_id
+            WHERE b.user_id = 111 AND c.user_id = 112)
+        ";
+
+        Rooms Checkroom = null;
+        using (var conn = Helper.DataSource.OpenConnection())
+        {
+            conn.Query(sqlSetFriend);
+            conn.Query(sqlCreateRoom);
+            conn.Query(insertUsers);
+            Checkroom = conn.QuerySingle<Rooms>(sql);
+        }
+        
+        HttpResponseMessage responseMessage;
+        try
+        {
+            responseMessage = await _httpClient.GetAsync(apicall);
+            TestContext.WriteLine("full body response: " + await responseMessage.Content.ReadAsStringAsync());
+        }
+        catch (Exception e)
+        {
+            throw new Exception("Failed to create chat room", e);
+        }
+        Rooms response;
+        
+        try
+        {
+            response = JsonConvert.DeserializeObject<Rooms>(await responseMessage.Content.ReadAsStringAsync()) ??
+                       throw new InvalidOperationException();
+        }
+        catch (Exception e)
+        {
+            throw new Exception(Helper.BadResponseBody("bad response"), e);
+        }
+        
+        using (new AssertionScope())
+        {
+            response.rom_id.Should().Be(Checkroom.rom_id);
+            response.rom_name.Should().Be(Checkroom.rom_name);
+        }
+    }
 }
