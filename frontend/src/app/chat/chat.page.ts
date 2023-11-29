@@ -62,6 +62,7 @@ export class ChatPage implements OnInit {
       this.chatroom_num = id;
       this.displayname = name;
     });
+    this.messages = [];
 
     this.getMessages();
 
@@ -80,8 +81,6 @@ export class ChatPage implements OnInit {
     this.messages = [];
     this.page = 1;
     this.displayname = "@displayname";
-    this.chatroom_num = -1;
-    this.ngOnInit();
   }
 
 
