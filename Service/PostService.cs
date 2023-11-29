@@ -20,8 +20,13 @@ public class PostService
         return _postRepository.createPost(post);
     }
 
-    public object getposts(int limit, int offset)
+    public IEnumerable<Post> getposts(int limit, int offset)
     {
         return _postRepository.getposts(limit, offset);
+    }
+
+    public Post getpost(int id)
+    {
+        return _postRepository.getpost(id);
     }
 }
