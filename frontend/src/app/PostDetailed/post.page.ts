@@ -9,6 +9,8 @@ import * as ago from "s-ago";
 import {TokenService} from "../services/token.service";
 import {Account} from "../accountInterface";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {ToastController} from "@ionic/angular";
+import {CommentModel} from "../models/CommentModel";
 
 @Component({
     selector: 'post-detail',
@@ -26,19 +28,29 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
         <ion-toolbar>
             <ion-title mode="ios">Comments</ion-title>
         </ion-toolbar>
-        <ion-infinite-scroll>
-            <ion-card *ngIf="token.getToken()">
-                <ion-toolbar>
-                    <ion-img [src]="profilepic" style="height: 30px; width: 30px; border-radius: 360%;"/>
-                    <ion-text>{{displayName}}</ion-text>
-                </ion-toolbar>
-                <ion-textarea [counter]="true" [maxlength]="500" placeholder="what do you want your comment to say?" [formControl]="textFC"></ion-textarea>
-                <div>
-                    <ion-input placeholder="image url" [formControl]="imageFC"></ion-input>
-                </div>
-                <ion-buttons>
-                    <ion-button (click)="createComment()">Comment</ion-button>
+        <ion-card *ngIf="token.getToken()">
+        <ion-toolbar>
+            <ion-img [src]="profilepic" style="height: 30px; width: 30px; border-radius: 360%;"/>
+            <ion-text>{{displayName}}</ion-text>
+        </ion-toolbar>
+        <ion-textarea [counter]="true" [maxlength]="500" placeholder="what do you want your comment to say?" [formControl]="textFC"></ion-textarea>
+        <div>
+            <ion-input placeholder="image url" [formControl]="imageFC"></ion-input>
+        </div>
+        <ion-buttons>
+            <ion-button [disabled]="comment.invalid" (click)="createComment()">Comment</ion-button>
+        </ion-buttons>
+    </ion-card>
+        <ion-infinite-scroll (ionInfinite)="loadMore()">
+            <ion-card *ngFor="let comment of this.state.comments">
+                <ion-toolbar><ion-buttons slot="end">
+                    <ion-text >created {{getLocalDate(comment.created)}}</ion-text>
                 </ion-buttons>
+                    <ion-text>{{comment.name}}</ion-text>
+
+                </ion-toolbar>
+                <ion-img *ngIf="comment.img_url != undefined" [src]="comment.img_url"/>
+                <ion-text>{{comment.text}}</ion-text>
             </ion-card>
         </ion-infinite-scroll>
     </ion-content>`,
@@ -48,6 +60,7 @@ export class PostDetail implements OnInit
     displayName: string = "";
     profilepic: string = "";
 
+    limitFC = new FormControl(10,[Validators.required])
     textFC = new FormControl("",[Validators.required, Validators.maxLength(500), Validators.minLength(3)]);
     imageFC = new FormControl(null);
 
@@ -58,15 +71,17 @@ export class PostDetail implements OnInit
         }
     )
 
-
-    constructor(public router: Router, public route: ActivatedRoute, public http: HttpClient, public state: Globalstate, public token: TokenService)
+    constructor(public router: Router, public route: ActivatedRoute, public http: HttpClient, public state: Globalstate, public token: TokenService, public toast: ToastController)
     {
         this.router.events.subscribe(event =>    {
             if(event instanceof NavigationStart) {
                 this.whoAmI();
+                this.comment.reset();
             }
         })
     }
+
+
 
     async whoAmI()
     {
@@ -90,7 +105,7 @@ export class PostDetail implements OnInit
         const call = this.http.get<PostModel>(environment.baseURL+'post/'+ id)
         const result = await firstValueFrom<PostModel>(call);
         this.state.currentPost = result;
-        console.log(this.state.currentPost);
+        this.loadComments();
     }
 
     getLocalDate(UTCString: string) {
@@ -99,7 +114,41 @@ export class PostDetail implements OnInit
         return ago (date);
     }
 
-    createComment() {
+    async createComment() {
+        try {
+            const call = this.http.post<CommentModel>(environment.baseURL + "comment/", this.comment.value, {params:{postId: this.state.currentPost.id}});
+            const result = await firstValueFrom<CommentModel>(call);
+            console.log(result)
+            this.state.comments.unshift(result);
+            this.comment.reset();
+            (await this.toast.create(
+                {
+                    message: "commented",
+                    color: "success",
+                    duration: 2000,
+                })).present()
+        }
+        catch (e)
+        {
+            (await this.toast.create(
+                {
+                    message: "failed to comment please try again",
+                    color: "danger",
+                    duration: 2000,
+                }
+            )).present();
+        }
+    }
 
+    private async loadComments() {
+        const call = this.http.get<CommentModel[]>(environment.baseURL + "getcomments", {params:{postId: this.state.currentPost.id}})
+        const result = await firstValueFrom<CommentModel[]>(call);
+        this.state.comments = result;
+    }
+
+  async loadMore() {
+        const call = this.http.get<PostModel[]>(environment.baseURL + "getmorecomments", {params: {limit: this.limitFC.value!, offset: this.state.comments.length, postId: this.state.currentPost.id}})
+        const result = await firstValueFrom<PostModel[]>(call);
+        this.state.posts = this.state.posts.concat(result)
     }
 }

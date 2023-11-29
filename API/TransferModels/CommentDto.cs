@@ -4,8 +4,6 @@ namespace API.TransferModels;
 
 public class CommentDto
 {
-    public class PostDto
-    {
         public int postId { get; set; }
         public int authorId { get; set; }
         [MinLength(3)]
@@ -13,5 +11,4 @@ public class CommentDto
         public string text { get; set; }
         public string? imgurl { get; set; }
         public DateTimeOffset? created { get; set; }
-    }
 }

@@ -42,7 +42,7 @@ import * as ago from "s-ago";
               <ion-input placeholder="image url" [formControl]="imageFC"></ion-input>
           </div>
           <ion-buttons>
-              <ion-button (click)="createPost()">post</ion-button>
+              <ion-button [disabled]="post.invalid" (click)="createPost()">post</ion-button>
           </ion-buttons>
       </ion-card>
       <ion-infinite-scroll (ionInfinite)="loadMore()">

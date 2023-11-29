@@ -13,4 +13,14 @@ public class CommentService
         _logger = logger;
         _commentRepository = commentRepository;
     }
+
+    public Comment createComment(Comment comment)
+    {
+        return _commentRepository.createComment(comment);
+    }
+
+    public IEnumerable<Comment> getComments(int limit, int offset, int postId)
+    {
+        return _commentRepository.getComents(limit, offset, postId);
+    }
 }

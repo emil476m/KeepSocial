@@ -1,9 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Numerics;
 
 namespace Infastructure;
 
 public class Comment
 {
+    public BigInteger id { get; set; }
     public int post_id { get; set; }
     public int author_id { get; set; }
     [MinLength(3)]
