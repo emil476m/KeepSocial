@@ -18,7 +18,7 @@ import {Globalstate} from "../services/states/globalstate";
       </ion-header>
       <ion-content>
         <ion-item>
-          <ion-input [formControl]="UserInput" type="text" onpaste="return false;" ondrop="return false;" autocomplete="off" label-placement="floating" [label]="InputLabel"></ion-input>
+          <ion-input [formControl]="UserInput" type="text" onpaste="return false;" ondrop="return false;" autocomplete="off" label-placement="floating" [label]="InputLabel" [type]="hide ? 'password' : 'text'"></ion-input>
           <div *ngIf="UserInput.invalid && UserInput.touched" class="error"  [textContent]="'Invalid '+this.globalstate.updatingWhatAccountItem"> Invalid
           </div>
         </ion-item>
@@ -45,7 +45,8 @@ export class NewAccountInfoModal implements OnInit
       this.UserInput.setValidators([Validators.required, Validators.email])
 
     }else if (this.globalstate.updatingWhatAccountItem == "Account Password"){
-
+      this.UserInput.setValidators([Validators.required, Validators.minLength(8),Validators.maxLength(32)])
+      this.hide=true;
     }else if (this.globalstate.updatingWhatAccountItem == "Account Avatar"){
 
     }
@@ -95,4 +96,5 @@ export class NewAccountInfoModal implements OnInit
   }
 
 
+  hide = false;
 }

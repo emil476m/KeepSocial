@@ -38,7 +38,7 @@ VALUES (@userId, @hash, @salt, @algorithm)
         connection.Execute(sql, new { userId, hash, salt, algorithm });
     }
 
-    public void Update(int userId, string hash, string salt, string algorithm)
+    public bool Update(int userId, string hash, string salt, string algorithm)
     {
         const string sql = $@"
 UPDATE keepsocial.password_hash
@@ -46,6 +46,6 @@ SET hash = @hash, salt = @salt, algorithm = @algorithm
 WHERE user_id = @userId
 ";
         using var connection = _dataSource.OpenConnection();
-        connection.Execute(sql, new { userId, hash, salt, algorithm });
+        return connection.Execute(sql, new { userId, hash, salt, algorithm }) == 1;
     }
 }

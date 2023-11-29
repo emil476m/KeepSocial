@@ -77,7 +77,23 @@ public class AccountService
                 return true;
             }
         }
-
+        else if (updatedValueName == "Account Password")
+        {
+            var hashAlgorithm = PasswordHashAlgorithm.Create();
+            var salt = hashAlgorithm.GenerateSalt();
+            var hash = hashAlgorithm.HashPassword(updatedValue, salt);
+            bool succes =_passwordHashRepository.Update(id, hash, salt, hashAlgorithm.GetName());
+            
+            string message = "Your password on KeepSocial has been changed " + "\n"+ "" +
+                             "if you did not change it, then please contact costumer support at www.KeepSocial/notimplemented.com";
+            
+            if (succes)
+            {
+                SendEmailValidation(id, message);
+                return true;
+            }
+            
+        }
         return false;
     }
 
