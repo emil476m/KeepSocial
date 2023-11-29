@@ -52,7 +52,8 @@ public class AccountRepository
            id as {nameof(User.userId)},
            name as {nameof(User.userDisplayName)},
            email as {nameof(User.userEmail)},
-           birthday as {nameof(User.userBirthday)}
+           birthday as {nameof(User.userBirthday)},
+           avatarUrl as {nameof(User.avatarUrl)}
            from keepsocial.users where id = @id and isDeleted = false";
         using var connection = _dataSource.OpenConnection();
         return connection.QueryFirst<User>(sql, new { id });
@@ -128,5 +129,16 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
             if (number == userId || number == friendId) return true;
         }
         return false;
+    }
+
+    public bool UpdateAvatarImg(int id, string updatedValue)
+    {
+        var sql = @$"
+            UPDATE keepsocial.users SET avatarUrl = @updatedValue  WHERE id = @id";
+
+        using (var conn = _dataSource.OpenConnection())
+        {
+            return conn.Execute(sql, new {id, updatedValue}) == 1;
+        }
     }
 }

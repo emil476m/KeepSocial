@@ -13,7 +13,7 @@ public class User
     public string userEmail { get; set; }
     public DateTime userBirthday { get; set; }
     
-    public string? AvatarUrl { get; set; }
+    public string? avatarUrl { get; set; }
     
     public bool isDeleted { get; set; }
     

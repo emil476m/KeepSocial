@@ -94,6 +94,10 @@ public class AccountService
             }
             
         }
+        else if (updatedValueName == "Account Avatar")
+        {
+            return _accountRepository.UpdateAvatarImg(id, updatedValue);
+        }
         return false;
     }
 
