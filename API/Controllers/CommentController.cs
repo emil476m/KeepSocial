@@ -31,11 +31,12 @@ public class CommentController: ControllerBase
             img_url = dto.imgurl
         };
         if (comment == null) return BadRequest("Failed to create comment");
-        return Ok(_commentService.createComment(comment));
+        var commentdb = _commentService.createComment(comment);
+        return Ok(commentdb);
     }
     
     [HttpGet]
-        [Route("/api/getcomments")]
+    [Route("/api/getcomments")]
     public IActionResult getComments([FromQuery] int postId)
     {
         try

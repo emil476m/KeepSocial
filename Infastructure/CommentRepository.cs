@@ -19,12 +19,13 @@ public class CommentRepository
             id;
             ";
         var select =
-            $@"select comments.post_id,comments.author_id,comments.text,comments.img_url,comments.created,u.name from keepsocial.comments join keepsocial.users u on u.id = comments.author_id where comments.id = @id;";
+            $@"select comments.id, comments.post_id,comments.author_id,comments.text,comments.img_url,comments.created,u.name from keepsocial.comments join keepsocial.users u on u.id = comments.author_id where comments.id = @id;";
 
         using (var conn = _dataSource.OpenConnection())
         {
             var id =  conn.ExecuteScalar<int>(insert, new {postid = comment.post_id, authorid = comment.author_id, text = comment.text, imgurl = comment.img_url, created = DateTimeOffset.UtcNow });
-            return conn.QueryFirst<Comment>(select, new  {id = id});
+           
+            return  conn.QueryFirst<Comment>(select, new  {id = id});;
         }
     }
 
