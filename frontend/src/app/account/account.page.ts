@@ -42,7 +42,7 @@ import {Globalstate} from "../services/states/globalstate";
               <ion-item >
                 <ion-label>Password:</ion-label>
                 <ion-label>********</ion-label>
-                <ion-button>Change</ion-button>
+                <ion-button (click)="changePassword()">Change</ion-button>
               </ion-item>
             </ion-col>
             <ion-col>
@@ -119,7 +119,8 @@ this.isEnabled = !this.isEnabled;
 
   }
   async changePassword(){
-
+    this.globalstate.updatingWhatAccountItem="Account Password";
+    this.openEdit();
   }
 
   async changeProfilePicture(){
