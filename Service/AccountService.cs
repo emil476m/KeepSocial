@@ -129,4 +129,19 @@ public class AccountService
             throw new Exception("could not fetch friend data");
         }
     }
+
+    public bool FollowUser(int userId, int followedId)
+    {
+        return _accountRepository.FollowUser(userId, followedId);
+    }
+
+    public bool UnFollowUser(int userId, int followedId)
+    {
+        return _accountRepository.UnFollowUser(userId, followedId);
+    }
+
+    public bool CheckIfFollowing(int userId, int followedId)
+    {
+        return _accountRepository.CheckIfFollowing(userId, followedId);
+    }
 }
