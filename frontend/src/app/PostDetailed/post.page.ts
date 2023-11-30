@@ -90,7 +90,7 @@ export class PostDetail implements OnInit
             const call = this.http.get<Account>(environment.baseURL+"whoami");
             const result = await firstValueFrom<Account>(call);
             this.displayName = result.userDisplayName;
-            this.profilepic = result.AvatarUrl;
+            this.profilepic = result.avatarUrl;
         }
     }
 

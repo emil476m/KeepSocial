@@ -94,6 +94,10 @@ public class AccountService
             }
             
         }
+        else if (updatedValueName == "Account Avatar")
+        {
+            return _accountRepository.UpdateAvatarImg(id, updatedValue);
+        }
         return false;
     }
 
@@ -124,5 +128,20 @@ public class AccountService
             Console.WriteLine(e);
             throw new Exception("could not fetch friend data");
         }
+    }
+
+    public bool FollowUser(int userId, int followedId)
+    {
+        return _accountRepository.FollowUser(userId, followedId);
+    }
+
+    public bool UnFollowUser(int userId, int followedId)
+    {
+        return _accountRepository.UnFollowUser(userId, followedId);
+    }
+
+    public bool CheckIfFollowing(int userId, int followedId)
+    {
+        return _accountRepository.CheckIfFollowing(userId, followedId);
     }
 }

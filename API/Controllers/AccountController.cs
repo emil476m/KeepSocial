@@ -142,4 +142,59 @@ public class AccountController : ControllerBase
         }
     }
     
+    [RequireAuthentication]
+    [HttpPost]
+    [Route("/api/account/followUser")]
+    public ResponseDto FollowUser([FromBody] int followedId)
+    { 
+        bool success = _accountService.FollowUser(HttpContext.GetSessionData().UserId, followedId);
+        if (success)
+        {
+            return new ResponseDto
+            {
+                MessageToClient = "Successfully followed"
+            };
+        }
+        else
+        {
+            return new ResponseDto
+            {
+                MessageToClient = "Failed to follow"
+            };
+        }
+    }
+    
+    [RequireAuthentication]
+    [HttpDelete]
+    [Route("/api/account/unFollowUser")]
+    public ResponseDto UnFollowUser([FromBody] int followedId)
+    { 
+        bool success = _accountService.UnFollowUser(HttpContext.GetSessionData().UserId, followedId);
+        if (success)
+        {
+            return new ResponseDto
+            {
+                MessageToClient = "Successfully unfollowed"
+            };
+        }
+        else
+        {
+            return new ResponseDto
+            {
+                MessageToClient = "Failed to unfollow"
+            };
+        }
+    }
+    
+    [RequireAuthentication]
+    [HttpPost]
+    [Route("/api/account/checkIfFollowing")]
+    public ReturnBoolDto CheckIfFollowing([FromBody] int followedId)
+    { 
+        bool isFollowing = _accountService.CheckIfFollowing(HttpContext.GetSessionData().UserId, followedId);
+        return new ReturnBoolDto
+        {
+            isTrue = isFollowing
+        };
+    }
 }
