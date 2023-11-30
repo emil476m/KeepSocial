@@ -2,7 +2,6 @@
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using API.TransferModels;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Infastructure;
@@ -189,4 +188,14 @@ insert into keepsocial.password_hash(user_id,hash,salt,algorithm) values (111,'6
     }
 }
 
+public class PostDto
+{
+    public int id { get; set; }
+    public int authorId { get; set; }
+    [MinLength(3)]
+    [MaxLength(500)]
+    public string text { get; set; }
+    public string? imgurl { get; set; }
+    public DateTimeOffset? created { get; set; }
+}
 

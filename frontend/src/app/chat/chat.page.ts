@@ -54,7 +54,17 @@ export class ChatPage implements OnInit {
   chatroom_num: number = -1;
   @ViewChild('textWindow', {static: false}) textWindow!: IonContent;
 
+  page: number = 1;
+
+  message: FormControl<string | null> = new FormControl("", [Validators.required, Validators.minLength(3), Validators.maxLength(50)]);
+
+  messages: Message[] = [];
+
   ngOnInit() {
+    this.messages = [];
+    this.page = 1;
+    this.displayname = "@displayname";
+
     //document.getElementById("Textcontainer")!.scrollTop()
     this.route.params.subscribe(params => {
       const id = params['id'];
@@ -62,7 +72,6 @@ export class ChatPage implements OnInit {
       this.chatroom_num = id;
       this.displayname = name;
     });
-    this.messages = [];
 
     this.getMessages();
 
@@ -70,19 +79,6 @@ export class ChatPage implements OnInit {
       this.textWindow.scrollToBottom();
     }, 1000);
   }
-
-  page: number = 1;
-
-  message: FormControl<string | null> = new FormControl("", [Validators.required, Validators.minLength(3), Validators.maxLength(50)]);
-
-  messages: Message[] = [];
-
-  ionViewWillEnter() {
-    this.messages = [];
-    this.page = 1;
-    this.displayname = "@displayname";
-  }
-
 
   async sendMessage() {
     console.log(this.message.value)
