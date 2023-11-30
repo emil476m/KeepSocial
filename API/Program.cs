@@ -3,6 +3,7 @@ using API.Middleware;
 using Infastructure;
 using Service;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -12,9 +13,11 @@ builder.Services.AddSingleton<AccountRepository>();
 builder.Services.AddSingleton<ChatReposetory>();
 builder.Services.AddSingleton<PasswordHashRepository>();
 builder.Services.AddSingleton<PostRepository>();
+builder.Services.AddSingleton<CommentRepository>();
 builder.Services.AddSingleton<AccountService>();
 builder.Services.AddSingleton<ChatService>();
 builder.Services.AddSingleton<PostService>();
+builder.Services.AddSingleton<CommentService>();
 builder.Services.AddSingleton<HttpClient>();
 builder.Services.AddSingleton<HttpClientService>();
 builder.Services.AddSingleton<MailService>();

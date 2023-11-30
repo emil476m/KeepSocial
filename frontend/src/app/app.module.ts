@@ -24,6 +24,7 @@ import {RoomsPage} from "./chat/rooms.page";
 import {AccountPage} from "./account/account.page";
 import {FriendsPage} from "./freind/friends.page";
 import {NewAccountInfoModal} from "./changeAccountInfoModal/AccountInfoModal";
+import {PostDetail} from "./PostDetailed/post.page";
 
 @NgModule({
   declarations:
@@ -36,6 +37,7 @@ import {NewAccountInfoModal} from "./changeAccountInfoModal/AccountInfoModal";
       ChatPage,
       RoomsPage,
       NewAccountInfoModal,
+      PostDetail,
       FriendsPage,
   ],
     imports:

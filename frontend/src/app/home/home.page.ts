@@ -16,7 +16,7 @@ import * as ago from "s-ago";
   selector: 'app-home',
   template: `
     <ion-toolbar>
-      <ion-title align="center">KeepSocial</ion-title>
+      <ion-title mode="ios">KeepSocial</ion-title>
       <ion-buttons slot="end">
           <ng-template #notLoggedin>
           <ion-button routerLink="/login">
@@ -42,11 +42,11 @@ import * as ago from "s-ago";
               <ion-input placeholder="image url" [formControl]="imageFC"></ion-input>
           </div>
           <ion-buttons>
-              <ion-button (click)="createPost()">post</ion-button>
+              <ion-button [disabled]="post.invalid" (click)="createPost()">post</ion-button>
           </ion-buttons>
       </ion-card>
       <ion-infinite-scroll (ionInfinite)="loadMore()">
-        <ion-card *ngFor="let post of state.posts">
+        <ion-card *ngFor="let post of state.posts" (click)="gotopost(post.id)">
 
           <ion-toolbar><ion-buttons slot="end">
             <ion-text >created {{getLocalDate(post.created)}}</ion-text>
@@ -67,7 +67,7 @@ export class HomePage implements OnInit{
   displayName: string = "";
   profilepic: string = "";
   textFC = new FormControl("",[Validators.required, Validators.maxLength(500), Validators.minLength(3)]);
-  imageFC = new FormControl("");
+  imageFC = new FormControl(null);
   limitFC = new FormControl(10,[Validators.required])
 
   post = new FormGroup(
@@ -170,6 +170,10 @@ export class HomePage implements OnInit{
 let date = new Date(UTCString);
 date.setHours(date.getHours()+1)
     return ago (date);
+  }
+
+  gotopost(id: number) {
+    this.router.navigate(['post/'+id]);
   }
 }
 
