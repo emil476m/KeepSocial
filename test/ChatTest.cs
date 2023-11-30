@@ -365,6 +365,7 @@ insert into keepsocial.password_hash(user_id,hash,salt,algorithm) values (112,'U
         }
     }
     
+    [Test]
     public async Task sendChatMessageSuccces()
     {
         string apicall = apirUrl + "SenndMessage";
@@ -390,7 +391,7 @@ insert into keepsocial.password_hash(user_id,hash,salt,algorithm) values (112,'U
             message = "Holla mi padre",
             isSender = true,
             User_id = 111,
-            sendAt = new DateTime(0000, 00, 00, 00, 00, 00, 0)
+            sendAt = new DateTime(2023, 11, 29, 13, 12, 48, 1)
         };
 
         HttpResponseMessage responseMessage;
