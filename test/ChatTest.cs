@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Collections;
+using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using Dapper;
@@ -124,15 +125,15 @@ insert into keepsocial.password_hash(user_id,hash,salt,algorithm) values (112,'U
     [Test]
     public async Task createfriendChat()
     {
-        string apicall = apirUrl + "friendChat112"; 
+        string apicall = apirUrl + "friendChat112";
         Helper.TriggerRebuild(resetbd);
-        
+
         var sqlSetFriend = $@"INSERT INTO keepsocial.friendRealeatioj(user1_id, user2_id) VALUES (111, 112);";
         using (var conn = Helper.DataSource.OpenConnection())
         {
             conn.Query(sqlSetFriend);
         }
-        
+
         HttpResponseMessage responseMessage;
         try
         {
@@ -143,8 +144,9 @@ insert into keepsocial.password_hash(user_id,hash,salt,algorithm) values (112,'U
         {
             throw new Exception("Failed to create chat room", e);
         }
+
         Rooms response;
-        
+
         try
         {
             response = JsonConvert.DeserializeObject<Rooms>(await responseMessage.Content.ReadAsStringAsync()) ??
@@ -154,7 +156,7 @@ insert into keepsocial.password_hash(user_id,hash,salt,algorithm) values (112,'U
         {
             throw new Exception(Helper.BadResponseBody("bad response"), e);
         }
-        
+
         var sql = $@"
             select 
             keepsocial.chatrooms.rom_id as {nameof(Rooms.rom_id)},
@@ -171,20 +173,22 @@ insert into keepsocial.password_hash(user_id,hash,salt,algorithm) values (112,'U
         {
             Checkroom = conn.QuerySingle<Rooms>(sql);
         }
-        
+
         using (new AssertionScope())
         {
+            responseMessage.StatusCode.Should().Be(HttpStatusCode.OK);
+
             response.rom_id.Should().Be(Checkroom.rom_id);
             response.rom_name.Should().Be(Checkroom.rom_name);
         }
     }
-    
+
     [Test]
     public async Task createfriendChatExeptionIfNotfriend()
     {
-        string apicall = apirUrl + "friendChat112"; 
+        string apicall = apirUrl + "friendChat112";
         Helper.TriggerRebuild(resetbd);
-        
+
         HttpResponseMessage responseMessage;
         try
         {
@@ -195,21 +199,22 @@ insert into keepsocial.password_hash(user_id,hash,salt,algorithm) values (112,'U
         {
             throw new Exception("Failed to run false friend test", e);
         }
-        
+
         using (new AssertionScope())
         {
             responseMessage.StatusCode.Should().NotBe(HttpStatusCode.OK);
         }
     }
-    
+
     [Test]
     public async Task OpenfriendExistingChatChat()
     {
-        string apicall = apirUrl + "friendChat112"; 
+        string apicall = apirUrl + "friendChat112";
         Helper.TriggerRebuild(resetbd);
-        
+
         var sqlSetFriend = $@"INSERT INTO keepsocial.friendRealeatioj(user1_id, user2_id) VALUES (111, 112);";
-        var sqlCreateRoom = $@"INSERT INTO keepsocial.chatrooms(rom_id, rom_name) values (101, (Select name FROM keepsocial.users WHERE keepsocial.users.id = 111) || ' ' || (Select name FROM keepsocial.users WHERE keepsocial.users.id = 112));";
+        var sqlCreateRoom =
+            $@"INSERT INTO keepsocial.chatrooms(rom_id, rom_name) values (101, (Select name FROM keepsocial.users WHERE keepsocial.users.id = 111) || ' ' || (Select name FROM keepsocial.users WHERE keepsocial.users.id = 112));";
         var insertUsers = $@"INSERT INTO keepsocial.chatroomUsersRealation(rom_id, user_id) values (101, 111);
                             INSERT INTO keepsocial.chatroomUsersRealation(rom_id, user_id) values (101, 112);";
         var sql = $@"
@@ -231,7 +236,7 @@ insert into keepsocial.password_hash(user_id,hash,salt,algorithm) values (112,'U
             conn.Query(insertUsers);
             Checkroom = conn.QuerySingle<Rooms>(sql);
         }
-        
+
         HttpResponseMessage responseMessage;
         try
         {
@@ -242,8 +247,9 @@ insert into keepsocial.password_hash(user_id,hash,salt,algorithm) values (112,'U
         {
             throw new Exception("Failed to create chat room", e);
         }
+
         Rooms response;
-        
+
         try
         {
             response = JsonConvert.DeserializeObject<Rooms>(await responseMessage.Content.ReadAsStringAsync()) ??
@@ -253,11 +259,171 @@ insert into keepsocial.password_hash(user_id,hash,salt,algorithm) values (112,'U
         {
             throw new Exception(Helper.BadResponseBody("bad response"), e);
         }
-        
+
         using (new AssertionScope())
         {
+            responseMessage.StatusCode.Should().Be(HttpStatusCode.OK);
+
             response.rom_id.Should().Be(Checkroom.rom_id);
             response.rom_name.Should().Be(Checkroom.rom_name);
+        }
+    }
+
+    [Test]
+    public async Task GetMessages()
+    {
+        string apicall = apirUrl + "ChatMessages101?pageNumber=1";
+        Helper.TriggerRebuild(resetbd);
+
+        var messages = $@"INSERT INTO keepsocial.messages(rom_id, user_id, message, time_Send) 
+            VALUES (@room_id, @User_id, @message, @sendAt);";
+        var sqlSetFriend = $@"INSERT INTO keepsocial.friendRealeatioj(user1_id, user2_id) VALUES (111, 112);";
+        var sqlCreateRoom =
+            $@"INSERT INTO keepsocial.chatrooms(rom_id, rom_name) values (101, (Select name FROM keepsocial.users WHERE keepsocial.users.id = 111) || ' ' || (Select name FROM keepsocial.users WHERE keepsocial.users.id = 112));";
+        var insertUsers = $@"INSERT INTO keepsocial.chatroomUsersRealation(rom_id, user_id) values (101, 111);
+                            INSERT INTO keepsocial.chatroomUsersRealation(rom_id, user_id) values (101, 112);";
+
+        var m1 = new Message()
+        {
+            room_id = 101,
+            message = "Hello",
+            isSender = true,
+            User_id = 111,
+            sendAt = new DateTime(2023, 11, 29, 13, 12, 40, 1)
+        };
+        var m2 = new Message()
+        {
+            room_id = 101,
+            message = "Nah",
+            isSender = false,
+            User_id = 112,
+            sendAt =  new DateTime(2023, 11, 29, 13, 12, 45, 1)
+        };
+        var m3 = new Message()
+        {
+            room_id = 101,
+            message = "Nah part 2",
+            isSender = false,
+            User_id = 112,
+            sendAt =  new DateTime(2023, 11, 29, 13, 12, 48, 1)
+
+        };
+        
+        var expectedMessageArray = new List<Message>();
+        expectedMessageArray.Add(m1);
+        expectedMessageArray.Add(m2);
+        expectedMessageArray.Add(m3);
+        
+        Rooms Checkroom = null;
+        using (var conn = Helper.DataSource.OpenConnection())
+        {
+            conn.Query(sqlSetFriend);
+            conn.Query(sqlCreateRoom);
+            conn.Query(insertUsers);
+
+            foreach (var m in expectedMessageArray)
+            {
+                conn.Query(messages, new { m.room_id, m.User_id, m.message, m.sendAt });
+            }
+        }
+
+        HttpResponseMessage responseMessage;
+        try
+        {
+            responseMessage = await _httpClient.GetAsync(apicall);
+            TestContext.WriteLine("full body response: " + await responseMessage.Content.ReadAsStringAsync());
+        }
+        catch (Exception e)
+        {
+            throw new Exception("Failed to get Messages", e);
+        }
+
+        List<Message> response;
+
+        try
+        {
+            response = (List<Message>)(JsonConvert.DeserializeObject<IEnumerable<Message>>(await responseMessage.Content
+                                           .ReadAsStringAsync()) ??
+                                       throw new InvalidOperationException());
+        }
+        catch (Exception e)
+        {
+            throw new Exception(Helper.BadResponseBody("bad response"), e);
+        }
+
+        using (new AssertionScope())
+        {
+            responseMessage.StatusCode.Should().Be(HttpStatusCode.OK);
+
+            for (int i = 0; i < response.Count(); i ++)
+            {
+                response[i].room_id.Should().Be(expectedMessageArray[i].room_id);
+                response[i].message.Should().Be(expectedMessageArray[i].message);
+                response[i].isSender.Should().Be(expectedMessageArray[i].isSender);
+                response[i].User_id.Should().Be(expectedMessageArray[i].User_id);
+            }
+        }
+    }
+    
+    public async Task sendChatMessageSuccces()
+    {
+        string apicall = apirUrl + "SenndMessage";
+        Helper.TriggerRebuild(resetbd);
+
+        var sqlSetFriend = $@"INSERT INTO keepsocial.friendRealeatioj(user1_id, user2_id) VALUES (111, 112);";
+        var sqlCreateRoom =
+            $@"INSERT INTO keepsocial.chatrooms(rom_id, rom_name) values (101, (Select name FROM keepsocial.users WHERE keepsocial.users.id = 111) || ' ' || (Select name FROM keepsocial.users WHERE keepsocial.users.id = 112));";
+        var insertUsers = $@"INSERT INTO keepsocial.chatroomUsersRealation(rom_id, user_id) values (101, 111);
+                            INSERT INTO keepsocial.chatroomUsersRealation(rom_id, user_id) values (101, 112);";
+
+        Rooms Checkroom = null;
+        using (var conn = Helper.DataSource.OpenConnection())
+        {
+            conn.Query(sqlSetFriend);
+            conn.Query(sqlCreateRoom);
+            conn.Query(insertUsers);
+        }
+
+        var body = new Message
+        {
+            room_id = 101,
+            message = "Holla mi padre",
+            isSender = true,
+            User_id = 111,
+            sendAt = new DateTime(0000, 00, 00, 00, 00, 00, 0)
+        };
+
+        HttpResponseMessage responseMessage;
+        try
+        {
+            responseMessage = await _httpClient.PostAsJsonAsync(apicall, body);
+            TestContext.WriteLine("full body response: " + await responseMessage.Content.ReadAsStringAsync());
+        }
+        catch (Exception e)
+        {
+            throw new Exception("Failed to send message in room", e);
+        }
+
+        Message response;
+
+        try
+        {
+            response = JsonConvert.DeserializeObject<Message>(await responseMessage.Content.ReadAsStringAsync()) ??
+                       throw new InvalidOperationException();
+        }
+        catch (Exception e)
+        {
+            throw new Exception(Helper.BadResponseBody("bad response"), e);
+        }
+
+        using (new AssertionScope())
+        {
+            responseMessage.StatusCode.Should().Be(HttpStatusCode.OK);
+            
+            response.room_id.Should().Be(body.room_id);
+            response.isSender.Should().Be(body.isSender);
+            response.message.Should().Be(body.message);
+            response.User_id.Should().Be(body.User_id);
         }
     }
 }
