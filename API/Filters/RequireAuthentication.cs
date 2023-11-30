@@ -8,7 +8,6 @@ public class RequireAuthentication : ActionFilterAttribute
     public override void OnActionExecuting(ActionExecutingContext context)
     {
         var str = context.HttpContext.Request.Headers.Authorization.FirstOrDefault();
-        Console.WriteLine(str);
         if (str is null) throw new AuthenticationException();
     }
 }
