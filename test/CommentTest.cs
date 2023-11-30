@@ -152,10 +152,10 @@ insert into keepsocial.posts(id,author_id,text,img_url,created) values (1,111,'y
         using (new AssertionScope())
         {
             responseMessage.StatusCode.Should().Be(HttpStatusCode.OK);
-            response.author_id.Should().NotBe(comment.authorId);
+            response.authorId.Should().NotBe(comment.authorId);
             response.id.Should().NotBe(0);
             response.text.Should().Be(comment.text);
-            response.img_url.Should().Be(comment.imgurl);
+            response.imgUrl.Should().Be(comment.imgurl);
         }
     }
 

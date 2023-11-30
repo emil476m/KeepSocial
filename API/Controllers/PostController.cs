@@ -26,10 +26,10 @@ public class PostController : ControllerBase
         var post = new Post
         {
             id = dto.id,
-            author_id = HttpContext.GetSessionData()!.UserId,
+            authorId = HttpContext.GetSessionData()!.UserId,
             text = dto.text,
-            img_url = dto.imgurl,
-            name = "",
+            imgUrl = dto.imgurl,
+            authorName = "",
         };
         if (post == null) return BadRequest();
         return Ok(_postService.createPost(post));
@@ -44,7 +44,7 @@ public class PostController : ControllerBase
             var posts = _postService.getposts(10, 0);
             return Ok(posts);
         }
-        catch
+        catch(Exception e)
         {
             return BadRequest("failed to get posts please try again");
         }
@@ -59,7 +59,7 @@ public class PostController : ControllerBase
             var posts = _postService.getposts(limit, offset);
             return Ok(posts);
         }
-        catch
+        catch(Exception e)
         {
             return BadRequest("failed to get more posts please try again");
         }
@@ -74,7 +74,7 @@ public class PostController : ControllerBase
             var post = _postService.getpost(id);
             return Ok(post);
         }
-        catch
+        catch(Exception e)
         {
             return BadRequest("Failed to get the post you wanted please try again");
         }

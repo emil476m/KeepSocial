@@ -128,10 +128,10 @@ insert into keepsocial.password_hash(user_id,hash,salt,algorithm) values (111,'6
         using (new AssertionScope())
         {
             responseMessage.StatusCode.Should().Be(HttpStatusCode.OK);
-            response.author_id.Should().NotBe(postdto.authorId);
+            response.authorId.Should().NotBe(postdto.authorId);
             response.id.Should().NotBe(postdto.id);
             response.text.Should().Be(postdto.text);
-            response.img_url.Should().Be(postdto.imgurl);
+            response.imgUrl.Should().Be(postdto.imgurl);
         }
     }
 

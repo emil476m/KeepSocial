@@ -10,6 +10,7 @@ export class Globalstate
   ishuman = false;
   posts : PostModel[] = [];
   currentPost : PostModel|any = {};
+  currentComment : CommentModel|any = {}
   comments : CommentModel[] = [];
   updatingWhatAccountItem: String|null = null;
 }

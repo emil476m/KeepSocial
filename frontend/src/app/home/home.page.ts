@@ -51,10 +51,10 @@ import * as ago from "s-ago";
           <ion-toolbar><ion-buttons slot="end">
             <ion-text >created {{getLocalDate(post.created)}}</ion-text>
           </ion-buttons>
-            <ion-text>{{post.name}}</ion-text>
+            <ion-text>{{post.authorName}}</ion-text>
 
           </ion-toolbar>
-          <ion-img *ngIf="post.img_url != undefined" [src]="post.img_url"/>
+          <ion-img *ngIf="post.imgUrl != undefined" [src]="post.imgUrl"/>
           <ion-text>{{post.text}}</ion-text>
         </ion-card>
       </ion-infinite-scroll>
