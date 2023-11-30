@@ -18,6 +18,7 @@ public class ChatController : ControllerBase
         _chatService = chatService;
     }
     
+    [RequireAuthentication]
     [HttpGet("/api/Rooms")]
     public IEnumerable<Rooms> getAllRooms(int pageNumber)
     {
@@ -25,6 +26,7 @@ public class ChatController : ControllerBase
         return _chatService.getChatRooms(pageNumber, session);
     }
 
+    [RequireAuthentication]
     [HttpGet("/api/ChatMessages{roomId}")]
     public IEnumerable<Message> getMessagesInChat([FromRoute] int roomId, int pageNumber)
     {
@@ -33,6 +35,7 @@ public class ChatController : ControllerBase
         return _chatService.getChats(roomId, pageNumber, session);
     }
     
+    [RequireAuthentication]
     [HttpPost("/api/SenndMessage")]
     public Message snedMessagesInChat([FromBody]Message message)
     {
@@ -40,6 +43,7 @@ public class ChatController : ControllerBase
         return _chatService.sendMessage(message, session);
     }
     
+    [RequireAuthentication]
     [HttpGet("/api/friendChat{friendId}")]
     public Rooms getMessagesInChat([FromRoute] int friendId)
     {

@@ -1,7 +1,7 @@
-﻿using System.Net;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using API.TransferModels;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Infastructure;
@@ -205,4 +205,16 @@ insert into keepsocial.posts(id,author_id,text,img_url,created) values (1,111,'y
             responseMessage.StatusCode.Should().Be(HttpStatusCode.OK);
         }
     }
+}
+
+
+public class CommentDto
+{
+    public int postId { get; set; }
+    public int authorId { get; set; }
+    [MinLength(3)]
+    [MaxLength(500)]
+    public string text { get; set; }
+    public string? imgurl { get; set; }
+    public DateTimeOffset? created { get; set; }
 }

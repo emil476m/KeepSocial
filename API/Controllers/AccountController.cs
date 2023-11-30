@@ -112,7 +112,7 @@ public class AccountController : ControllerBase
             ResponseData = new {ishuman}
         };
     }
-    
+    [RequireAuthentication]
     [HttpGet]
     [Route("/api/freinds")]
     public IEnumerable<User> GetFreinds(int pageNumber)
