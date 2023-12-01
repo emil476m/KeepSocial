@@ -147,14 +147,14 @@ public class AccountService
 
     public void UpdateAvatar(SessionData session, string? avatarUrl)
     {
-            _accountRepository.updateAvatar(avatarUrl, session.UserId);
-        /*try
+        try
         {
+            _accountRepository.updateAvatar(avatarUrl, session.UserId);
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
             throw new Exception("there where an encounter with an error while saving the Image, please try again later");
-        }*/
+        }
     }
 }
