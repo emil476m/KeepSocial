@@ -197,4 +197,13 @@ public class AccountController : ControllerBase
             isTrue = isFollowing
         };
     }
+    
+    [RequireAuthentication]
+    [HttpPost]
+    [Route("/api/getProfile")]
+    public Profile getProfile([FromBody] string profileName)
+    {
+        int id = HttpContext.GetSessionData().UserId;
+        return _accountService.getProfile(profileName, id);
+    }
 }

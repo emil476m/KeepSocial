@@ -25,9 +25,13 @@ import {TokenService} from "./services/token.service";
                   Posts
               </ion-tab-button>
               <ion-tab-button tab="account" routerLink="account" [disabled]="!token.getToken()">
-                  <ion-icon name="person-outline"></ion-icon>
-                  Account
+                  <ion-icon name="settings-outline"></ion-icon>
+                  Settings
               </ion-tab-button>
+            <ion-tab-button tab="profile" routerLink="profile" [disabled]="!token.getToken()">
+              <ion-icon name="person-outline"></ion-icon>
+              Profile
+            </ion-tab-button>
           </ion-tab-bar>
       </ion-tabs>
   `

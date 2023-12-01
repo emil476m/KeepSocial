@@ -25,6 +25,7 @@ import {AccountPage} from "./account/account.page";
 import {FriendsPage} from "./freind/friends.page";
 import {NewAccountInfoModal} from "./changeAccountInfoModal/AccountInfoModal";
 import {PostDetail} from "./PostDetailed/post.page";
+import {ProfilePage} from "./profile/profile.page";
 
 @NgModule({
   declarations:
@@ -39,6 +40,7 @@ import {PostDetail} from "./PostDetailed/post.page";
       NewAccountInfoModal,
       PostDetail,
       FriendsPage,
+      ProfilePage,
   ],
     imports:
       [BrowserModule,

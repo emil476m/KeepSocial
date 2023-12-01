@@ -16,6 +16,16 @@ public class User
     public string? avatarUrl { get; set; }
     
     public bool isDeleted { get; set; }
-    
-    
+}
+
+public class Profile
+{
+    public int userId { get; set; }
+    public string userDisplayName { get; set; }
+    public string? avatarUrl { get; set; }
+    public int followers { get; set; }
+    public int following { get; set; }
+    public bool isFriend { get; set; }
+    public bool isFollowing { get; set; }
+    public bool isSelf { set; get; }
 }

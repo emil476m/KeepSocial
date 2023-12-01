@@ -119,14 +119,13 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
     public bool isFriends(int userId, int friendId)
     {
         var sql = $@"
-           SELECT user1_id from keepsocial.friendRealeatioj 
+           SELECT count(user1_id) from keepsocial.friendRealeatioj 
             where (user1_id = @userId and user2_id = @friendId) 
             OR (user1_id = @friendId and user2_id = @userId);
         ";
         using (var conn = _dataSource.OpenConnection())
         {
-            int number = conn.QuerySingle<int>(sql, new {userId, friendId});
-            if (number == userId || number == friendId) return true;
+            return conn.ExecuteScalar<int>(sql, new {userId, friendId}) >= 1;
         }
         return false;
     }
@@ -172,6 +171,32 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
         using (var conn = _dataSource.OpenConnection())
         {
             return conn.ExecuteScalar<int>(sql, new { userId, followedId }) == 1;
+        }
+    }
+
+    public Profile getProfile(string profileName)
+    {
+        var userId = 0;
+        var sql = $@"select
+           id as {nameof(Profile.userId)},
+           name as {nameof(Profile.userDisplayName)},
+           avatarUrl as {nameof(Profile.avatarUrl)}
+           from keepsocial.users where name = @profileName and isDeleted = false";
+        
+        var sqlFollowing =
+            $@"SELECT count(follower_id) FROM keepsocial.followrelation WHERE follower_id = @userId;";
+        
+        var sqlFollower =
+            $@"SELECT count(followed_id) FROM keepsocial.followrelation WHERE followed_id = @userId;";
+        
+        using (var conn = _dataSource.OpenConnection())
+        {
+            var profile =  conn.QueryFirst<Profile>(sql, new { profileName });
+            userId = profile.userId;
+            Console.WriteLine("this is ther user id: "+userId);
+            profile.followers = conn.ExecuteScalar<int>(sqlFollower, new {userId});
+            profile.following = conn.ExecuteScalar<int>(sqlFollowing, new {userId});
+            return profile;
         }
     }
 }
