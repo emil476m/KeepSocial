@@ -203,20 +203,19 @@ public class AccountController : ControllerBase
     [RequireAuthentication]
     [HttpPut]
     [Route("/api/account/updateAvatar")]
-    public IActionResult Update([FromForm] IFormFile? avatar)
+    public void Update([FromForm] IFormFile? avatar)
     {
         var session = HttpContext.GetSessionData()!;
         string? avatarUrl = null;
         if (avatar != null)
         {
             //returns user, and then we only takes the avatar url string
-            avatarUrl = this._accountService.whoAmI(session.UserId)?.AvatarUrl;
+            avatarUrl = this._accountService.whoAmI(session.UserId)?.avatarUrl;
             // We need a stream of bytes (image data)
             using var avatarStream = avatar.OpenReadStream();
             // "avatar" is the container name
             avatarUrl = _blobService.Save("avatar", avatarStream, avatarUrl);
         }
         _accountService.UpdateAvatar(session, avatarUrl);
-        return Ok(); 
     }
 }
