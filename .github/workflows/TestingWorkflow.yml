@@ -41,3 +41,4 @@ jobs:
           pgconn: ${{secrets.pgconn}}
           JwtSecret: ${{secrets.JwtSecret}}
           testToken: ${{secrets.testToken}}
+          AvatarStorage: ${{secrets.AvatarStorage}}
