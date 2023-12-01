@@ -53,7 +53,7 @@ public class AccountRepository
            name as {nameof(User.userDisplayName)},
            email as {nameof(User.userEmail)},
            birthday as {nameof(User.userBirthday)},
-           avatarUrl as {nameof(User.AvatarUrl)}
+           avatarUrl as {nameof(User.avatarUrl)}
            from keepsocial.users where id = @id and isDeleted = false";
         using var connection = _dataSource.OpenConnection();
         return connection.QueryFirst<User>(sql, new { id });
@@ -131,6 +131,50 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
         return false;
     }
 
+    public bool UpdateAvatarImg(int id, string updatedValue)
+    {
+        var sql = @$"
+            UPDATE keepsocial.users SET avatarUrl = @updatedValue  WHERE id = @id";
+
+        using (var conn = _dataSource.OpenConnection())
+        {
+            return conn.Execute(sql, new {id, updatedValue}) == 1;
+        }
+    }
+
+    public bool FollowUser(int userId, int followedId)
+    {
+        var sql =
+            $@"INSERT INTO keepsocial.followrelation (followed_id, follower_id) VALUES(@followedid, @userId)";
+
+        using (var conn = _dataSource.OpenConnection())
+        {
+            return conn.Execute(sql, new { userId, followedId }) == 1;
+        }
+    }
+    
+    public bool UnFollowUser(int userId, int followedId)
+    {
+        var sql =
+            $@"DELETE FROM keepsocial.followrelation WHERE followed_id = @followedId AND follower_id = @userId;";
+
+        using (var conn = _dataSource.OpenConnection())
+        {
+            return conn.Execute(sql, new { userId, followedId }) == 1;
+        }
+    }
+    
+    public bool CheckIfFollowing(int userId, int followedId)
+    {
+        var sql =
+            $@"SELECT count(follower_id) FROM keepsocial.followrelation WHERE followed_id = @followedId AND follower_id = @userId;";
+
+        using (var conn = _dataSource.OpenConnection())
+        {
+            return conn.ExecuteScalar<int>(sql, new { userId, followedId }) == 1;
+        }
+    }
+    
     public void updateAvatar(string? avatarUrl, int userId)
     {
         var sql = @$"

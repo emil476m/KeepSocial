@@ -10,5 +10,5 @@ export interface Account {
   userDisplayName: string
   userEmail: string
   userBirthday: Date
-  AvatarUrl: string
+  avatarUrl: string
 }
