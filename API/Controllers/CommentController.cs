@@ -1,4 +1,5 @@
-﻿using API.Filters;
+﻿using System.Net.Mime;
+using API.Filters;
 using API.TransferModels;
 using Infastructure;
 using Microsoft.AspNetCore.Mvc;
@@ -25,10 +26,10 @@ public class CommentController: ControllerBase
     {
         var comment = new Comment
         {
-            post_id = postId,
-            author_id = HttpContext.GetSessionData().UserId,
+            postId = postId,
+            authorId = HttpContext.GetSessionData().UserId,
             text = dto.text,
-            img_url = dto.imgurl
+            imgUrl = dto.imgurl
         };
         if (comment == null) return BadRequest("Failed to create comment");
         var commentdb = _commentService.createComment(comment);
@@ -44,7 +45,7 @@ public class CommentController: ControllerBase
             var posts = _commentService.getComments(10, 0, postId);
             return Ok(posts);   
         }
-        catch
+        catch(Exception e)
         {
             return BadRequest("failed to get comments please try again");
         }
@@ -59,9 +60,33 @@ public class CommentController: ControllerBase
             var posts = _commentService.getComments(limit, offset, postId);
             return Ok(posts);
         }
-        catch
+        catch(Exception e)
         {
-            return BadRequest("failed to get more posts please try again");
+            return BadRequest("failed to delete please try again");
         }
     }
+
+    [HttpDelete]
+    [Route("/api/deletecomment")]
+    public IActionResult deletecomment([FromQuery] int id)
+    {
+        try
+        {
+            _commentService.deleteComment(id);
+            return Ok();
+        }
+        catch(Exception e)
+       
+        { 
+            return BadRequest("Failed to delete comment try again");
+        }
+    }
+    
+    [HttpPut]
+    [Route("/api/comment/{id}")]
+    public Comment UpdateComment(CommentDto dto, [FromRoute] int id)
+    {
+        return _commentService.UpdateComment(id, dto.text, dto.imgurl);
+    }
+
 }

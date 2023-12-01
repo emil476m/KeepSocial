@@ -23,4 +23,14 @@ public class CommentService
     {
         return _commentRepository.getComents(limit, offset, postId);
     }
+
+    public void deleteComment(int id)
+    {
+        _commentRepository.deleteComment(id);
+    }
+
+    public Comment UpdateComment(int id, string text, string imgUrl)
+    {
+        return _commentRepository.updateComment(id, text, imgUrl);
+    }
 }

@@ -6,12 +6,12 @@ namespace Infastructure;
 public class Comment
 {
     public int id { get; set; }
-    public int post_id { get; set; }
-    public int author_id { get; set; }
+    public int postId { get; set; }
+    public int authorId { get; set; }
     [MinLength(3)]
     [MaxLength(500)]
     public string text { get; set; }
-    public string? img_url { get; set; }
+    public string? imgUrl { get; set; }
     public DateTimeOffset created { get; set; }
-    public string name { get; set; }
+    public string authorName { get; set; }
 }
