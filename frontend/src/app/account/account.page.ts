@@ -49,7 +49,7 @@ import {Globalstate} from "../services/states/globalstate";
               <ion-grid >
                 <ion-row >
                   <ion-col class="grid-item">
-                    <ion-avatar  style="width: 400px; height: 400px;" >
+                    <ion-avatar  style="width: 200px; height: 200px;" >
                       <img alt="Silhouette of a person's head" [src]="currentAvatarUrl"  />
                     </ion-avatar>
                   </ion-col>
@@ -147,6 +147,7 @@ this.isEnabled = !this.isEnabled;
     const formData = new FormData();
     formData.set("avatar", file);
     await firstValueFrom(this.http.put(environment.baseURL + 'account/updateAvatar', formData));
+    await location.reload();
   }
 
   async changeEmail(){
