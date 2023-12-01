@@ -178,7 +178,6 @@ export class PostDetail implements OnInit
         try {
             const call = this.http.post<CommentModel>(environment.baseURL + "comment/", this.comment.value, {params:{postId: this.state.currentPost.id}});
             const result = await firstValueFrom<CommentModel>(call);
-            console.log(result)
             this.state.comments.unshift(result);
             this.comment.reset();
             (await this.toast.create(

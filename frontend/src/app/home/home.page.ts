@@ -115,6 +115,7 @@ export class HomePage implements OnInit{
   {
     this.router.events.subscribe(event =>    {
       if(event instanceof NavigationStart) {
+        this.userid = 0;
         this.whoAmI();
       }
     })
@@ -136,6 +137,7 @@ export class HomePage implements OnInit{
   async logout() {
     try{
     this.token.clearToken();
+    this.userid = 0;
 
     (await this.toast.create({
       message: "Logout successful",
