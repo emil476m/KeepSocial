@@ -6,15 +6,15 @@ import {Globalstate} from "../../services/states/globalstate";
 import {firstValueFrom} from "rxjs";
 import {environment} from "../../../environments/environment.prod";
 import {HttpClient} from "@angular/common/http";
-import {NavigationStart, Route, Router} from "@angular/router";
-import {logoFacebook} from "ionicons/icons";
+import {NavigationStart, Router} from "@angular/router";
+import {PostModel} from "../../models/PostModel";
 
 @Component({
   template:
     `
       <ion-header>
         <ion-toolbar>
-          <ion-title mode="ios">Edit comment</ion-title>
+          <ion-title mode="ios">Post comment</ion-title>
           <ion-buttons slot="end">
             <ion-button (click)="dismissModal()">Close</ion-button>
           </ion-buttons>
@@ -26,17 +26,17 @@ import {logoFacebook} from "ionicons/icons";
           <ion-input label="Image" labelPlacement="floating" placeholder="image url" [formControl]="imageFC"></ion-input>
         </div>
       </ion-content>
-      <ion-button (click)="updateComment()">Update comment</ion-button>
+      <ion-button (click)="updatePost()">Update Post</ion-button>
     `,
 })
-export class EditCommentModal implements OnInit
+export class EditPostModal implements OnInit
 {
 
-  copyOfComment: CommentModel;
+  copyOfPost: PostModel;
   textFC = new FormControl("",[Validators.required, Validators.maxLength(500), Validators.minLength(3)]);
   imageFC = new FormControl("");
 
-  comment = new FormGroup(
+  post = new FormGroup(
     {
       text: this.textFC,
       imgurl: this.imageFC,
@@ -51,7 +51,7 @@ export class EditCommentModal implements OnInit
     public router: Router
   )
   {
-    this.copyOfComment = this.state.currentComment;
+    this.copyOfPost = this.state.currentPost;
     this.router.events.subscribe(event =>    {
       if(event instanceof NavigationStart) {
         this.ngOnInit();
@@ -60,8 +60,8 @@ export class EditCommentModal implements OnInit
   }
   ngOnInit()
   {
-    this.textFC.patchValue(this.state.currentComment.text);
-    this.imageFC.patchValue(this.state.currentComment.imgUrl);
+    this.textFC.patchValue(this.state.currentPost.text);
+    this.imageFC.patchValue(this.state.currentPost.imgUrl);
   }
   async dismissModal() {
     while(await this.popoverCtrl.getTop())
@@ -69,22 +69,23 @@ export class EditCommentModal implements OnInit
     this.modalController.dismiss();
   }
 
-  async updateComment() {
+  async updatePost() {
     try{
-    const call = this.http.put<CommentModel>(environment.baseURL+"comment/" + this.copyOfComment.id, this.comment.value);
-    const result = await firstValueFrom<CommentModel>(call);
-    let index = this.state.comments.findIndex(c => c.id == this.copyOfComment.id)
-    this.state.comments[index] = result as CommentModel;
+      const call = this.http.put<CommentModel>(environment.baseURL+"post/" + this.copyOfPost.id, this.post.value);
+      const result = await firstValueFrom<CommentModel>(call);
+      let index = this.state.posts.findIndex(c => c.id == this.copyOfPost.id)
+      this.state.posts[index] = result as PostModel;
+      this.state.currentPost = result as PostModel;
 
 
-    (await this.toast.create({
-      color: "success",
-      message: 'comment successfully updated.',
-      duration: 2000,
-    })).present();
-    while(await this.popoverCtrl.getTop())
-      await this.popoverCtrl.dismiss();
-    this.dismissModal();
+      (await this.toast.create({
+        color: "success",
+        message: 'comment successfully updated.',
+        duration: 2000,
+      })).present();
+      while(await this.popoverCtrl.getTop())
+        await this.popoverCtrl.dismiss();
+      this.dismissModal();
 
     }
     catch (e)

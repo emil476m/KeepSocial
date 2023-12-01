@@ -79,4 +79,34 @@ public class PostController : ControllerBase
             return BadRequest("Failed to get the post you wanted please try again");
         }
     }
+    
+    [HttpDelete]
+    [Route("/api/deletepost")]
+    public IActionResult deletePost([FromQuery] int id)
+    {
+        try
+        {
+            _postService.deletePost(id);
+            return Ok();
+        }
+        catch(Exception e)
+       
+        { 
+            return BadRequest("Failed to delete comment try again");
+        }
+    }
+    
+    [HttpPut]
+    [Route("/api/post/{id}")]
+    public IActionResult UpdatePost(PostDto dto, [FromRoute] int id)
+    {
+        try
+        {
+            return Ok(_postService.UpdatePost(id, dto.text, dto.imgurl));
+        }
+        catch (Exception e)
+        {
+            return BadRequest("Failed to update post");
+        }
+    }
 }

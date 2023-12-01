@@ -65,4 +65,33 @@ public class PostRepository
             return conn.QueryFirst<Post>(sql, new { id });
         }
     }
+
+    public void deletePost(int id)
+    {
+        var deleteCommentsOnPost = $@"delete from keepsocial.comments where post_id = @id";
+        var deletePost = $@"delete from keepsocial.posts where id = @id";
+
+        using (var conn = _dataSource.OpenConnection())
+        {
+            conn.Execute(deleteCommentsOnPost, new { id });
+            conn.Execute(deletePost, new { id });
+        }
+    }
+
+    public Post updatePost(int id, string text, string imgurl)
+    {
+        var update = $@"Update keepsocial.posts set text = @text, img_url = @imgurl, created = @created where id = @id;";
+        var select = $@"select posts.id as {nameof(Post.id)},
+                     posts.author_id as {nameof(Post.authorId)},
+                     posts.text as {nameof(Post.text)},
+                     posts.img_url as {nameof(Post.imgUrl)},
+                     posts.created as {nameof(Post.created)},
+                     u.name as {nameof(Post.authorName)}
+                    from keepsocial.posts join keepsocial.users u on u.id = posts.author_id where posts.id = @id;";
+        using (var conn = _dataSource.OpenConnection())
+        {
+            conn.Execute(update, new { id, text, imgurl, created = DateTimeOffset.UtcNow });
+            return conn.QueryFirst<Post>(select, new {id});
+        }
+    }
 }

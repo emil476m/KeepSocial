@@ -62,7 +62,7 @@ public class CommentController: ControllerBase
         }
         catch(Exception e)
         {
-            return BadRequest("failed to get more posts please try again");
+            return BadRequest("failed to delete please try again");
         }
     }
 
@@ -84,7 +84,7 @@ public class CommentController: ControllerBase
     
     [HttpPut]
     [Route("/api/comment/{id}")]
-    public Comment UpdateBox(CommentDto dto, [FromRoute] int id)
+    public Comment UpdateComment(CommentDto dto, [FromRoute] int id)
     {
         return _commentService.UpdateComment(id, dto.text, dto.imgurl);
     }

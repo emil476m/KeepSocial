@@ -29,4 +29,14 @@ public class PostService
     {
         return _postRepository.getpost(id);
     }
+
+    public void deletePost(int id)
+    {
+        _postRepository.deletePost(id);
+    }
+
+    public Post UpdatePost(int id, string dtoText, string? dtoImgurl)
+    {
+        return _postRepository.updatePost(id, dtoText, dtoImgurl);
+    }
 }

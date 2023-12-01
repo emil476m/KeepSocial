@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {TokenService} from "../services/token.service";
 import {NavigationStart, Router} from "@angular/router";
-import {ToastController} from "@ionic/angular";
+import {AlertController, ModalController, PopoverController, ToastController} from "@ionic/angular";
 import {AccountService} from "../services/account.service";
 import {firstValueFrom} from "rxjs";
 import {environment} from "../../environments/environment.prod";
@@ -11,6 +11,7 @@ import {Account} from "../accountInterface";
 import {PostModel} from '../models/PostModel';
 import {Globalstate} from "../services/states/globalstate";
 import * as ago from "s-ago";
+import {EditPostModal} from "../PostDetailed/EditPostModal/edit.post.modal";
 
 @Component({
   selector: 'app-home',
@@ -52,7 +53,26 @@ import * as ago from "s-ago";
             <ion-text >created {{getLocalDate(post.created)}}</ion-text>
           </ion-buttons>
             <ion-text>{{post.authorName}}</ion-text>
+            <ion-buttons slot="end" *ngIf="userid == post.authorId">
+              <ion-button (click)="ismenueopenPost()">
+                <ion-icon name="ellipsis-vertical-outline"></ion-icon>
+              </ion-button>
+              <ion-popover [isOpen]="isopenPostMenu">
+                <ng-template>
 
+                  <ion-button fill="clear" (click)="openEditPost(post)">
+                    <ion-icon name="create-outline"></ion-icon>
+                    edit
+                  </ion-button>
+                  <br>
+                  <ion-button fill="clear" color="danger" (click)="DeleteAlertPost()">
+                    <ion-icon name="trash-outline"></ion-icon>
+                    delete
+                  </ion-button>
+
+                </ng-template>
+              </ion-popover>
+            </ion-buttons>
           </ion-toolbar>
           <ion-img *ngIf="post.imgUrl != undefined" [src]="post.imgUrl"/>
           <ion-text>{{post.text}}</ion-text>
@@ -66,6 +86,9 @@ export class HomePage implements OnInit{
 
   displayName: string = "";
   profilepic: string = "";
+  userid: number = 0;
+  isopenPostMenu = false;
+
   textFC = new FormControl("",[Validators.required, Validators.maxLength(500), Validators.minLength(3)]);
   imageFC = new FormControl(null);
   limitFC = new FormControl(10,[Validators.required])
@@ -80,7 +103,15 @@ export class HomePage implements OnInit{
 
 
 
-  constructor(public token: TokenService, private router : Router, private readonly toast: ToastController, private aService: AccountService, private http : HttpClient, public state: Globalstate)
+  constructor(public token: TokenService,
+              private router : Router,
+              private readonly toast: ToastController,
+              private aService: AccountService,
+              private http : HttpClient,
+              public state: Globalstate,
+              public modalcontroller: ModalController,
+              private alertcontroller: AlertController,
+              public popoverCtrl: PopoverController)
   {
     this.router.events.subscribe(event =>    {
       if(event instanceof NavigationStart) {
@@ -97,6 +128,7 @@ export class HomePage implements OnInit{
     const result = await firstValueFrom<Account>(call);
     this.displayName = result.userDisplayName;
     this.profilepic = result.avatarUrl;
+    this.userid = result.userId;
     }
   }
 
@@ -174,6 +206,72 @@ date.setHours(date.getHours()+1)
 
   gotopost(id: number) {
     this.router.navigate(['post/'+id]);
+  }
+
+  ismenueopenPost() {
+    if(this.isopenPostMenu == false)
+    {
+      this.isopenPostMenu = true;
+    }
+    else {
+      this.isopenPostMenu = false;
+    }
+  }
+
+  DeleteAlertPost() {
+    this.alertcontroller.create({
+      message: "do you want to delete this comment?",
+      buttons: [
+        {
+          role: "cancel",
+          text: "no"
+        },
+        {
+          role: "confirm",
+          text: "yes",
+          handler: async () => {
+            try{
+              const call = this.http.delete(environment.baseURL+'deletepost', {params:{id: this.state.currentPost.id}});
+              const result = await firstValueFrom(call);
+              this.state.posts = this.state.posts.filter(e => e.id != this.state.currentPost.id);
+              this.popoverCtrl.dismiss();
+              this.router.navigate(['home']);
+              this.toast.create({
+                color: "success",
+                message: ' successfully deleted.',
+                duration: 2000,
+              }).then(res =>
+              {
+                res.present();
+              })
+
+            }
+            catch (e)
+            {
+              ((await this.toast.create({
+                message: 'Failed to delete comment',
+                color: "danger",
+                duration: 2000,
+              }))).present
+            }}
+        }
+      ]}).then(res =>
+    {
+      res.present();
+    })
+  }
+
+
+  openEditPost(post: PostModel){
+    this.state.currentPost = post;
+    this.modalcontroller.create({
+      component: EditPostModal,
+      componentProps: {
+        copyOfPost: {...this.state.currentPost}
+      }
+    }).then(res => {
+      res.present();
+    })
   }
 }
 
