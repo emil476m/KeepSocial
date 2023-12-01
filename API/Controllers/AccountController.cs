@@ -160,8 +160,7 @@ public class AccountController : ControllerBase
             // "avatar" is the container name
             avatarUrl = _blobService.Save("avatar", avatarStream, avatarUrl);
         }
-        _accountService.UpdateAvatar(session, avatarUrl); //TODO Finish saving avatar url in DB
+        _accountService.UpdateAvatar(session, avatarUrl);
         return Ok(); 
-        //TODO Implement blbo storrage in Azure
     }
 }

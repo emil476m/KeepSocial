@@ -68,8 +68,8 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<BlobService>(provider =>
         {
             // Get connection string from configuration (appsettings.json)
-            var connectionString = provider.GetService<IConfiguration>()!
-                .GetConnectionString("AvatarStorage");
+            string connectionString = Environment.GetEnvironmentVariable("AvatarStorage");
+                //.GetConnectionString("AvatarStorage"); //TODO Envirement variable // Secret
             // The client knows how to talk to the service on Azure.
             var client = new BlobServiceClient(connectionString);
             // Return an instance of the service we just made.
