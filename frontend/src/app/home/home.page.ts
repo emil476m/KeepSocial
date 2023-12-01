@@ -220,7 +220,7 @@ date.setHours(date.getHours()+1)
 
   DeleteAlertPost() {
     this.alertcontroller.create({
-      message: "do you want to delete this comment?",
+      message: "do you want to delete this post?",
       buttons: [
         {
           role: "cancel",
@@ -249,7 +249,7 @@ date.setHours(date.getHours()+1)
             catch (e)
             {
               ((await this.toast.create({
-                message: 'Failed to delete comment',
+                message: 'Failed to delete post',
                 color: "danger",
                 duration: 2000,
               }))).present

@@ -292,7 +292,7 @@ export class PostDetail implements OnInit
 
   DeleteAlertPost() {
     this.alertcontroller.create({
-      message: "do you want to delete this comment?",
+      message: "do you want to delete this post?",
       buttons: [
         {
           role: "cancel",
@@ -321,7 +321,7 @@ export class PostDetail implements OnInit
             catch (e)
             {
               ((await this.toast.create({
-                message: 'Failed to delete comment',
+                message: 'Failed to delete post',
                 color: "danger",
                 duration: 2000,
               }))).present

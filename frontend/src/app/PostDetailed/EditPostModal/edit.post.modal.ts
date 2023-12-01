@@ -80,7 +80,7 @@ export class EditPostModal implements OnInit
 
       (await this.toast.create({
         color: "success",
-        message: 'comment successfully updated.',
+        message: 'post successfully updated.',
         duration: 2000,
       })).present();
       while(await this.popoverCtrl.getTop())
@@ -92,7 +92,7 @@ export class EditPostModal implements OnInit
     {
       (await this.toast.create(
         {
-          message: 'Failed to update comment',
+          message: 'Failed to update post',
           color: "danger",
           duration: 2000,
         })).present();
