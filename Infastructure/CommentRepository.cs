@@ -19,22 +19,65 @@ public class CommentRepository
             id;
             ";
         var select =
-            $@"select comments.id, comments.post_id,comments.author_id,comments.text,comments.img_url,comments.created,u.name from keepsocial.comments join keepsocial.users u on u.id = comments.author_id where comments.id = @id;";
+            $@"select comments.id as {nameof(Comment.id)},
+                    comments.post_id as {nameof(Comment.postId)},
+                    comments.author_id as {nameof(Comment.authorId)},
+                    comments.text as {nameof(Comment.text)},
+                    comments.img_url as {nameof(Comment.imgUrl)},
+                    comments.created as {nameof(Comment.created)},
+                    u.name as {nameof(Comment.authorName)} 
+                    from keepsocial.comments join keepsocial.users u on u.id = comments.author_id where comments.id = @id";
 
         using (var conn = _dataSource.OpenConnection())
         {
-            var id =  conn.ExecuteScalar<int>(insert, new {postid = comment.post_id, authorid = comment.author_id, text = comment.text, imgurl = comment.img_url, created = DateTimeOffset.UtcNow });
+            var id =  conn.ExecuteScalar<int>(insert, new {postid = comment.postId, authorid = comment.authorId, text = comment.text, imgurl = comment.imgUrl, created = DateTimeOffset.UtcNow });
            
-            return  conn.QueryFirst<Comment>(select, new  {id = id});;
+            return  conn.QueryFirst<Comment>(select, new  {id});;
         }
     }
 
     public IEnumerable<Comment> getComents(int limit, int offset, int postId)
     {
-        var sql = $@"select comments.post_id,comments.author_id,comments.text,comments.img_url,comments.created,u.name from keepsocial.comments join keepsocial.users u on u.id = comments.author_id where comments.post_id = @postId order by created desc offset @offset limit @limit";
+        var sql = $@"select comments.id as {nameof(Comment.id)},
+                     comments.post_id as {nameof(Comment.postId)},
+                     comments.author_id as {nameof(Comment.authorId)},
+                     comments.text as {nameof(Comment.text)},
+                     comments.img_url as {nameof(Comment.imgUrl)},
+                     comments.created as {nameof(Comment.created)},
+                     u.name as {nameof(Comment.authorName)}
+                    from keepsocial.comments join keepsocial.users u on u.id = comments.author_id where comments.post_id = @postId 
+                    order by created desc offset @offset limit @limit";
         using (var conn = _dataSource.OpenConnection())
         {
             return conn.Query<Comment>(sql, new { offset, limit, postId});
+        }
+    }
+
+    public void deleteComment(int id)
+    {
+        var sql = $@"delete from keepsocial.comments where id = @id";
+
+        using (var conn = _dataSource.OpenConnection())
+        {
+            conn.Execute(sql, new { id });
+        }
+    }
+
+    public Comment updateComment(int id, string text, string imgurl)
+    {
+        var update = $@"Update keepsocial.comments set text = @text, img_url = @imgurl, created = @created where id = @id;";
+        var select = $@"select comments.id as {nameof(Comment.id)},
+                     comments.post_id as {nameof(Comment.postId)},
+                     comments.author_id as {nameof(Comment.authorId)},
+                     comments.text as {nameof(Comment.text)},
+                     comments.img_url as {nameof(Comment.imgUrl)},
+                     comments.created as {nameof(Comment.created)},
+                     u.name as {nameof(Comment.authorName)}
+                    from keepsocial.comments join keepsocial.users u on u.id = comments.author_id where comments.id = @id;";
+        using (var conn = _dataSource.OpenConnection())
+        {
+            conn.Execute(update, new { id, text, imgurl, created = DateTimeOffset.UtcNow });
+            return conn.QueryFirst<Comment>(select, new {id});
         }
     }
 }

@@ -1,8 +1,8 @@
 export interface PostModel {
     id: number
-    author_id: number
+    authorId: number
     text: string
-    img_url: string
+    imgUrl: string
     created: string
-    name: string
+    authorName: string
  }

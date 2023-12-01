@@ -48,6 +48,7 @@ public class AccountController : ControllerBase
     }
     
     [HttpPost]
+    [RateLimiter(5)]
     [Route("/api/account/login")]
     public IActionResult Login([FromBody] LoginDto dto)
     {
