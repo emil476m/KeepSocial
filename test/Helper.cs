@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Infastructure;
 using Newtonsoft.Json;
 using Npgsql;
 
@@ -49,7 +50,23 @@ public class Helper
             }
         }
     }
-    
+
+
+    public static object? checkifexists(int id, string sql)
+    {
+        using (var conn = DataSource.OpenConnection())
+        {
+            try
+            {
+                return conn.ExecuteScalar<int>(sql, new{id});
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Failed to check if a comment exists", e);
+            }
+        }
+    }
+
     public static string NoResponseMessage = $@"
 failed to get a response from the API.
 ";

@@ -49,19 +49,21 @@ import {Globalstate} from "../services/states/globalstate";
               <ion-grid >
                 <ion-row >
                   <ion-col class="grid-item">
-                    <ion-avatar  style="width: 400px; height: 400px;" >
-                      <img alt="Silhouette of a person's head" [src]="currentAvatarUrl" />
-
-
+                    <ion-avatar  style="width: 200px; height: 200px;" >
+                      <img alt="Silhouette of a person's head" [src]="currentAvatarUrl"  />
                     </ion-avatar>
-
                   </ion-col>
                 </ion-row>
                 <ion-row>
                   <ion-col class="grid-item">
-                    <ion-button (click)="changeProfilePicture()">
-                      Change Picture
-                    </ion-button>
+                    <ion-card>
+                      <ion-input
+                        label="Avatar"
+                        type="file"
+                        accept="image/png, image/jpeg"
+                        (change)="onFileChanged($event)"
+                      ></ion-input>
+                    </ion-card>
                   </ion-col>
                 </ion-row>
               </ion-grid>
@@ -78,13 +80,15 @@ export class AccountPage implements OnInit{
   BtnNameText = "Change";
 
   defaultAvatarUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png";
-  currentAvatarUrl = "";
+  currentAvatarUrl: string = "";
 
   AName = new FormControl("",[Validators.required,Validators.minLength(1),Validators.maxLength(100)]);
   AEmail = "";
   ADate = "";
   constructor(private http: HttpClient, public toastControl: ToastController, private modalcontroller: ModalController, private globalstate: Globalstate) {
   }
+
+  protected readonly window = window;
 
   openEdit() {
 
@@ -114,6 +118,7 @@ this.isEnabled = !this.isEnabled;
     var myDate = new Date(result.userBirthday);
     this.ADate = myDate.getDate() + "\\" +  (myDate.getMonth()+1) + "\\" + myDate.getFullYear();
     this.currentAvatarUrl = result.avatarUrl
+    if (this.currentAvatarUrl == null || this.currentAvatarUrl == "") this.currentAvatarUrl = this.defaultAvatarUrl;
   }
   async s(){
     this.window(location.href="https://www.youtube.com/watch?v=xvFZjo5PgG0");
@@ -132,13 +137,26 @@ this.isEnabled = !this.isEnabled;
   async changeProfilePicture(){
     this.globalstate.updatingWhatAccountItem="Account Avatar";
     this.openEdit();
-
   }
+
+  async onFileChanged($event: Event) {
+    // The event contains all/any selected files
+    const files = ($event.target as HTMLInputElement).files;
+    if (!files) return;
+    const file = files[0];
+    const formData = new FormData();
+    formData.set("avatar", file);
+    await firstValueFrom(this.http.put(environment.baseURL + 'account/updateAvatar', formData));
+    await location.reload();
+  }
+
   async changeEmail(){
     this.globalstate.updatingWhatAccountItem="Account Email";
     this.openEdit();
 
   }
+}
 
-  protected readonly window = window;
+export interface AccountUpdate {
+  text: string;
 }

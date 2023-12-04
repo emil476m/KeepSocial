@@ -10,14 +10,14 @@ import {Environment} from "@angular/cli/lib/config/workspace-schema";
 import {environment} from "../../environments/environment.prod";
 
 @Component({
-  selector: 'app-boxdetailed',
+  selector: 'app-register',
   styleUrls: ['register.css'],
   template:
     `
       <ion-content>
         <ion-header>
           <ion-toolbar>
-            <ion-title align="center">Register Account</ion-title>
+            <ion-title mode="ios">Register Account</ion-title>
           </ion-toolbar>
         </ion-header>
         <ion-grid>

@@ -7,6 +7,7 @@ export interface newAccount {
 }
 
 export interface Account {
+  userId: number
   userDisplayName: string
   userEmail: string
   userBirthday: Date

@@ -26,6 +26,8 @@ import {FriendsPage} from "./freind/friends.page";
 import {NewAccountInfoModal} from "./changeAccountInfoModal/AccountInfoModal";
 import {PostDetail} from "./PostDetailed/post.page";
 import {ProfilePage} from "./profile/profile.page";
+import {EditCommentModal} from "./PostDetailed/EditCommentModal/edit.comment.modal";
+import {EditPostModal} from "./PostDetailed/EditPostModal/edit.post.modal";
 
 @NgModule({
   declarations:
@@ -40,6 +42,8 @@ import {ProfilePage} from "./profile/profile.page";
       NewAccountInfoModal,
       PostDetail,
       FriendsPage,
+      EditCommentModal,
+      EditPostModal,
       ProfilePage,
   ],
     imports:

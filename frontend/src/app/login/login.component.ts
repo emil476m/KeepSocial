@@ -1,7 +1,7 @@
 import {Component} from "@angular/core";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {ReCapchaV3Service} from "../services/reCapchaV3.service";
-import {HttpClient, HttpErrorResponse} from "@angular/common/http";
+import {HttpClient} from "@angular/common/http";
 import {environment} from "../../environments/environment.prod";
 import {firstValueFrom} from "rxjs";
 import {ResponsdtoModel} from "../models/responsdto.model";
@@ -93,11 +93,26 @@ export class LoginComponent {
         })).present();
     } catch (e)
       {
+        if (
+          typeof e === "object" &&
+          e &&
+          "status" in e &&
+          typeof e.status === "number"
+        )
+        if (e.status == 429) {
+          (await this.toast.create({
+            message: "Too many requests try again later",
+            color: "danger",
+            duration: 5000
+          })).present();
+        }
+        else {
         (await this.toast.create({
           message: "Email or password was wrong please try again",
           color: "danger",
           duration: 5000,
         })).present();
+        }
       }
     }
 }

@@ -21,6 +21,7 @@ builder.Services.AddSingleton<CommentService>();
 builder.Services.AddSingleton<HttpClient>();
 builder.Services.AddSingleton<HttpClientService>();
 builder.Services.AddSingleton<MailService>();
+builder.Services.AddAvatarBlobService();
 builder.Services.AddControllers();
 builder.Services.AddJwtService();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

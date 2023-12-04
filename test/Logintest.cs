@@ -2,6 +2,8 @@
 using System.Net.Http.Json;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using Infastructure;
+using Newtonsoft.Json;
 using Npgsql;
 
 namespace test;
@@ -147,11 +149,24 @@ insert into keepsocial.password_hash(user_id,hash,salt,algorithm) values (112,'U
         {
             throw new Exception("there was no response", e);
         }
+        Jwt result;
+        try
+        {
+            result = JsonConvert.DeserializeObject<Jwt>(await response.Content.ReadAsStringAsync()) ??
+                     throw new InvalidOperationException();
+        }
+        catch (Exception e)
+        {
+            throw new Exception(Helper.BadResponseBody("bad response"), e);
+        }
+        
         
         using (new AssertionScope())
         {
             response.StatusCode.Should().Be(HttpStatusCode.OK);
+            result.token.Should().NotBe(null);
         }
+        
     }
 
 
@@ -180,4 +195,12 @@ insert into keepsocial.password_hash(user_id,hash,salt,algorithm) values (112,'U
             response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
         }
     }
+}
+
+
+
+
+public class Jwt
+{
+    public string token { get; set; }
 }
