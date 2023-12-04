@@ -15,13 +15,15 @@ public class AccountController : ControllerBase
     private readonly AccountService _accountService;
     private readonly JwtService _jwtService;
     private readonly HttpClientService _clientService;
+    private readonly BlobService _blobService;
 
-    public AccountController(AccountService accountService, JwtService jwtService, HttpClientService httpClientService)
+    public AccountController(AccountService accountService, BlobService blobService, JwtService jwtService, HttpClientService httpClientService)
     {
         _accountService = accountService;
         _jwtService = jwtService;
         _clientService = httpClientService;
-        
+        _blobService = blobService;
+
     }
 
 
@@ -197,5 +199,24 @@ public class AccountController : ControllerBase
         {
             isTrue = isFollowing
         };
+    }
+
+    [RequireAuthentication]
+    [HttpPut]
+    [Route("/api/account/updateAvatar")]
+    public void Update([FromForm] IFormFile? avatar)
+    {
+        var session = HttpContext.GetSessionData()!;
+        string? avatarUrl = null;
+        if (avatar != null)
+        {
+            //returns user, and then we only takes the avatar url string
+            avatarUrl = this._accountService.whoAmI(session.UserId)?.avatarUrl;
+            // We need a stream of bytes (image data)
+            using var avatarStream = avatar.OpenReadStream();
+            // "avatar" is the container name
+            avatarUrl = _blobService.Save("avatar", avatarStream, avatarUrl);
+        }
+        _accountService.UpdateAvatar(session, avatarUrl);
     }
 }

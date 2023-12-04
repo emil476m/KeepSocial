@@ -174,4 +174,15 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
             return conn.ExecuteScalar<int>(sql, new { userId, followedId }) == 1;
         }
     }
+    
+    public void updateAvatar(string? avatarUrl, int userId)
+    {
+        var sql = @$"
+            UPDATE keepsocial.users SET avatarUrl = @avatarUrl  WHERE id = @userId";
+
+        using (var conn = _dataSource.OpenConnection())
+        {
+            conn.Execute(sql, new {avatarUrl, userId});
+        }
+    }
 }

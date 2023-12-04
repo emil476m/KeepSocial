@@ -144,4 +144,17 @@ public class AccountService
     {
         return _accountRepository.CheckIfFollowing(userId, followedId);
     }
+
+    public void UpdateAvatar(SessionData session, string? avatarUrl)
+    {
+        try
+        {
+            _accountRepository.updateAvatar(avatarUrl, session.UserId);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception("there where an encounter with an error while saving the Image, please try again later");
+        }
+    }
 }
