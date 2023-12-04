@@ -161,12 +161,12 @@ public class AccountService
         }
     }
 
-    public IEnumerable<FriendRequestModel>? GetFriendRequest(int userId, int pageNumber)
+    public IEnumerable<FriendRequestModel> GetFriendRequest(int userId, int pageNumber)
     {
         int offset = (10 * pageNumber) - 10;
+        return _accountRepository.getFriendRequest(userId, offset);
         try
         {
-            return _accountRepository.getFriendRequest(userId, offset);
         }
         catch (Exception e)
         {

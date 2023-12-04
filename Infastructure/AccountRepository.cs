@@ -186,7 +186,7 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
         }
     }
 
-    public IEnumerable<FriendRequestModel>? getFriendRequest(int userId, int offset)
+    public IEnumerable<FriendRequestModel> getFriendRequest(int userId, int offset)
     {
         //var sql = $@"SELECT id, requester from keepsocial.friendRequestTable WHERE requested = 111 and response IS NULL;";
         var check = $@"SELECT count(keepsocial.friendrequesttable.id) from keepsocial.friendRequestTable WHERE requested = @userId and response IS NULL;";
@@ -196,13 +196,17 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
             users.avatarurl as {nameof(FriendRequestModel.RequesterAvatarurl)}
             from keepsocial.users 
             JOIN keepsocial.friendrequesttable f on users.id = f.requester  
-            WHERE requested = @userId and response IS NULL
-            LIMIT 10 OFFSET @offSetNumber;
+            WHERE(requested = @userId and response IS NULL)
+            LIMIT 10 OFFSET @offset;
         ";
         
         using (var conn = _dataSource.OpenConnection())
         {
-            if (conn.Execute(check, new { userId }) <= 0) return null;
+            if (conn.Execute(check, new { userId }) == 0)
+            {
+                return new List<FriendRequestModel>();
+            }
+            
             
             return conn.Query<FriendRequestModel>(sql, new {userId, offset});
 

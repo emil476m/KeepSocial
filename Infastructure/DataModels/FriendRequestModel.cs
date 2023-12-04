@@ -8,6 +8,6 @@ public class FriendRequestModel
     
     [Required] public required string RequesterName { get; set; }
     
-    [Required] public required string RequesterAvatarurl { get; set; }
+    [Required] public required string? RequesterAvatarurl { get; set; }
     
 }

@@ -230,21 +230,20 @@ public class AccountController : ControllerBase
      * returns a list of FriendRequest that have been send to a friend request
      */
     [RequireAuthentication]
-    [HttpPut]
+    [HttpGet]
     [Route("/api/account/GetFriendRequests")]
-    public IEnumerable<FriendRequestModel>? GetFriendRequests(int pageNumber)
+    public IEnumerable<FriendRequestModel> GetRequests(int pageNumber)
     {
         int userId = HttpContext.GetSessionData().UserId!;
+        //int userId = 111;
 
         return _accountService.GetFriendRequest(userId, pageNumber);
-        throw new NotImplementedException();
-        //TODO get friend Request to User, and only this user
     }
     
     [RequireAuthentication]
     [HttpPut]
     [Route("/api/account/FriendRequestsResponse")]
-    public ResponseDto FriendRequestsResponse(RequestUpdateDto response)
+    public ResponseDto RequestsResponse(RequestUpdateDto response)
     {
         int userId = HttpContext.GetSessionData().UserId!;
         throw new NotImplementedException();
