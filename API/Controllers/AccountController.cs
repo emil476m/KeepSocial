@@ -169,8 +169,8 @@ public class AccountController : ControllerBase
     
     [RequireAuthentication]
     [HttpDelete]
-    [Route("/api/account/unFollowUser")]
-    public ResponseDto UnFollowUser([FromBody] int followedId)
+    [Route("/api/account/unFollowUser/{followedId}")]
+    public ResponseDto UnFollowUser([FromRoute] int followedId)
     { 
         bool success = _accountService.UnFollowUser(HttpContext.GetSessionData().UserId, followedId);
         if (success)
@@ -199,6 +199,16 @@ public class AccountController : ControllerBase
         {
             isTrue = isFollowing
         };
+    }
+    
+    [RequireAuthentication]
+    [HttpGet]
+    [Route("/api/getProfile/{profileName}")]
+    public Profile getProfile([FromRoute] string profileName)
+    {
+        
+        int id = HttpContext.GetSessionData().UserId;
+        return _accountService.getProfile(profileName, id);
     }
 
     [RequireAuthentication]
