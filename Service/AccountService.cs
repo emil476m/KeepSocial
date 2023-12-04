@@ -163,15 +163,33 @@ public class AccountService
 
     public IEnumerable<FriendRequestModel> GetFriendRequest(int userId, int pageNumber)
     {
-        int offset = (10 * pageNumber) - 10;
-        return _accountRepository.getFriendRequest(userId, offset);
         try
         {
+            int offset = (10 * pageNumber) - 10;
+            return _accountRepository.getFriendRequest(userId, offset);
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
             throw new Exception("could not fetch friend request data");
         }
+    }
+
+    public string handleFriendRequest(bool response, int requestId, int requesterId)
+    {
+        //TODO put in try cath later
+        if (response)
+        {
+            //TODO accept request
+        }
+        else if(!response)
+        {
+            //TODO reject request
+        }
+        else
+        {
+            return "an error have occurred client side";
+        }
+        throw new NotImplementedException();
     }
 }

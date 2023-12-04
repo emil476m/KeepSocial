@@ -268,6 +268,8 @@ public class AccountController : ControllerBase
                 MessageToClient = MessageToClient
             };
         }
+
+        string messageToClient = _accountService.handleFriendRequest(response.Response, response.RequestId, response.RequesterId);
         
         throw new NotImplementedException();
         //TODO Make the bool in the DTO be the decline or accept for request

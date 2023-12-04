@@ -132,24 +132,26 @@ export class FriendsPage implements OnInit {
   }
 
   async Accept(requesterId: number, requestId: number) {
-    console.log(requestId + "accepted")
+    console.log(requestId + "accepted") //TODO remowe this
     let response: RequestUpdateDto = {
       requesterId: requesterId,
       requestId: requestId,
       response: true
     }
     await firstValueFrom(this.http.put(environment.baseURL + 'account/FriendRequestsResponse', response));
+    window.location.reload();
 
   }
 
   async Decline(requesterId: number , requestId: number) {
-    console.log(requestId + "Declinend")
+    console.log(requestId + "Declinend") //TODO remowe this
     let response: RequestUpdateDto = {
       requesterId: requesterId,
       requestId: requestId,
       response: true
     }
     await firstValueFrom(this.http.put(environment.baseURL + 'account/FriendRequestsResponse', response));
+    window.location.reload();
 
   }
 }
