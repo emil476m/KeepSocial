@@ -246,6 +246,29 @@ public class AccountController : ControllerBase
     public ResponseDto RequestsResponse(RequestUpdateDto response)
     {
         int userId = HttpContext.GetSessionData().UserId!;
+
+        if (response.Response)
+        {
+            string MessageToClient = "send request to accept request " + response.RequestId + "with user" + response.RequesterId;
+            
+            Console.WriteLine("\n \n"+ MessageToClient);
+            
+            return new ResponseDto
+            {
+                MessageToClient = MessageToClient
+            };
+        } if (!response.Response)
+        {
+            string MessageToClient = "Declined request " + response.RequestId + "with user" + response.RequesterId;
+            
+            Console.WriteLine("\n \n"+ MessageToClient);
+
+            return new ResponseDto
+            {
+                MessageToClient = MessageToClient
+            };
+        }
+        
         throw new NotImplementedException();
         //TODO Make the bool in the DTO be the decline or accept for request
     }

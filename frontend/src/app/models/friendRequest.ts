@@ -1,5 +1,6 @@
 export interface FriendRequestModel {
   requestId: number;
+  requestersId: number;
   requesterName: string;
   requesterAvatarurl: string | null;
 }

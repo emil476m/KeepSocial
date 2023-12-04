@@ -5,7 +5,8 @@ import {Router} from "@angular/router";
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../environments/environment.prod";
 import {firstValueFrom} from "rxjs";
-import {FriendRequestModel} from "../models/friendRequest";
+import {FriendRequestModel, RequestUpdateDto} from "../models/friendRequest";
+import {Message} from "../models/Message.model";
 
 @Component({
   selector: 'friend',
@@ -25,11 +26,11 @@ import {FriendRequestModel} from "../models/friendRequest";
             {{request.requesterName}}
           </ion-title>
           <ion-title></ion-title>
-          <ion-button class="cardBtn1" (click)="Accept(request.requestId)">
+          <ion-button class="cardBtn1" (click)="Accept(request.requestersId, request.requestId)">
             <!--Open chat with friend or create if they dont have one-->
             <ion-icon name="checkmark-outline"></ion-icon>
           </ion-button>
-          <ion-button class="cardBtn" (click)="Decline(request.requestId)"><!---view acccount--->
+          <ion-button class="cardBtn" (click)="Decline(request.requestersId, request.requestId)"><!---view acccount--->
             <ion-icon name="ban-outline"></ion-icon>
           </ion-button>
         </ion-card>
@@ -97,7 +98,6 @@ export class FriendsPage implements OnInit {
 
   async getrequest() {
     try {
-      //const call = this.http.get<FriendRequestModel[]>(environment.baseURL+"GetFriendRequests?pageNumber=" + this.page);
       const call = this.http.get<FriendRequestModel[]>(environment.baseURL+"account/GetFriendRequests?pageNumber=" + this.page);
       call.subscribe((resData: FriendRequestModel[]) => {
         this.requestList = resData;
@@ -131,11 +131,25 @@ export class FriendsPage implements OnInit {
     //implement when user profile have been made
   }
 
-  Accept(RequestId: number) {
+  async Accept(requesterId: number, requestId: number) {
+    console.log(requestId + "accepted")
+    let response: RequestUpdateDto = {
+      requesterId: requesterId,
+      requestId: requestId,
+      response: true
+    }
+    await firstValueFrom(this.http.put(environment.baseURL + 'account/FriendRequestsResponse', response));
 
   }
 
-  Decline(RequestId: number) {
+  async Decline(requesterId: number , requestId: number) {
+    console.log(requestId + "Declinend")
+    let response: RequestUpdateDto = {
+      requesterId: requesterId,
+      requestId: requestId,
+      response: true
+    }
+    await firstValueFrom(this.http.put(environment.baseURL + 'account/FriendRequestsResponse', response));
 
   }
 }
