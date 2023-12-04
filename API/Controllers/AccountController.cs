@@ -17,7 +17,8 @@ public class AccountController : ControllerBase
     private readonly HttpClientService _clientService;
     private readonly BlobService _blobService;
 
-    public AccountController(AccountService accountService, BlobService blobService, JwtService jwtService, HttpClientService httpClientService)
+    public AccountController(AccountService accountService, BlobService blobService, JwtService jwtService,
+        HttpClientService httpClientService)
     {
         _accountService = accountService;
         _jwtService = jwtService;
@@ -27,7 +28,7 @@ public class AccountController : ControllerBase
     }
 
 
-    
+
     [HttpPost]
     [Route("/api/account/createuser")]
     public ResponseDto CreateUser([FromBody] RegisterUserDto dto)
@@ -38,7 +39,7 @@ public class AccountController : ControllerBase
             MessageToClient = "Successfully registered"
         };
     }
-    
+
     [HttpGet]
     [RequireAuthentication]
     [Route("/account/getAllUsers")]
@@ -46,7 +47,7 @@ public class AccountController : ControllerBase
     {
         return _accountService.getUserName();
     }
-    
+
     [HttpPost]
     [RateLimiter(5)]
     [Route("/api/account/login")]
@@ -57,10 +58,10 @@ public class AccountController : ControllerBase
         var token = _jwtService.IssueToken(SessionData.FromUser(user!));
         return Ok(new { token });
     }
-    
-    
-    
-    
+
+
+
+
     [HttpGet]
     [Route("/api/skey")]
     public ResponseDto getSitekey()
@@ -80,15 +81,16 @@ public class AccountController : ControllerBase
         int id = HttpContext.GetSessionData().UserId;
         return _accountService.whoAmI(id);
     }
-    
-    
-    
+
+
+
     [RequireAuthentication]
     [HttpPost]
     [Route("/api/account/updateAccount")]
     public ResponseDto updateAccount([FromBody] UpdateBasicUserDataDto dto)
-    { 
-        bool success = _accountService.UpdateUser(HttpContext.GetSessionData().UserId, dto.updatedValue, dto.updatedValueName);
+    {
+        bool success =
+            _accountService.UpdateUser(HttpContext.GetSessionData().UserId, dto.updatedValue, dto.updatedValueName);
         if (success)
         {
             return new ResponseDto
@@ -112,9 +114,10 @@ public class AccountController : ControllerBase
         var ishuman = await _clientService.verifyHuman(dto.token);
         return new ResponseDto
         {
-            ResponseData = new {ishuman}
+            ResponseData = new { ishuman }
         };
     }
+
     [RequireAuthentication]
     [HttpGet]
     [Route("/api/freinds")]
@@ -123,6 +126,7 @@ public class AccountController : ControllerBase
         int userId = HttpContext.GetSessionData().UserId!;
         return _accountService.getFriends(userId, pageNumber);
     }
+
     [RequireAuthentication]
     [HttpPost]
     [Route("/api/account/validationGeneration")]
@@ -144,12 +148,12 @@ public class AccountController : ControllerBase
             };
         }
     }
-    
+
     [RequireAuthentication]
     [HttpPost]
     [Route("/api/account/followUser")]
     public ResponseDto FollowUser([FromBody] int followedId)
-    { 
+    {
         bool success = _accountService.FollowUser(HttpContext.GetSessionData().UserId, followedId);
         if (success)
         {
@@ -166,12 +170,12 @@ public class AccountController : ControllerBase
             };
         }
     }
-    
+
     [RequireAuthentication]
     [HttpDelete]
     [Route("/api/account/unFollowUser")]
     public ResponseDto UnFollowUser([FromBody] int followedId)
-    { 
+    {
         bool success = _accountService.UnFollowUser(HttpContext.GetSessionData().UserId, followedId);
         if (success)
         {
@@ -188,12 +192,12 @@ public class AccountController : ControllerBase
             };
         }
     }
-    
+
     [RequireAuthentication]
     [HttpPost]
     [Route("/api/account/checkIfFollowing")]
     public ReturnBoolDto CheckIfFollowing([FromBody] int followedId)
-    { 
+    {
         bool isFollowing = _accountService.CheckIfFollowing(HttpContext.GetSessionData().UserId, followedId);
         return new ReturnBoolDto
         {
@@ -217,6 +221,34 @@ public class AccountController : ControllerBase
             // "avatar" is the container name
             avatarUrl = _blobService.Save("avatar", avatarStream, avatarUrl);
         }
+
         _accountService.UpdateAvatar(session, avatarUrl);
     }
+
+
+    /**
+     * returns a list of FriendRequest that have been send to a friend request
+     */
+    [RequireAuthentication]
+    [HttpPut]
+    [Route("/api/account/GetFriendRequests")]
+    public IEnumerable<FriendRequestModel>? GetFriendRequests(int pageNumber)
+    {
+        int userId = HttpContext.GetSessionData().UserId!;
+
+        return _accountService.GetFriendRequest(userId, pageNumber);
+        throw new NotImplementedException();
+        //TODO get friend Request to User, and only this user
+    }
+    
+    [RequireAuthentication]
+    [HttpPut]
+    [Route("/api/account/FriendRequestsResponse")]
+    public ResponseDto FriendRequestsResponse(RequestUpdateDto response)
+    {
+        int userId = HttpContext.GetSessionData().UserId!;
+        throw new NotImplementedException();
+        //TODO Make the bool in the DTO be the decline or accept for request
+    }
+
 }
