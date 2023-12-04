@@ -204,8 +204,9 @@ public class AccountController : ControllerBase
     [RequireAuthentication]
     [HttpPut]
     [Route("/api/account/updateAvatar")]
-    public void Update([FromForm] IFormFile? avatar)
+    public IActionResult Update([FromForm] IFormFile? avatar)
     {
+        if (avatar?.Length > 10 * 1024 * 1024) return StatusCode(StatusCodes.Status413PayloadTooLarge);
         var session = HttpContext.GetSessionData()!;
         string? avatarUrl = null;
         if (avatar != null)
@@ -213,10 +214,15 @@ public class AccountController : ControllerBase
             //returns user, and then we only takes the avatar url string
             avatarUrl = this._accountService.whoAmI(session.UserId)?.avatarUrl;
             // We need a stream of bytes (image data)
-            using var avatarStream = avatar.OpenReadStream();
+            using var AvatarTransform = new ImageTransform(avatar.OpenReadStream())
+                .Resize(200,200)
+                .FixOrientation()
+                .RemoveMetadata()
+                .Jpeg();
             // "avatar" is the container name
-            avatarUrl = _blobService.Save("avatar", avatarStream, avatarUrl);
+            avatarUrl = _blobService.Save("avatar", AvatarTransform.ToStream(),avatarUrl);
         }
         _accountService.UpdateAvatar(session, avatarUrl);
+        return Ok();
     }
 }
