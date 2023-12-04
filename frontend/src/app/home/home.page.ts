@@ -139,6 +139,7 @@ export class HomePage implements OnInit{
     this.displayName = result.userDisplayName;
     this.profilepic = result.avatarUrl;
     this.userid = result.userId;
+    this.state.currentUserName = result.userDisplayName;
     }
   }
 

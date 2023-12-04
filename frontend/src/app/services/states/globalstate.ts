@@ -13,4 +13,5 @@ export class Globalstate
   currentComment : CommentModel|any = {}
   comments : CommentModel[] = [];
   updatingWhatAccountItem: String|null = null;
+  currentUserName: string | null = null;
 }
