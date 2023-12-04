@@ -1,5 +1,6 @@
 import { Component } from "@angular/core";
 import {TokenService} from "./services/token.service";
+import {Globalstate} from "./services/states/globalstate";
 
 @Component({
   template: `
@@ -19,16 +20,11 @@ import {TokenService} from "./services/token.service";
                   <ion-icon name="people-outline"></ion-icon>
                   Friend
               </ion-tab-button>
-
-              <ion-tab-button tab="posts" [disabled]="!token.getToken()">
-                  <ion-icon name="library-outline"></ion-icon>
-                  Posts
-              </ion-tab-button>
               <ion-tab-button tab="account" routerLink="account" [disabled]="!token.getToken()">
                   <ion-icon name="settings-outline"></ion-icon>
                   Settings
               </ion-tab-button>
-            <ion-tab-button tab="profile" routerLink="profile" [disabled]="!token.getToken()">
+            <ion-tab-button tab="profile" routerLink="profile/{{state.currentUserName}}" [disabled]="!token.getToken()">
               <ion-icon name="person-outline"></ion-icon>
               Profile
             </ion-tab-button>
@@ -38,6 +34,6 @@ import {TokenService} from "./services/token.service";
 })
 export class TabsComponent
 {
-  constructor(public readonly token: TokenService) {
+  constructor(public readonly token: TokenService, public readonly state :Globalstate) {
   }
 }

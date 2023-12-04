@@ -25,6 +25,7 @@ import {environment} from "../../environments/environment.prod";
                   </ion-col>
 
                   <ion-col size="9" style="text-align: right; vertical-align: text-bottom" >
+                    <ion-button class="btnEdit" *ngIf="isSelf">Edit</ion-button>
                     <ion-button class="btnFriend" *ngIf="!isSelf"><ion-icon name="person-add-outline"></ion-icon></ion-button>
                     <ion-button class="btnFollow" *ngIf="!isSelf" (click)="changeFollow()" [textContent]="btnFollow"></ion-button>
                     <ion-card-title align="left">{{profileName}}</ion-card-title>
