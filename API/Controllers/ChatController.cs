@@ -52,4 +52,23 @@ public class ChatController : ControllerBase
         return _chatService.getFriendRoom(friendId, session);
     }
     
+    [RequireAuthentication]
+    [HttpPut]
+    [Route("/api/account/GetFriendRequests")]
+    public IEnumerable<User> GetFriendRequests()
+    {
+        int userId = HttpContext.GetSessionData().UserId!;
+        throw new NotImplementedException();
+        //TODO get friend Request to User, and only this user
+    }
+    
+    [RequireAuthentication]
+    [HttpPut]
+    [Route("/api/account/FriendRequestsResponse")]
+    public IEnumerable<User> FriendRequestsResponse(RequestUpdateDto response)
+    {
+        int userId = HttpContext.GetSessionData().UserId!;
+        throw new NotImplementedException();
+        //TODO Make the bool in the DTO be the decline or accept for request
+    }
 }
