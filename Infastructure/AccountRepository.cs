@@ -180,8 +180,9 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
         var sql = $@"select
            id as {nameof(Profile.userId)},
            name as {nameof(Profile.userDisplayName)},
-           avatarUrl as {nameof(Profile.avatarUrl)}
-           from keepsocial.users where name = @profileName and isDeleted = false";
+           avatarUrl as {nameof(Profile.avatarUrl)},
+           profileDescription as {nameof(Profile.profileDescription)}
+           from keepsocial.users where name = @profileName and isDeleted = false;";
         
         var sqlFollowing =
             $@"SELECT count(follower_id) FROM keepsocial.followrelation WHERE follower_id = @userId;";

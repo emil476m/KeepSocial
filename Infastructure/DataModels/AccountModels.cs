@@ -23,6 +23,8 @@ public class Profile
     public int userId { get; set; }
     public string userDisplayName { get; set; }
     public string? avatarUrl { get; set; }
+    public string profileDescription { get; set; } 
+    public int postAmount { get; set; }
     public int followers { get; set; }
     public int following { get; set; }
     public bool isFriend { get; set; }
