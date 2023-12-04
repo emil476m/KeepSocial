@@ -6,4 +6,5 @@ export interface CommentModel {
     imgUrl: string
     created: string
     authorName: string
+    avatarUrl: string
 }

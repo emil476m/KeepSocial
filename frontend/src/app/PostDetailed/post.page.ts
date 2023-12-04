@@ -7,7 +7,7 @@ import {environment} from "../../environments/environment.prod";
 import {Globalstate} from "../services/states/globalstate";
 import * as ago from "s-ago";
 import {TokenService} from "../services/token.service";
-import {Account} from "../accountInterface";
+import {Account} from "../models/accountInterface";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {AlertController, ModalController, PopoverController, ToastController} from "@ionic/angular";
 import {CommentModel} from "../models/CommentModel";
@@ -20,7 +20,12 @@ import {EditPostModal} from "./EditPostModal/edit.post.modal";
       <ion-content>
         <ion-card>
           <ion-toolbar>
-            <ion-title>{{this.state.currentPost.authorName}}</ion-title>
+            <ion-buttons>
+              <ion-avatar>
+                <ion-img [src]="this.state.currentPost.avatarUrl"/>
+              </ion-avatar>
+              <ion-text style="padding-left: 10px;">{{this.state.currentPost.authorName}}</ion-text>
+            </ion-buttons>
             <ion-buttons slot="end">
               <ion-text>created {{getLocalDate(this.state.currentPost.created)}}</ion-text>
             </ion-buttons>
@@ -53,8 +58,12 @@ import {EditPostModal} from "./EditPostModal/edit.post.modal";
         </ion-toolbar>
         <ion-card *ngIf="token.getToken()">
           <ion-toolbar>
-            <ion-img [src]="profilepic" style="height: 30px; width: 30px; border-radius: 360%;"/>
-            <ion-text>{{displayName}}</ion-text>
+            <ion-buttons>
+              <ion-avatar>
+                <ion-img [src]="profilepic"/>
+              </ion-avatar>
+              <ion-text style="padding-left: 10px;">{{displayName}}</ion-text>
+            </ion-buttons>
           </ion-toolbar>
           <ion-textarea [counter]="true" [maxlength]="500" placeholder="what do you want your comment to say?"
                         [formControl]="textFC"></ion-textarea>
@@ -72,7 +81,12 @@ import {EditPostModal} from "./EditPostModal/edit.post.modal";
               <ion-buttons slot="end">
                 <ion-text>created {{getLocalDate(comment.created)}}</ion-text>
               </ion-buttons>
-              <ion-text>{{comment.authorName}}</ion-text>
+              <ion-buttons>
+                <ion-avatar>
+                  <ion-img [src]="comment.avatarUrl"/>
+                </ion-avatar>
+                <ion-text style="padding-left: 10px;">{{comment.authorName}}</ion-text>
+              </ion-buttons>
               <ion-buttons slot="end" *ngIf="userid == comment.authorId">
                 <ion-button (click)="ismenueopenComment()">
                   <ion-icon name="ellipsis-vertical-outline"></ion-icon>

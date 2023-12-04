@@ -7,7 +7,7 @@ import {firstValueFrom} from "rxjs";
 import {environment} from "../../environments/environment.prod";
 import {HttpClient} from "@angular/common/http";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {Account} from "../accountInterface";
+import {Account} from "../models/accountInterface";
 import {PostModel} from '../models/PostModel';
 import {Globalstate} from "../services/states/globalstate";
 import * as ago from "s-ago";
@@ -35,8 +35,12 @@ import {EditPostModal} from "../PostDetailed/EditPostModal/edit.post.modal";
     <ion-content>
       <ion-card *ngIf="token.getToken()">
         <ion-toolbar>
-          <ion-img [src]="profilepic" style="height: 30px; width: 30px; border-radius: 360%;"/>
-          <ion-text>{{displayName}}</ion-text>
+          <ion-buttons>
+          <ion-avatar>
+          <ion-img [src]="profilepic"/>
+          </ion-avatar>
+          <ion-text style="padding-left: 10px;">{{displayName}}</ion-text>
+          </ion-buttons>
         </ion-toolbar>
           <ion-textarea [counter]="true" [maxlength]="500" placeholder="what do you want your post to say?" [formControl]="textFC"></ion-textarea>
           <div>
@@ -52,7 +56,12 @@ import {EditPostModal} from "../PostDetailed/EditPostModal/edit.post.modal";
           <ion-toolbar><ion-buttons slot="end">
             <ion-text >created {{getLocalDate(post.created)}}</ion-text>
           </ion-buttons>
-            <ion-text>{{post.authorName}}</ion-text>
+            <ion-buttons>
+            <ion-avatar>
+            <ion-img [src]="post.avatarUrl"/>
+            </ion-avatar>
+            <ion-text style="padding-left: 10px;">{{post.authorName}}</ion-text>
+            </ion-buttons>
             <ion-buttons slot="end" *ngIf="userid == post.authorId">
               <ion-button (click)="ismenueopenPost()">
                 <ion-icon name="ellipsis-vertical-outline"></ion-icon>

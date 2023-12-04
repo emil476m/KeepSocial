@@ -1,5 +1,5 @@
 import {Component, OnInit} from "@angular/core";
-import {Account} from "../accountInterface";
+import {Account} from "../models/accountInterface";
 import {firstValueFrom, window} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../environments/environment.prod";

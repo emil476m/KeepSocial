@@ -25,7 +25,8 @@ public class CommentRepository
                     comments.text as {nameof(Comment.text)},
                     comments.img_url as {nameof(Comment.imgUrl)},
                     comments.created as {nameof(Comment.created)},
-                    u.name as {nameof(Comment.authorName)} 
+                    u.name as {nameof(Comment.authorName)},
+                    u.avatarUrl as {nameof(Comment.avatarUrl)}
                     from keepsocial.comments join keepsocial.users u on u.id = comments.author_id where comments.id = @id";
 
         using (var conn = _dataSource.OpenConnection())
@@ -44,7 +45,8 @@ public class CommentRepository
                      comments.text as {nameof(Comment.text)},
                      comments.img_url as {nameof(Comment.imgUrl)},
                      comments.created as {nameof(Comment.created)},
-                     u.name as {nameof(Comment.authorName)}
+                     u.name as {nameof(Comment.authorName)},
+                     u.avatarUrl as {nameof(Comment.avatarUrl)}
                     from keepsocial.comments join keepsocial.users u on u.id = comments.author_id where comments.post_id = @postId 
                     order by created desc offset @offset limit @limit";
         using (var conn = _dataSource.OpenConnection())
@@ -72,7 +74,8 @@ public class CommentRepository
                      comments.text as {nameof(Comment.text)},
                      comments.img_url as {nameof(Comment.imgUrl)},
                      comments.created as {nameof(Comment.created)},
-                     u.name as {nameof(Comment.authorName)}
+                     u.name as {nameof(Comment.authorName)},
+                     u.avatarUrl as {nameof(Comment.avatarUrl)}
                     from keepsocial.comments join keepsocial.users u on u.id = comments.author_id where comments.id = @id;";
         using (var conn = _dataSource.OpenConnection())
         {
