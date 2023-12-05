@@ -213,4 +213,52 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
 
         }
     }
+
+    public string acceptRequest(bool response, int requestId, int requesterId, int userId)
+    {
+        var sql1 = $@" UPDATE keepsocial.friendRequestTable set response = @response 
+                                      WHERE requested = @userId and requester = @requesterId 
+                                        AND request_id = @requestId;
+        ";
+
+        var sql2 = $@"INSERT INTO keepsocial.friendRealeatioj(user1_id, user2_id) VALUES (@userId, @requesterId)";
+
+        using (var conn = _dataSource.OpenConnection())
+        {
+            var transaction = conn.BeginTransaction();
+            try
+            {
+                
+            conn.Query(sql1, new { response, userId, requesterId, requestId });
+            conn.Query(sql2, new { userId, requesterId });
+            
+            transaction.Commit();
+            
+            return "Accepted request";
+
+            }catch (Exception e)
+            {
+                transaction.Rollback();
+                throw e;
+            }
+        }
+    }
+
+    public string declineRequest(bool response, int requestId, int requesterId, int userId)
+    {
+        
+        var sql1 = $@" UPDATE keepsocial.friendRequestTable set response = @response 
+                                      WHERE requested = @userId and requester = @requesterId 
+                                        AND request_id = @requestId;
+        ";
+
+        using (var conn = _dataSource.OpenConnection())
+        {
+
+            conn.Query(sql1, new { response, userId, requesterId, requestId });
+        }
+
+
+        return "denied Request";
+    }
 }

@@ -148,7 +148,7 @@ export class FriendsPage implements OnInit {
     let response: RequestUpdateDto = {
       requesterId: requesterId,
       requestId: requestId,
-      response: true
+      response: false
     }
     await firstValueFrom(this.http.put(environment.baseURL + 'account/FriendRequestsResponse', response));
     window.location.reload();

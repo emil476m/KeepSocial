@@ -175,21 +175,25 @@ public class AccountService
         }
     }
 
-    public string handleFriendRequest(bool response, int requestId, int requesterId)
+    public string handleFriendRequest(bool response, int requestId, int requesterId, int userId)
     {
-        //TODO put in try cath later
-        if (response)
+        try
         {
-            //TODO accept request
+            if (response)
+            {
+                return _accountRepository.acceptRequest(response, requestId, requesterId, userId);
+            }
+            else if (!response)
+            {
+                return _accountRepository.declineRequest(response, requestId, requesterId, userId);
+            }
+
+            return "something went wrong but no error have acoured, plese check your data";
         }
-        else if(!response)
+        catch (Exception e)
         {
-            //TODO reject request
+            Console.WriteLine(e);
+            throw new Exception("could not handle response to friend request");
         }
-        else
-        {
-            return "an error have occurred client side";
-        }
-        throw new NotImplementedException();
     }
 }
