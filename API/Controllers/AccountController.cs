@@ -250,7 +250,6 @@ public class AccountController : ControllerBase
     public IEnumerable<FriendRequestModel> GetRequests(int pageNumber)
     {
         int userId = HttpContext.GetSessionData().UserId!;
-        //int userId = 111;
 
         return _accountService.GetFriendRequest(userId, pageNumber);
     }
