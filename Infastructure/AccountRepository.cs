@@ -241,8 +241,8 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
 
     public string acceptRequest(bool response, int requestId, int requesterId, int userId)
     {
-        var sql1 = $@" UPDATE keepsocial.friendRequestTable set response = @response 
-                                      WHERE requested = @userId and requester = @requesterId 
+        var sql1 = $@" DELETE from keepsocial.friendRequestTable 
+                                      WHERE requested = @userId AND requester = @requesterId 
                                         AND request_id = @requestId;
         ";
 
@@ -254,7 +254,7 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
             try
             {
                 
-            conn.Query(sql1, new { response, userId, requesterId, requestId });
+            conn.Execute(sql1, new { userId, requesterId, requestId });
             conn.Query(sql2, new { userId, requesterId });
             
             transaction.Commit();

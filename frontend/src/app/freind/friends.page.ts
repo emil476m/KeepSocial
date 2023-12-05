@@ -132,7 +132,6 @@ export class FriendsPage implements OnInit {
   }
 
   async Accept(requesterId: number, requestId: number) {
-    console.log(requestId + "accepted") //TODO remowe this
     let response: RequestUpdateDto = {
       requesterId: requesterId,
       requestId: requestId,
@@ -144,7 +143,6 @@ export class FriendsPage implements OnInit {
   }
 
   async Decline(requesterId: number , requestId: number) {
-    console.log(requestId + "Declinend") //TODO remowe this
     let response: RequestUpdateDto = {
       requesterId: requesterId,
       requestId: requestId,

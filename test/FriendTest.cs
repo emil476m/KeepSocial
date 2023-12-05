@@ -12,7 +12,7 @@ namespace test;
 [TestFixture]
 public class FriendTest
 {
-        private string resetbd = $@"
+    private string resetbd = $@"
 DROP SCHEMA IF EXISTS keepsocial CASCADE;
 CREATE SCHEMA keepsocial;
  
@@ -142,23 +142,24 @@ insert into keepsocial.password_hash(user_id,hash,salt,algorithm) values (112,'U
             new AuthenticationHeaderValue("Bearer", Environment.GetEnvironmentVariable("testToken"));
         apirUrl = "http://localhost:5000/api/";
     }
-    
+
     public class RequestUpdateDto
     {
         public required int RequesterId { get; set; }
-    
+
         public required int RequestId { get; set; }
-    
+
         public required bool Response { get; set; }
     }
-    
+
     [Test]
     public async Task AcceptRequest()
     {
         string apicall = apirUrl + "account/FriendRequestsResponse";
         Helper.TriggerRebuild(resetbd);
 
-        var sqlSetFriendrequest = $@"INSERT INTO keepsocial.friendRequestTable(request_id, requester, requested) VALUES (101, 112, 111);";
+        var sqlSetFriendrequest =
+            $@"INSERT INTO keepsocial.friendRequestTable(request_id, requester, requested) VALUES (101, 112, 111);";
         using (var conn = Helper.DataSource.OpenConnection())
         {
             conn.Query(sqlSetFriendrequest);
@@ -170,7 +171,7 @@ insert into keepsocial.password_hash(user_id,hash,salt,algorithm) values (112,'U
             RequestId = 101,
             Response = true
         };
-        
+
         HttpResponseMessage responseMessage;
         try
         {
@@ -182,35 +183,38 @@ insert into keepsocial.password_hash(user_id,hash,salt,algorithm) values (112,'U
             throw new Exception("Failed to create resposne to request", e);
         }
 
-        var sql = $@"select request_id as {nameof(RequestUpdateDto.RequestId)},
-       requester as {nameof(RequestUpdateDto.RequesterId)},
-       response as {nameof(RequestUpdateDto.Response)}
-        from keepsocial.friendRequestTable where requested = 111";
+        var sql = @$"SELECT count(user1_id) from keepsocial.friendRealeatioj 
+            where (user1_id = 111 and user2_id = 112) 
+        OR (user1_id = 112 and user2_id = 111);";
+        
+        var sql2 = @$"SELECT count(*) from keepsocial.friendRequestTable 
+            WHERE requested = 111 and requester = 112";
 
-        RequestUpdateDto Checkrequestanwser = null;
+        bool isFriends = false;
+        bool requestexist = false;
         using (var conn = Helper.DataSource.OpenConnection())
         {
-            Checkrequestanwser = conn.QuerySingle<RequestUpdateDto>(sql);
+            isFriends = conn.ExecuteScalar<int>(sql) >= 1;
+            requestexist = conn.ExecuteScalar<int>(sql2) >= 1;
         }
 
         using (new AssertionScope())
         {
             responseMessage.StatusCode.Should().Be(HttpStatusCode.OK);
 
-            body.RequesterId.Should().Be(Checkrequestanwser.RequesterId);
-            body.RequestId.Should().Be(Checkrequestanwser.RequestId);
-            body.Response.Should().Be(Checkrequestanwser.Response);
-
+            isFriends.Should().Be(true);
+            requestexist.Should().Be(false);
         }
     }
-    
+
     [Test]
     public async Task DeclineRequest()
     {
         string apicall = apirUrl + "account/FriendRequestsResponse";
         Helper.TriggerRebuild(resetbd);
 
-        var sqlSetFriendrequest = $@"INSERT INTO keepsocial.friendRequestTable(request_id, requester, requested) VALUES (101, 112, 111);";
+        var sqlSetFriendrequest =
+            $@"INSERT INTO keepsocial.friendRequestTable(request_id, requester, requested) VALUES (101, 112, 111);";
         using (var conn = Helper.DataSource.OpenConnection())
         {
             conn.Query(sqlSetFriendrequest);
@@ -222,7 +226,7 @@ insert into keepsocial.password_hash(user_id,hash,salt,algorithm) values (112,'U
             RequestId = 101,
             Response = false
         };
-        
+
         HttpResponseMessage responseMessage;
         try
         {
@@ -252,7 +256,6 @@ insert into keepsocial.password_hash(user_id,hash,salt,algorithm) values (112,'U
             body.RequesterId.Should().Be(Checkrequestanwser.RequesterId);
             body.RequestId.Should().Be(Checkrequestanwser.RequestId);
             body.Response.Should().Be(Checkrequestanwser.Response);
-
         }
     }
 }
