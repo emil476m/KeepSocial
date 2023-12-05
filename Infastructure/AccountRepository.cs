@@ -211,4 +211,15 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
             conn.Execute(sql, new {avatarUrl, userId});
         }
     }
+    
+    public bool updateProfileDescription(string description, int userId)
+    {
+        var sql = @$"
+            UPDATE keepsocial.users SET profileDescription = @description  WHERE id = @userId";
+
+        using (var conn = _dataSource.OpenConnection())
+        {
+            return conn.Execute(sql, new {description, userId}) == 1;
+        }
+    }
 }

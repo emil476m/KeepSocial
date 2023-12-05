@@ -1,12 +1,16 @@
 import {Component, OnInit} from "@angular/core";
-import {InfiniteScrollCustomEvent} from "@ionic/angular";
+import {InfiniteScrollCustomEvent, ModalController} from "@ionic/angular";
 import {firstValueFrom} from "rxjs";
 import {ActivatedRoute, Router} from "@angular/router";
 import {HttpClient} from "@angular/common/http";
-import {Account, Profile} from "../accountInterface";
+import {Profile} from "../accountInterface";
 import {environment} from "../../environments/environment.prod";
+import {Globalstate} from "../services/states/globalstate";
+import {NewAccountInfoModal} from "../changeAccountInfoModal/AccountInfoModal";
+import {PostModel} from "../models/PostModel";
 
 @Component({
+  styleUrls: ['profile.page.style.css'],
   template:
     `
       <ion-content>
@@ -24,12 +28,18 @@ import {environment} from "../../environments/environment.prod";
                   <ion-col size="2" >
                   </ion-col>
 
-                  <ion-col size="9" style="text-align: right; vertical-align: text-bottom" >
-                    <ion-button class="btnEdit" *ngIf="isSelf">Edit</ion-button>
-                    <ion-button class="btnFriend" *ngIf="!isSelf"><ion-icon name="person-add-outline"></ion-icon></ion-button>
-                    <ion-button class="btnFollow" *ngIf="!isSelf" (click)="changeFollow()" [textContent]="btnFollow"></ion-button>
+                  <ion-col size="9" style="vertical-align: text-bottom" >
+                    <ion-item lines="none">
+                      <ion-buttons slot="end" >
+                        <ion-button class="btnEdit"  *ngIf="isSelf" >Edit</ion-button>
+                        <ion-button class="btnFriend" *ngIf="!isSelf"><ion-icon name="person-add-outline"></ion-icon></ion-button>
+                        <ion-button class="btnFollow" *ngIf="!isSelf" (click)="changeFollow()" [textContent]="btnFollow"></ion-button>
+                      </ion-buttons>
+                    </ion-item>
                     <ion-card-title align="left">{{profileName}}</ion-card-title>
-                    <ion-label style="text-align: left">{{profileDescription}}</ion-label>
+
+                      <ion-label style="text-align: left">{{profileDescription}}</ion-label>
+
                     <ion-item>
                       <ion-label>{{following}} Following</ion-label>
                       <ion-label>{{followers}} Followers</ion-label>
@@ -51,7 +61,7 @@ import {environment} from "../../environments/environment.prod";
 
 export class ProfilePage implements OnInit{
 
-  constructor(public router: Router, public route: ActivatedRoute, public http: HttpClient){
+  constructor(public router: Router, public route: ActivatedRoute, public http: HttpClient, public state: Globalstate, private modalcontroller: ModalController){
 
   }
   defaultAvatarUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png";
@@ -72,6 +82,7 @@ export class ProfilePage implements OnInit{
   btnFollow = "Follow";
 
   ngOnInit() {
+    this.state.updatingWhatAccountItem=null;
     for (let i = 1; i < 51; i++) {
       // @ts-ignore
       this.items.push(`Item ${i}`);
@@ -123,6 +134,32 @@ export class ProfilePage implements OnInit{
     const call = this.http.post(environment.baseURL+"account/FollowUser",this.profileId);
     const result = await firstValueFrom(call);
 
+  }
+
+  edit(){
+    this.state.updatingWhatAccountItem="Profile Description";
+    this.openEdit();
+  }
+
+  openEdit() {
+
+    this.modalcontroller.create({
+      component: NewAccountInfoModal,
+      componentProps: {
+      }
+    }).then(res => {
+      res.present();
+    })
+  }
+
+
+
+
+  async getPost() {
+    const call = this.http.get<PostModel>(environment.baseURL+'post/'+ this.profileId)
+    const result = await firstValueFrom<PostModel>(call);
+    this.state.currentPost = result;
+    //this.loadComments();
   }
 
 }

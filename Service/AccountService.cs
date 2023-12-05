@@ -98,6 +98,10 @@ public class AccountService
         {
             return _accountRepository.UpdateAvatarImg(id, updatedValue);
         }
+        else if (updatedValueName == "Profile Description")
+        {
+            return _accountRepository.updateProfileDescription(updatedValue, id);
+        }
         return false;
     }
 
