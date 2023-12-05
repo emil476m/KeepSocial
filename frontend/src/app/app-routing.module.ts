@@ -9,6 +9,7 @@ import {RegisterPage} from "./register/register.page";
 import {AccountPage} from "./account/account.page";
 import {PostDetail} from "./PostDetailed/post.page";
 import {FriendsPage} from "./freind/friends.page";
+import {ProfilePage} from "./profile/profile.page";
 
 const routes: Routes = [
   {
@@ -44,7 +45,11 @@ const routes: Routes = [
         path: '',
         redirectTo: '/home',
         pathMatch: 'full',
-      }
+      },
+      {
+        path: "profile/:profileName",
+        component: ProfilePage,
+      },
     ]
   },
   {

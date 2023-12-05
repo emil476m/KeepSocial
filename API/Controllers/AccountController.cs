@@ -39,7 +39,7 @@ public class AccountController : ControllerBase
             MessageToClient = "Successfully registered"
         };
     }
-
+    
     [HttpGet]
     [RequireAuthentication]
     [Route("/account/getAllUsers")]
@@ -47,7 +47,7 @@ public class AccountController : ControllerBase
     {
         return _accountService.getUserName();
     }
-
+    
     [HttpPost]
     [RateLimiter(5)]
     [Route("/api/account/login")]
@@ -58,10 +58,10 @@ public class AccountController : ControllerBase
         var token = _jwtService.IssueToken(SessionData.FromUser(user!));
         return Ok(new { token });
     }
-
-
-
-
+    
+    
+    
+    
     [HttpGet]
     [Route("/api/skey")]
     public ResponseDto getSitekey()
@@ -81,16 +81,15 @@ public class AccountController : ControllerBase
         int id = HttpContext.GetSessionData().UserId;
         return _accountService.whoAmI(id);
     }
-
-
-
+    
+    
+    
     [RequireAuthentication]
     [HttpPost]
     [Route("/api/account/updateAccount")]
     public ResponseDto updateAccount([FromBody] UpdateBasicUserDataDto dto)
-    {
-        bool success =
-            _accountService.UpdateUser(HttpContext.GetSessionData().UserId, dto.updatedValue, dto.updatedValueName);
+    { 
+        bool success = _accountService.UpdateUser(HttpContext.GetSessionData().UserId, dto.updatedValue, dto.updatedValueName);
         if (success)
         {
             return new ResponseDto
@@ -114,7 +113,7 @@ public class AccountController : ControllerBase
         var ishuman = await _clientService.verifyHuman(dto.token);
         return new ResponseDto
         {
-            ResponseData = new { ishuman }
+            ResponseData = new {ishuman}
         };
     }
 
@@ -148,12 +147,12 @@ public class AccountController : ControllerBase
             };
         }
     }
-
+    
     [RequireAuthentication]
     [HttpPost]
     [Route("/api/account/followUser")]
     public ResponseDto FollowUser([FromBody] int followedId)
-    {
+    { 
         bool success = _accountService.FollowUser(HttpContext.GetSessionData().UserId, followedId);
         if (success)
         {
@@ -170,12 +169,12 @@ public class AccountController : ControllerBase
             };
         }
     }
-
+    
     [RequireAuthentication]
     [HttpDelete]
-    [Route("/api/account/unFollowUser")]
-    public ResponseDto UnFollowUser([FromBody] int followedId)
-    {
+    [Route("/api/account/unFollowUser/{followedId}")]
+    public ResponseDto UnFollowUser([FromRoute] int followedId)
+    { 
         bool success = _accountService.UnFollowUser(HttpContext.GetSessionData().UserId, followedId);
         if (success)
         {
@@ -192,24 +191,35 @@ public class AccountController : ControllerBase
             };
         }
     }
-
+    
     [RequireAuthentication]
     [HttpPost]
     [Route("/api/account/checkIfFollowing")]
     public ReturnBoolDto CheckIfFollowing([FromBody] int followedId)
-    {
+    { 
         bool isFollowing = _accountService.CheckIfFollowing(HttpContext.GetSessionData().UserId, followedId);
         return new ReturnBoolDto
         {
             isTrue = isFollowing
         };
     }
+    
+    [RequireAuthentication]
+    [HttpGet]
+    [Route("/api/getProfile/{profileName}")]
+    public Profile getProfile([FromRoute] string profileName)
+    {
+        
+        int id = HttpContext.GetSessionData().UserId;
+        return _accountService.getProfile(profileName, id);
+    }
 
     [RequireAuthentication]
     [HttpPut]
     [Route("/api/account/updateAvatar")]
-    public void Update([FromForm] IFormFile? avatar)
+    public IActionResult Update([FromForm] IFormFile? avatar)
     {
+        if (avatar?.Length > 10 * 1024 * 1024) return StatusCode(StatusCodes.Status413PayloadTooLarge);
         var session = HttpContext.GetSessionData()!;
         string? avatarUrl = null;
         if (avatar != null)
@@ -217,12 +227,17 @@ public class AccountController : ControllerBase
             //returns user, and then we only takes the avatar url string
             avatarUrl = this._accountService.whoAmI(session.UserId)?.avatarUrl;
             // We need a stream of bytes (image data)
-            using var avatarStream = avatar.OpenReadStream();
+            using var AvatarTransform = new ImageTransform(avatar.OpenReadStream())
+                .Resize(200,200)
+                .FixOrientation()
+                .RemoveMetadata()
+                .Jpeg();
             // "avatar" is the container name
-            avatarUrl = _blobService.Save("avatar", avatarStream, avatarUrl);
+            avatarUrl = _blobService.Save("avatar", AvatarTransform.ToStream(),avatarUrl);
         }
 
         _accountService.UpdateAvatar(session, avatarUrl);
+        return Ok();
     }
 
 

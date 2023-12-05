@@ -147,6 +147,25 @@ public class AccountService
         return _accountRepository.CheckIfFollowing(userId, followedId);
     }
 
+    public Profile getProfile(string profileName, int currentUserId)
+    {
+            var profile = _accountRepository.getProfile(profileName);
+            if (profile.userId == currentUserId)
+            {
+                profile.isSelf = true;
+                profile.isFriend = false;
+                profile.isFollowing = false;
+            }
+            else
+            {
+                profile.isSelf = false;
+                profile.isFollowing = _accountRepository.CheckIfFollowing(currentUserId, profile.userId);
+                profile.isFriend = _accountRepository.isFriends(currentUserId, profile.userId);
+            }
+            
+            return profile;
+    }
+
     public void UpdateAvatar(SessionData session, string? avatarUrl)
     {
         try
