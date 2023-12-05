@@ -214,7 +214,6 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
 
     public IEnumerable<FriendRequestModel> getFriendRequest(int userId, int offset)
     {
-        //var sql = $@"SELECT id, requester from keepsocial.friendRequestTable WHERE requested = 111 and response IS NULL;";
         var check = $@"SELECT count(keepsocial.friendrequesttable.request_id) from keepsocial.friendRequestTable WHERE requested = @userId and response IS NULL;";
         
         var sql = $@"SELECT users.id as {nameof(FriendRequestModel.RequestersId)},
