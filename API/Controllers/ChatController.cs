@@ -51,5 +51,4 @@ public class ChatController : ControllerBase
         
         return _chatService.getFriendRoom(friendId, session);
     }
-    
 }

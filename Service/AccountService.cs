@@ -11,17 +11,16 @@ public class AccountService
     private readonly ILogger<AccountService> _logger;
     private readonly MailService _mailService;
 
-    public AccountService(AccountRepository accountRepository, PasswordHashRepository passwordHashRepository, ILogger<AccountService> logger, MailService mailService)
+    public AccountService(AccountRepository accountRepository, PasswordHashRepository passwordHashRepository,
+        ILogger<AccountService> logger, MailService mailService)
     {
         _mailService = mailService;
         _logger = logger;
         _accountRepository = accountRepository;
         _passwordHashRepository = passwordHashRepository;
     }
-    
-    
-   
-    
+
+
     public User CreateUser(string userDisplayName, string userEmail, string password, DateTime userBirthday)
     {
         var hashAlgorithm = PasswordHashAlgorithm.Create();
@@ -68,7 +67,7 @@ public class AccountService
         }
         else if (updatedValueName == "Account Email")
         {
-            string message = "Your email has been linked to an Account at KeepSocial " + "\n"+ "" +
+            string message = "Your email has been linked to an Account at KeepSocial " + "\n" + "" +
                              "if you did not link it, then please contact costumer support at www.KeepSocial/notimplemented.com";
             bool succes = _accountRepository.UpdateUserEmail(id, updatedValue);
             if (succes)
@@ -82,22 +81,22 @@ public class AccountService
             var hashAlgorithm = PasswordHashAlgorithm.Create();
             var salt = hashAlgorithm.GenerateSalt();
             var hash = hashAlgorithm.HashPassword(updatedValue, salt);
-            bool succes =_passwordHashRepository.Update(id, hash, salt, hashAlgorithm.GetName());
-            
-            string message = "Your password on KeepSocial has been changed " + "\n"+ "" +
+            bool succes = _passwordHashRepository.Update(id, hash, salt, hashAlgorithm.GetName());
+
+            string message = "Your password on KeepSocial has been changed " + "\n" + "" +
                              "if you did not change it, then please contact costumer support at www.KeepSocial/notimplemented.com";
-            
+
             if (succes)
             {
                 SendEmailValidation(id, message);
                 return true;
             }
-            
         }
         else if (updatedValueName == "Account Avatar")
         {
             return _accountRepository.UpdateAvatarImg(id, updatedValue);
         }
+
         return false;
     }
 
@@ -105,20 +104,23 @@ public class AccountService
     {
         string email = whoAmI(userId).userEmail;
         Random rnd = new Random();
-        int validationNumber= rnd.Next(10000000, 99999999);
-        string message = "This is your validation code for KeepSocial please enter it to continue to make changes to your account: " + validationNumber;
+        int validationNumber = rnd.Next(10000000, 99999999);
+        string message =
+            "This is your validation code for KeepSocial please enter it to continue to make changes to your account: " +
+            validationNumber;
 
         if (mes != "" && mes != null)
         {
             message = mes;
         }
+
         _mailService.SendEmail(message, email);
         return _accountRepository.StoreValidation(userId, validationNumber);
     }
 
     public IEnumerable<User> getFriends(int userId, int pageNumber)
     {
-        int offset = (10 * pageNumber)-10;
+        int offset = (10 * pageNumber) - 10;
         try
         {
             return _accountRepository.getFriends(userId, offset);
@@ -173,7 +175,44 @@ public class AccountService
         catch (Exception e)
         {
             Console.WriteLine(e);
-            throw new Exception("there where an encounter with an error while saving the Image, please try again later");
+            throw new Exception(
+                "there where an encounter with an error while saving the Image, please try again later");
+        }
+    }
+
+    public IEnumerable<FriendRequestModel> GetFriendRequest(int userId, int pageNumber)
+    {
+        try
+        {
+            int offset = (10 * pageNumber) - 10;
+            return _accountRepository.getFriendRequest(userId, offset);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception("could not fetch friend request data");
+        }
+    }
+
+    public string handleFriendRequest(bool response, int requestId, int requesterId, int userId)
+    {
+        try
+        {
+            if (response)
+            {
+                return _accountRepository.acceptRequest(response, requestId, requesterId, userId);
+            }
+            else if (!response)
+            {
+                return _accountRepository.declineRequest(response, requestId, requesterId, userId);
+            }
+
+            return "something went wrong but no error have acoured, plese check your data";
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception("could not handle response to friend request");
         }
     }
 }

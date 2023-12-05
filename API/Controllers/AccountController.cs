@@ -17,7 +17,8 @@ public class AccountController : ControllerBase
     private readonly HttpClientService _clientService;
     private readonly BlobService _blobService;
 
-    public AccountController(AccountService accountService, BlobService blobService, JwtService jwtService, HttpClientService httpClientService)
+    public AccountController(AccountService accountService, BlobService blobService, JwtService jwtService,
+        HttpClientService httpClientService)
     {
         _accountService = accountService;
         _jwtService = jwtService;
@@ -27,7 +28,7 @@ public class AccountController : ControllerBase
     }
 
 
-    
+
     [HttpPost]
     [Route("/api/account/createuser")]
     public ResponseDto CreateUser([FromBody] RegisterUserDto dto)
@@ -115,6 +116,7 @@ public class AccountController : ControllerBase
             ResponseData = new {ishuman}
         };
     }
+
     [RequireAuthentication]
     [HttpGet]
     [Route("/api/freinds")]
@@ -123,6 +125,7 @@ public class AccountController : ControllerBase
         int userId = HttpContext.GetSessionData().UserId!;
         return _accountService.getFriends(userId, pageNumber);
     }
+
     [RequireAuthentication]
     [HttpPost]
     [Route("/api/account/validationGeneration")]
@@ -232,7 +235,38 @@ public class AccountController : ControllerBase
             // "avatar" is the container name
             avatarUrl = _blobService.Save("avatar", AvatarTransform.ToStream(),avatarUrl);
         }
+
         _accountService.UpdateAvatar(session, avatarUrl);
         return Ok();
     }
+
+
+    /**
+     * returns a list of FriendRequest that have been send to a friend request
+     */
+    [RequireAuthentication]
+    [HttpGet]
+    [Route("/api/account/GetFriendRequests")]
+    public IEnumerable<FriendRequestModel> GetRequests(int pageNumber)
+    {
+        int userId = HttpContext.GetSessionData().UserId!;
+
+        return _accountService.GetFriendRequest(userId, pageNumber);
+    }
+    
+    [RequireAuthentication]
+    [HttpPut]
+    [Route("/api/account/FriendRequestsResponse")]
+    public ResponseDto RequestsResponse(RequestUpdateDto response)
+    {
+        int userId = HttpContext.GetSessionData().UserId!;
+
+        string messageToClient = _accountService.handleFriendRequest(response.Response, response.RequestId, response.RequesterId, userId);
+        
+        return new ResponseDto
+        {
+            MessageToClient = messageToClient
+        };
+    }
+
 }
