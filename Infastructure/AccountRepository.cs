@@ -214,4 +214,79 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
             conn.Execute(sql, new {avatarUrl, userId});
         }
     }
+
+    public IEnumerable<FriendRequestModel> getFriendRequest(int userId, int offset)
+    {
+        var check = $@"SELECT count(keepsocial.friendrequesttable.request_id) from keepsocial.friendRequestTable WHERE requested = @userId and response IS NULL;";
+        
+        var sql = $@"SELECT users.id as {nameof(FriendRequestModel.RequestersId)},
+            f.request_id as {nameof(FriendRequestModel.RequestId)},
+            users.name as {nameof(FriendRequestModel.RequesterName)},
+            users.avatarurl as {nameof(FriendRequestModel.RequesterAvatarurl)}
+            from keepsocial.users 
+            JOIN keepsocial.friendrequesttable f on users.id = f.requester  
+            WHERE(requested = @userId and response IS NULL)
+            LIMIT 10 OFFSET @offset;
+        ";
+        
+        using (var conn = _dataSource.OpenConnection())
+        {
+            if (conn.Execute(check, new { userId }) == 0)
+            {
+                return new List<FriendRequestModel>();
+            }
+            
+            
+            return conn.Query<FriendRequestModel>(sql, new {userId, offset});
+
+        }
+    }
+
+    public string acceptRequest(bool response, int requestId, int requesterId, int userId)
+    {
+        var sql1 = $@" DELETE from keepsocial.friendRequestTable 
+                                      WHERE requested = @userId AND requester = @requesterId 
+                                        AND request_id = @requestId;
+        ";
+
+        var sql2 = $@"INSERT INTO keepsocial.friendRealeatioj(user1_id, user2_id) VALUES (@userId, @requesterId)";
+
+        using (var conn = _dataSource.OpenConnection())
+        {
+            var transaction = conn.BeginTransaction();
+            try
+            {
+                
+            conn.Execute(sql1, new { userId, requesterId, requestId });
+            conn.Query(sql2, new { userId, requesterId });
+            
+            transaction.Commit();
+            
+            return "Accepted request";
+
+            }catch (Exception e)
+            {
+                transaction.Rollback();
+                throw e;
+            }
+        }
+    }
+
+    public string declineRequest(bool response, int requestId, int requesterId, int userId)
+    {
+        
+        var sql1 = $@" UPDATE keepsocial.friendRequestTable set response = @response 
+                                      WHERE requested = @userId and requester = @requesterId 
+                                        AND request_id = @requestId;
+        ";
+
+        using (var conn = _dataSource.OpenConnection())
+        {
+
+            conn.Query(sql1, new { response, userId, requesterId, requestId });
+        }
+
+
+        return "denied Request";
+    }
 }

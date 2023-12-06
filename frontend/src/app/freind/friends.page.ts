@@ -5,6 +5,8 @@ import {Router} from "@angular/router";
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../environments/environment.prod";
 import {firstValueFrom} from "rxjs";
+import {FriendRequestModel, RequestUpdateDto} from "../models/friendRequest";
+import {Message} from "../models/Message.model";
 
 @Component({
   selector: 'friend',
@@ -19,6 +21,20 @@ import {firstValueFrom} from "rxjs";
 
     <ion-content [fullscreen]="true">
       <ion-content>
+        <ion-card *ngFor="let request of requestList">
+          <ion-title style="margin-left: 0.2%">
+            {{request.requesterName}}
+          </ion-title>
+          <ion-title></ion-title>
+          <ion-button class="cardBtn1" (click)="Accept(request.requestersId, request.requestId)">
+            <!--Open chat with friend or create if they dont have one-->
+            <ion-icon name="checkmark-outline"></ion-icon>
+          </ion-button>
+          <ion-button class="cardBtn" (click)="Decline(request.requestersId, request.requestId)"><!---view acccount--->
+            <ion-icon name="ban-outline"></ion-icon>
+          </ion-button>
+        </ion-card>
+
         <ion-card *ngFor="let friend of friendliest">
           <ion-title style="margin-left: 0.2%">
             {{friend.userDisplayName}}
@@ -27,7 +43,8 @@ import {firstValueFrom} from "rxjs";
             @user #{{friend.userId}}
           </ion-text>
           <ion-title></ion-title>
-          <ion-button class="cardBtn1" (click)="openChat(friend.userId)"><!--Open chat with friend or create if they dont have one-->
+          <ion-button class="cardBtn1" (click)="openChat(friend.userId)">
+            <!--Open chat with friend or create if they dont have one-->
             <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
           </ion-button>
           <ion-button class="cardBtn" (click)="goFriend(friend.userId)"><!---view acccount--->
@@ -58,19 +75,32 @@ export class FriendsPage implements OnInit {
   upcomingPage: number = 2;
 
   friendliest: User[] = [];
+  requestList: FriendRequestModel [] = [];
 
   ngOnInit(): void {
-  }
-  constructor(private router: Router, private http: HttpClient) {
-    this.getFriends()
+    this.getFriends();
+    this.getrequest();
 
+  }
+
+  constructor(private router: Router, private http: HttpClient) {
   }
 
   async getFriends() {
     try {
-      const call = this.http.get<User[]>(environment.baseURL+"freinds?pageNumber=" + this.page);
+      const call = this.http.get<User[]>(environment.baseURL + "freinds?pageNumber=" + this.page);
       call.subscribe((resData: User[]) => {
         this.friendliest = resData;
+      })
+    } catch (error) {
+    }
+  }
+
+  async getrequest() {
+    try {
+      const call = this.http.get<FriendRequestModel[]>(environment.baseURL+"account/GetFriendRequests?pageNumber=" + this.page);
+      call.subscribe((resData: FriendRequestModel[]) => {
+        this.requestList = resData;
       })
     } catch (error) {
     }
@@ -99,5 +129,27 @@ export class FriendsPage implements OnInit {
   goFriend(userId: number) {
     console.log("viewing user #" + userId);
     //implement when user profile have been made
+  }
+
+  async Accept(requesterId: number, requestId: number) {
+    let response: RequestUpdateDto = {
+      requesterId: requesterId,
+      requestId: requestId,
+      response: true
+    }
+    await firstValueFrom(this.http.put(environment.baseURL + 'account/FriendRequestsResponse', response));
+    window.location.reload();
+
+  }
+
+  async Decline(requesterId: number , requestId: number) {
+    let response: RequestUpdateDto = {
+      requesterId: requesterId,
+      requestId: requestId,
+      response: false
+    }
+    await firstValueFrom(this.http.put(environment.baseURL + 'account/FriendRequestsResponse', response));
+    window.location.reload();
+
   }
 }
