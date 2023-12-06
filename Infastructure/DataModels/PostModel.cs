@@ -12,4 +12,5 @@ public class Post
     public string? imgUrl { get; set; }
     public DateTimeOffset created { get; set; }
     public string authorName { get; set; }
+    public string avatarUrl { get; set; }
 }
