@@ -9,7 +9,10 @@ public class RateLimiter(int requestsPerMinute) : ActionFilterAttribute
     private static readonly Dictionary<string, DateTime> Timestamps = new();
     private static readonly Dictionary<string, int> RequestCounts = new();
 
-
+    
+    /*
+     * limits the amount of calls a user can make to the api
+     */
     public override void OnActionExecuting(ActionExecutingContext context)
     {
         var ip = context.HttpContext.Connection.RemoteIpAddress!.ToString();
@@ -33,23 +36,35 @@ public class RateLimiter(int requestsPerMinute) : ActionFilterAttribute
         }
     }
 
+    /*
+     * returns the HttpStatusCode TooManyRequests
+     */
     private void TooManyRequests(ActionExecutingContext context)
     {
         context.Result = new StatusCodeResult((int)HttpStatusCode.TooManyRequests);
     }
 
+    /*
+     * initializes the request counter and timestamp
+     */
     private void InitializeRequestCountAndTimeStamp(string ip)
     {
         Timestamps[ip] = DateTime.Now;
         RequestCounts[ip] = 1;
     }
 
+    /*
+     * resets the request counter and timestamp
+     */
     private void ResetRequestCountAndTimeStamp(string ip)
     {
         Timestamps[ip] = DateTime.Now;
         RequestCounts[ip] = 1;
     }
 
+    /*
+     * adds 1 to the request count
+     */
     private void IncrementRequestCount(string ip)
     {
         RequestCounts[ip] += 1;

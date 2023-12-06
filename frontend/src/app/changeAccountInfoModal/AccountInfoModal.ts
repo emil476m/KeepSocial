@@ -50,6 +50,11 @@ export class NewAccountInfoModal implements OnInit
     }else if (this.globalstate.updatingWhatAccountItem == "Account Avatar"){
       this.UserInput.setValidators([Validators.required])
     }
+    else if (this.globalstate.updatingWhatAccountItem == "Profile Description"){
+      this.UserInput.setValidators([Validators.required, Validators.maxLength(500)])
+    }
+
+
   }
 
 

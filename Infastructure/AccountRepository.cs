@@ -46,6 +46,9 @@ public class AccountRepository
         }
     }
 
+    /*
+     * gets a user by their id and returns their data
+     */
     public User? GetById(int id)
     {
         var sql = $@"select
@@ -190,14 +193,16 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
 
         var sqlFollower =
             $@"SELECT count(followed_id) FROM keepsocial.followrelation WHERE followed_id = @userId;";
-
+        
+        var sqlPostAmount = $@"select count(author_id) FROM keepsocial.posts WHERE author_id = @userId";
+        
         using (var conn = _dataSource.OpenConnection())
         {
             var profile = conn.QueryFirst<Profile>(sql, new { profileName });
             userId = profile.userId;
-            Console.WriteLine("this is ther user id: " + userId);
-            profile.followers = conn.ExecuteScalar<int>(sqlFollower, new { userId });
-            profile.following = conn.ExecuteScalar<int>(sqlFollowing, new { userId });
+            profile.followers = conn.ExecuteScalar<int>(sqlFollower, new {userId});
+            profile.following = conn.ExecuteScalar<int>(sqlFollowing, new {userId});
+            profile.postAmount = conn.ExecuteScalar<int>(sqlPostAmount, new {userId});
             return profile;
         }
     }
@@ -210,6 +215,17 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
         using (var conn = _dataSource.OpenConnection())
         {
             conn.Execute(sql, new { avatarUrl, userId });
+        }
+    }
+    
+    public bool updateProfileDescription(string description, int userId)
+    {
+        var sql = @$"
+            UPDATE keepsocial.users SET profileDescription = @description  WHERE id = @userId";
+
+        using (var conn = _dataSource.OpenConnection())
+        {
+            return conn.Execute(sql, new {description, userId}) == 1;
         }
     }
 

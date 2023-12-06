@@ -13,7 +13,10 @@ public class HttpClientService
     {
         _httpClient = httpClient;
     }
-
+    
+    /*
+     * sends a request to a google api to verify a token to see if a person is human
+     */
     public async Task<bool> verifyHuman(string token)
     {
         var lookupaddress = "https://www.google.com/recaptcha/api/siteverify";
