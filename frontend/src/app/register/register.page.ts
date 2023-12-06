@@ -51,7 +51,7 @@ import {environment} from "../../environments/environment.prod";
               </ion-item>
               <ion-item>
                 <ion-button (click)="createAccount()" data-testid="accountCreateBTN_"
-                            *ngIf="APassword.valid && APasswordRepeat.valid && AEmail.valid && AName.valid"
+                            *ngIf="APassword.valid && APasswordRepeat.valid && ADate.valid && AEmail.valid && AName.valid"
                 >Create Account</ion-button>
               </ion-item>
             </ion-col>
