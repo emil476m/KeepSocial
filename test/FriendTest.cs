@@ -258,4 +258,10 @@ insert into keepsocial.password_hash(user_id,hash,salt,algorithm) values (112,'U
             body.Response.Should().Be(Checkrequestanwser.Response);
         }
     }
+
+    [Test]
+    public async Task SendRequest()
+    {
+        
+    }
 }
