@@ -51,7 +51,7 @@ export class NewAccountInfoModal implements OnInit
       this.UserInput.setValidators([Validators.required])
     }
     else if (this.globalstate.updatingWhatAccountItem == "Profile Description"){
-      this.UserInput.setValidators([Validators.required])
+      this.UserInput.setValidators([Validators.required, Validators.maxLength(500)])
     }
 
 

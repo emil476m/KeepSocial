@@ -39,4 +39,9 @@ public class PostService
     {
         return _postRepository.updatePost(id, dtoText, dtoImgurl);
     }
+    
+    public IEnumerable<Post> getMoreProfileposts(int limit, int offset, int profileId)
+    {
+        return _postRepository.getProfilePosts(limit, offset, profileId);
+    }
 }
