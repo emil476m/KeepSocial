@@ -16,6 +16,9 @@ public class JwtService
         _options = options;
     }
 
+    /*
+     * generates a new token
+     */
     public string IssueToken(SessionData data)
     {
         var jwtHandler = new JwtSecurityTokenHandler();
@@ -33,6 +36,9 @@ public class JwtService
         return token;
     }
 
+    /*
+     * validates a token
+     */
     public SessionData ValidateAndDecodeToken(string token)
     {
         var jwtHandler = new JwtSecurityTokenHandler();

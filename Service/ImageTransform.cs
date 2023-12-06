@@ -7,18 +7,27 @@ public sealed class ImageTransform(Stream stream) : IDisposable
     private readonly MagickImage _image = new(stream);
     private Stream? _outStream;
 
+    /*
+     * resizes an image
+     */
     public ImageTransform Resize(int width, int height)
     {
         _image.Resize(new MagickGeometry(width,height));
         return this;
     }
 
+    /*
+     * fixes the images orientation
+     */
     public ImageTransform FixOrientation()
     {
         _image.AutoOrient();
         return this;
     }
 
+    /*
+     * removes metadata from an image
+     */
     public ImageTransform RemoveMetadata()
     {
         var exifProfile = _image.GetExifProfile();
@@ -31,12 +40,18 @@ public sealed class ImageTransform(Stream stream) : IDisposable
         return this;
     }
 
+    /*
+     * makes the image a .jpeg
+     */
     public ImageTransform Jpeg()
     {
         _image.Format = MagickFormat.Jpeg;
         return this;
     }
 
+    /*
+     * sets the transformed image to be the new outStream
+     */
     public Stream ToStream()
     {
         _outStream = new MemoryStream();
@@ -45,6 +60,9 @@ public sealed class ImageTransform(Stream stream) : IDisposable
         return _outStream;
     }
 
+    /*
+     * disposes of the _image, stream and _outStream
+     */
     public void Dispose()
     {
         _image.Dispose();

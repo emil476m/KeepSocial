@@ -13,6 +13,9 @@ public class PostRepository
     }
 
 
+    /*
+     * creates a post with the given data and returns it
+     */
     public Post createPost(Post post)
     {
         var insert = $@"insert into keepsocial.posts(author_id,text,img_url,created) values (@authorid,@text,@imgurl,@created)
@@ -25,7 +28,8 @@ public class PostRepository
                       posts.text as {nameof(Post.text)},
                       posts.img_url as {nameof(Post.imgUrl)},
                       posts.created as {nameof(Post.created)},
-                      u.name as {nameof(Post.authorName)}
+                      u.name as {nameof(Post.authorName)},
+                      u.avatarUrl as {nameof(Post.avatarUrl)}
                       from keepsocial.posts join keepsocial.users u on u.id = posts.author_id where posts.id = @id;";
 
         using (var conn = _dataSource.OpenConnection())
@@ -35,6 +39,9 @@ public class PostRepository
         }
     }
 
+    /*
+     * returns posts with an offset so it knows where to start and a limit so it knows how many to return
+     */
     public IEnumerable<Post> getposts(int limit, int offset)
     {
         var sql = $@"select posts.id as {nameof(Post.id)},
@@ -42,7 +49,8 @@ public class PostRepository
                       posts.text as {nameof(Post.text)},
                       posts.img_url as {nameof(Post.imgUrl)},
                       posts.created as {nameof(Post.created)},
-                      u.name as {nameof(Post.authorName)}
+                      u.name as {nameof(Post.authorName)},
+                      u.avatarUrl as {nameof(Post.avatarUrl)}
                       from keepsocial.posts join keepsocial.users u on u.id = posts.author_id order by created desc offset @offset limit @limit";
         using (var conn = _dataSource.OpenConnection())
         {
@@ -50,6 +58,9 @@ public class PostRepository
         }
     }
 
+    /*
+     * returns the post with the given id
+     */
     public Post getpost(int id)
     {
         var sql =
@@ -58,7 +69,8 @@ public class PostRepository
                       posts.text as {nameof(Post.text)},
                       posts.img_url as {nameof(Post.imgUrl)},
                       posts.created as {nameof(Post.created)},
-                      u.name as {nameof(Post.authorName)}
+                      u.name as {nameof(Post.authorName)},
+                      u.avatarUrl as {nameof(Post.avatarUrl)}
                       from keepsocial.posts join keepsocial.users u on u.id = posts.author_id where posts.id = @id;";
         using (var conn = _dataSource.OpenConnection())
         {
@@ -66,6 +78,9 @@ public class PostRepository
         }
     }
 
+    /*
+     * deletes the post with the given id and the comments to the post
+     */
     public void deletePost(int id)
     {
         var deleteCommentsOnPost = $@"delete from keepsocial.comments where post_id = @id";
@@ -78,6 +93,9 @@ public class PostRepository
         }
     }
 
+    /*
+     * updates the comment with the given data and returns it
+     */
     public Post updatePost(int id, string text, string imgurl)
     {
         var update = $@"Update keepsocial.posts set text = @text, img_url = @imgurl, created = @created where id = @id;";
@@ -86,7 +104,8 @@ public class PostRepository
                      posts.text as {nameof(Post.text)},
                      posts.img_url as {nameof(Post.imgUrl)},
                      posts.created as {nameof(Post.created)},
-                     u.name as {nameof(Post.authorName)}
+                     u.name as {nameof(Post.authorName)},
+                    u.avatarUrl as {nameof(Post.avatarUrl)}
                     from keepsocial.posts join keepsocial.users u on u.id = posts.author_id where posts.id = @id;";
         using (var conn = _dataSource.OpenConnection())
         {

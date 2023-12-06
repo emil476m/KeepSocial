@@ -12,17 +12,23 @@ namespace API.Controllers;
 public class PostController : ControllerBase
 {
     private readonly PostService _postService;
+    private BlobService _blobService;
 
-    public PostController(PostService postService)
+    public PostController(PostService postService, BlobService blobService)
     {
         _postService = postService;
+        _blobService = blobService;
     }
 
+    /*
+     * sends data from a postDto to the Post service class and returns the post once it has been created 
+     */
     [RequireAuthentication]
     [HttpPost]
     [Route("/api/post")]
     public IActionResult CreatePost([FromBody] PostDto dto)
     {
+        
         var post = new Post
         {
             id = dto.id,
@@ -35,6 +41,9 @@ public class PostController : ControllerBase
         return Ok(_postService.createPost(post));
     }
 
+    /*
+     * returns an initial amount of post 
+     */
     [HttpGet]
     [Route("/api/getposts")]
     public IActionResult getPosts()
@@ -49,7 +58,10 @@ public class PostController : ControllerBase
             return BadRequest("failed to get posts please try again");
         }
     }
-
+    
+    /*
+     * returns more posts to the user depending on the variables limit and off set
+     */
     [HttpGet]
     [Route("/api/getmoreposts")]
     public IActionResult getmoreposts([FromQuery] int limit, int offset)
@@ -64,7 +76,10 @@ public class PostController : ControllerBase
             return BadRequest("failed to get more posts please try again");
         }
     }
-
+    
+    /*
+     * sends a posts id to the PostService and returns a post
+     */
     [HttpGet]
     [Route("/api/post/{id}")]
     public IActionResult getFullPost([FromRoute] int id)
@@ -80,6 +95,9 @@ public class PostController : ControllerBase
         }
     }
     
+    /*
+     * sends a posts id to the Post service class
+     */
     [HttpDelete]
     [Route("/api/deletepost")]
     public IActionResult deletePost([FromQuery] int id)
@@ -96,6 +114,9 @@ public class PostController : ControllerBase
         }
     }
     
+    /*
+     * sends data from a PostDto to the Post service class
+     */
     [HttpPut]
     [Route("/api/post/{id}")]
     public IActionResult UpdatePost(PostDto dto, [FromRoute] int id)
@@ -138,6 +159,44 @@ public class PostController : ControllerBase
         catch (Exception e)
         {
             return BadRequest("failed to get posts please try again");
+        }
+    }
+    
+    /*
+     * uploads an image to blobstorage and returns the image's url 
+     */
+    [HttpPost]
+    [RequireAuthentication]
+    [Route("/api/postimg")]
+    public IActionResult uploadImg([FromForm] IFormFile? image, [FromQuery] string? url)
+    {
+        if (url.Equals("undefined"))
+        {
+            url = null;
+        }
+
+        try
+        {
+            if (image?.Length > 10 * 1024 * 1024) return StatusCode(StatusCodes.Status413PayloadTooLarge);
+            string? imgUrl = url;
+            if (image != null)
+            {
+             
+                    using var imageTransform = new ImageTransform(image.OpenReadStream())
+                        .Resize(900, 450)
+                        .RemoveMetadata()
+                        .Jpeg();
+                    // "postimages" is the container name
+                    imgUrl = _blobService.Save("postimages", imageTransform.ToStream(), imgUrl);
+                
+            }
+
+            var res = new ResponseDto { MessageToClient = imgUrl };
+            return Ok(res);
+        }
+        catch (Exception e)
+        {
+            return BadRequest("Failed to upload image" + e);
         }
     }
 }

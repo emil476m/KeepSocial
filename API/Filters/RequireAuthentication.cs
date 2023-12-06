@@ -5,6 +5,9 @@ namespace API.Filters;
 
 public class RequireAuthentication : ActionFilterAttribute
 {
+    /*
+     * checks if a user is logged in
+     */
     public override void OnActionExecuting(ActionExecutingContext context)
     {
         var str = context.HttpContext.Request.Headers.Authorization.FirstOrDefault();

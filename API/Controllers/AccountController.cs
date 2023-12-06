@@ -17,7 +17,8 @@ public class AccountController : ControllerBase
     private readonly HttpClientService _clientService;
     private readonly BlobService _blobService;
 
-    public AccountController(AccountService accountService, BlobService blobService, JwtService jwtService, HttpClientService httpClientService)
+    public AccountController(AccountService accountService, BlobService blobService, JwtService jwtService,
+        HttpClientService httpClientService)
     {
         _accountService = accountService;
         _jwtService = jwtService;
@@ -27,7 +28,7 @@ public class AccountController : ControllerBase
     }
 
 
-    
+
     [HttpPost]
     [Route("/api/account/createuser")]
     public ResponseDto CreateUser([FromBody] RegisterUserDto dto)
@@ -39,14 +40,9 @@ public class AccountController : ControllerBase
         };
     }
     
-    [HttpGet]
-    [RequireAuthentication]
-    [Route("/account/getAllUsers")]
-    public IEnumerable<User> getTest()
-    {
-        return _accountService.getUserName();
-    }
-    
+    /**
+     * sends the login credentials from the Login dto to the AccountService class 
+     */
     [HttpPost]
     [RateLimiter(5)]
     [Route("/api/account/login")]
@@ -60,7 +56,9 @@ public class AccountController : ControllerBase
     
     
     
-    
+    /*
+     * gets the sight key for recapcha
+     */
     [HttpGet]
     [Route("/api/skey")]
     public ResponseDto getSitekey()
@@ -72,6 +70,9 @@ public class AccountController : ControllerBase
         };
     }
 
+    /*
+     * sends the current user's id to the AccountService class and returns that User object 
+     */
     [RequireAuthentication]
     [HttpGet]
     [Route("/api/whoami")]
@@ -105,6 +106,9 @@ public class AccountController : ControllerBase
         }
     }
 
+    /*
+     * sends a validation request and returns true or false depending on the result
+     */
     [HttpPost]
     [Route("/api/ishuman")]
     public async Task<ResponseDto> ishuman([FromBody] RecaptchaTokenDTO dto)
@@ -115,6 +119,7 @@ public class AccountController : ControllerBase
             ResponseData = new {ishuman}
         };
     }
+
     [RequireAuthentication]
     [HttpGet]
     [Route("/api/freinds")]
@@ -123,6 +128,7 @@ public class AccountController : ControllerBase
         int userId = HttpContext.GetSessionData().UserId!;
         return _accountService.getFriends(userId, pageNumber);
     }
+
     [RequireAuthentication]
     [HttpPost]
     [Route("/api/account/validationGeneration")]
@@ -232,7 +238,38 @@ public class AccountController : ControllerBase
             // "avatar" is the container name
             avatarUrl = _blobService.Save("avatar", AvatarTransform.ToStream(),avatarUrl);
         }
+
         _accountService.UpdateAvatar(session, avatarUrl);
         return Ok();
     }
+
+
+    /**
+     * returns a list of FriendRequest that have been send to a friend request
+     */
+    [RequireAuthentication]
+    [HttpGet]
+    [Route("/api/account/GetFriendRequests")]
+    public IEnumerable<FriendRequestModel> GetRequests(int pageNumber)
+    {
+        int userId = HttpContext.GetSessionData().UserId!;
+
+        return _accountService.GetFriendRequest(userId, pageNumber);
+    }
+    
+    [RequireAuthentication]
+    [HttpPut]
+    [Route("/api/account/FriendRequestsResponse")]
+    public ResponseDto RequestsResponse(RequestUpdateDto response)
+    {
+        int userId = HttpContext.GetSessionData().UserId!;
+
+        string messageToClient = _accountService.handleFriendRequest(response.Response, response.RequestId, response.RequesterId, userId);
+        
+        return new ResponseDto
+        {
+            MessageToClient = messageToClient
+        };
+    }
+
 }

@@ -8,6 +8,9 @@ namespace API;
 
 public static class ServiceCollectionExtensions
 {
+    /*
+     * adds JwtService when method is called
+     */
     public static void AddJwtService(this IServiceCollection services)
     {
         services.AddSingleton<JwtOptions>(services =>
@@ -29,6 +32,9 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<JwtService>();
     }
     
+    /*
+     * adds SwaggerGen with BearerJwt when method is called
+     */
     public static void AddSwaggerGenWithBearerJWT(this IServiceCollection services)
     {
         services.AddSwaggerGen(c =>
