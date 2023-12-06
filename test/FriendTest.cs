@@ -28,6 +28,7 @@ create table if not exists keepsocial.users (
         primary key (id)
 );
  
+
 create table if not exists keepsocial.password_hash (
     user_id integer,
     hash VARCHAR(350) NOT NULL ,
