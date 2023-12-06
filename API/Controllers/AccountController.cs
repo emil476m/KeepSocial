@@ -269,4 +269,28 @@ public class AccountController : ControllerBase
         };
     }
 
+    [RequireAuthentication]
+    [HttpGet]
+    [Route("/api/account/haveSendFriendRequest{requestingId}")]
+    public IActionResult HaveSendFriendRequest([FromRoute]int requestingId)
+    {
+        int userid = HttpContext.GetSessionData().UserId;
+
+        return Ok(_accountService.HaveSendFriendRequest(userid, requestingId));
+        
+    }
+    
+    [RequireAuthentication]
+    [HttpPost]
+    [Route("/api/account/SendFriendRequest{requestingId}")]
+    public IActionResult SendFriendRequest([FromRoute]int requestingId)
+    {
+        int userid = HttpContext.GetSessionData().UserId;
+        
+        return Ok(_accountService.SendFriendRequest(userid, requestingId));
+
+        //TODO return bool if there could be send a friend request
+
+    }
+    
 }
