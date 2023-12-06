@@ -1,12 +1,10 @@
 import {Component, OnInit} from "@angular/core";
-import {AbstractControl, FormControl, Validators} from "@angular/forms";
+import {FormControl, Validators} from "@angular/forms";
 import {firstValueFrom} from "rxjs";
-import {HttpClient, HttpErrorResponse} from "@angular/common/http";
+import {HttpClient} from "@angular/common/http";
 import {newAccount} from "../accountInterface";
 import {ToastController} from "@ionic/angular";
-import {calendarNumber} from "ionicons/icons";
 import {Router, UrlTree} from "@angular/router";
-import {Environment} from "@angular/cli/lib/config/workspace-schema";
 import {environment} from "../../environments/environment.prod";
 
 @Component({
@@ -52,7 +50,9 @@ import {environment} from "../../environments/environment.prod";
                 </div>
               </ion-item>
               <ion-item>
-                <ion-button (click)="createAccount()" data-testid="accountCreateBTN_">Create Account</ion-button>
+                <ion-button (click)="createAccount()" data-testid="accountCreateBTN_"
+                            *ngIf="APassword.valid && APasswordRepeat.valid && ADate.valid && AEmail.valid && AName.valid"
+                >Create Account</ion-button>
               </ion-item>
             </ion-col>
             <ion-col>

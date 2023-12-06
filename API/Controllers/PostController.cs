@@ -131,6 +131,37 @@ public class PostController : ControllerBase
         }
     }
     
+    [HttpGet]
+    [Route("/api/userprofilepost/{id}")]
+    public IActionResult getAllUserPost([FromRoute] int id)
+    {
+        try
+        {
+            var posts = _postService.getMoreProfileposts(10, 0, id);
+            return Ok(posts);
+        }
+        catch(Exception e)
+        {
+            return BadRequest("Failed to get the posts for the user");
+        }
+    }
+
+    [HttpGet]
+    [Route("/api/getmoreprofileposts/{id}")]
+    public IActionResult getMoreProfilePosts([FromRoute] int id, [FromQuery] int limit, int offset)
+
+    {
+        try
+        {
+            var posts = _postService.getMoreProfileposts(limit, offset, id);
+            return Ok(posts);
+        }
+        catch (Exception e)
+        {
+            return BadRequest("failed to get posts please try again");
+        }
+    }
+    
     /*
      * uploads an image to blobstorage and returns the image's url 
      */
