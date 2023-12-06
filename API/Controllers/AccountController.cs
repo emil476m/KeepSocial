@@ -289,8 +289,6 @@ public class AccountController : ControllerBase
         
         return Ok(_accountService.SendFriendRequest(userid, requestingId));
 
-        //TODO return bool if there could be send a friend request
-
     }
     
 }

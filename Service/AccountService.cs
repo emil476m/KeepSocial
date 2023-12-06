@@ -226,7 +226,13 @@ public class AccountService
         {
             Console.WriteLine(e);
 
-            if (e.Message == "You have sned to manny request to this user") throw e;
+            if (e.Message == "You have sned to manny request to this user")
+                return new FriendRequestResponse()
+                {
+                    requestId = 0,
+                    responseMessage = "You have send to many request"
+                };
+            
 
             throw new Exception("an Error Acoured while feching request");
         }
@@ -255,7 +261,11 @@ public class AccountService
 
             if (e.Message == "You have sned to manny request to this user")
             {
-                throw e;
+                return new FriendRequestResponse()
+                {
+                    requestId = 0,
+                    responseMessage = "You have send to many request"
+                };
             }
             else if (e.Message == "request might not have been created")
             {
