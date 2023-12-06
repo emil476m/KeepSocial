@@ -14,4 +14,5 @@ export class Globalstate
   comments : CommentModel[] = [];
   updatingWhatAccountItem: String|null = null;
   currentUserName: string | null = null;
+  profileId: number|null = null;
 }
