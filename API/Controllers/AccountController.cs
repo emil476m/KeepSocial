@@ -39,14 +39,9 @@ public class AccountController : ControllerBase
         };
     }
     
-    [HttpGet]
-    [RequireAuthentication]
-    [Route("/account/getAllUsers")]
-    public IEnumerable<User> getTest()
-    {
-        return _accountService.getUserName();
-    }
-    
+    /**
+     * sends the login credentials from the Login dto to the AccountService class 
+     */
     [HttpPost]
     [RateLimiter(5)]
     [Route("/api/account/login")]
@@ -60,7 +55,9 @@ public class AccountController : ControllerBase
     
     
     
-    
+    /*
+     * gets the sight key for recapcha
+     */
     [HttpGet]
     [Route("/api/skey")]
     public ResponseDto getSitekey()
@@ -72,6 +69,9 @@ public class AccountController : ControllerBase
         };
     }
 
+    /*
+     * sends the current user's id to the AccountService class and returns that User object 
+     */
     [RequireAuthentication]
     [HttpGet]
     [Route("/api/whoami")]
@@ -105,6 +105,9 @@ public class AccountController : ControllerBase
         }
     }
 
+    /*
+     * sends a validation request and returns true or false depending on the result
+     */
     [HttpPost]
     [Route("/api/ishuman")]
     public async Task<ResponseDto> ishuman([FromBody] RecaptchaTokenDTO dto)

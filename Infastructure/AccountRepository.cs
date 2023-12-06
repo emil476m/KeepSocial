@@ -46,6 +46,9 @@ public class AccountRepository
         }
     }
 
+    /*
+     * gets a user by their id and returns their data
+     */
     public User? GetById(int id)
     {
         var sql = $@"select

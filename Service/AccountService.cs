@@ -38,6 +38,10 @@ public class AccountService
         return _accountRepository.getUserName();
     }
 
+    /*
+     * sends the email and passwords to different destinations to authenticate a user when logging in
+     * and returns that user if a suer that matches all the information is found if nothing is found it returns null
+     */
     public User? Authenticate(string email, string password)
     {
         try

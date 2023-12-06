@@ -2,7 +2,7 @@ import {Component, OnInit} from "@angular/core";
 import {AbstractControl, FormControl, Validators} from "@angular/forms";
 import {firstValueFrom} from "rxjs";
 import {HttpClient, HttpErrorResponse} from "@angular/common/http";
-import {newAccount} from "../models/accountInterface";
+import {newAccount} from "../accountInterface";
 import {ToastController} from "@ionic/angular";
 import {calendarNumber} from "ionicons/icons";
 import {Router, UrlTree} from "@angular/router";

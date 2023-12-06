@@ -12,6 +12,9 @@ public class CommentRepository
         _dataSource = dataSource;
     }
 
+    /*
+     * creates a comment with the given data and returns it
+     */
     public Comment createComment(Comment comment)
     {
         var insert = $@"insert into keepsocial.comments(post_id,author_id,text,img_url,created) values (@postid,@authorid,@text,@imgurl,@created)
@@ -37,6 +40,9 @@ public class CommentRepository
         }
     }
 
+    /*
+     * returns comments that have the same postId and uses the ofset to know what has been loaded and limit to not load them all
+     */
     public IEnumerable<Comment> getComents(int limit, int offset, int postId)
     {
         var sql = $@"select comments.id as {nameof(Comment.id)},
@@ -55,6 +61,9 @@ public class CommentRepository
         }
     }
 
+    /*
+     * delets the comment that has the given id
+     */
     public void deleteComment(int id)
     {
         var sql = $@"delete from keepsocial.comments where id = @id";
@@ -65,6 +74,9 @@ public class CommentRepository
         }
     }
 
+    /*
+     * updates the comment with the given data and returns it 
+     */
     public Comment updateComment(int id, string text, string imgurl)
     {
         var update = $@"Update keepsocial.comments set text = @text, img_url = @imgurl, created = @created where id = @id;";
