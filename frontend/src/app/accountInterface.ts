@@ -26,3 +26,10 @@ export interface Profile {
   isFollowing: boolean
   isSelf: boolean
 }
+
+export interface SimpleUser
+{
+  userId: number
+  userDisplayname: string
+  avatarUrl?: string
+}

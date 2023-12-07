@@ -293,6 +293,43 @@ public class AccountController : ControllerBase
         return Ok(_accountService.SendFriendRequest(userid, requestingId));
 
     }
+    
+    /*
+     * sends id, offset and limit to the account service class and returns a list of SimpleUser objects
+     */
+    [HttpGet]
+    [RequireAuthentication]
+    [Route("/api/account/getfollowers")]
+    public IActionResult getfollowers([FromQuery] int id,int offset, int limit)
+    {
+        try
+        {
+            return Ok(_accountService.getFollowers(id, offset,limit));
+        }
+        catch (Exception e)
+        {
+            return NoContent();
+        }
+    }
+    
+    /*
+     * sends id, offset and limit to the account service class and returns a list of SimpleUser objects
+     */
+    [HttpGet]
+    [RequireAuthentication]
+    [Route("/api/account/getfollowing")]
+    public IActionResult getfollowing([FromQuery] int id,int offset, int limit)
+    {
+        try
+        {
+            return Ok(_accountService.getFollowing(id, offset,limit));
+        }
+        catch (Exception e)
+        {
+            return NoContent();
+        }
+    }
+
 
     [RequireAuthentication]
     [HttpDelete]
