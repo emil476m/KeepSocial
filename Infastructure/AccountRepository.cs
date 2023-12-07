@@ -357,4 +357,18 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
 
         throw new Exception("request might not have been created");
     }
+
+    public bool remoweFriend(int userId, int friendId)
+    {
+        var removeFriendSql = $@"
+           DELETE from keepsocial.friendRealeatioj
+            where (user1_id = @userId and user2_id = @friendId)
+            OR (user1_id = @friendId and user2_id = @userId);
+        ";
+
+        using (var conn = _dataSource.OpenConnection())
+        {
+            return conn.Execute(removeFriendSql, new { userId, friendId }) == 1;
+        }
+    }
 }

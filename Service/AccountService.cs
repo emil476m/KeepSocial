@@ -265,8 +265,6 @@ public class AccountService
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
-
             if (e.Message == "You have sned to manny request to this user")
             {
                 return new FriendRequestResponse()
@@ -281,6 +279,24 @@ public class AccountService
             }
 
             throw new Exception("an error accused when sending request");
+        }
+    }
+
+    public bool RemoveFriend(int userid, int friendId)
+    {
+        try
+        {
+            //if (!_accountRepository.isFriends(userid, friendId)) throw new Exception("Your not friends");
+
+            return _accountRepository.remoweFriend(userid, friendId);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+
+            if (e.Message == "Your not friends") throw e;
+
+            throw new Exception("an error have been encounter while removing friend");
         }
     }
 }

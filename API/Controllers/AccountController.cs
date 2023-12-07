@@ -293,5 +293,26 @@ public class AccountController : ControllerBase
         return Ok(_accountService.SendFriendRequest(userid, requestingId));
 
     }
+
+    [RequireAuthentication]
+    [HttpDelete]
+    [Route("/api/account/RemoveFriend{requestingId}")]
+    public IActionResult RemoveFriend([FromRoute] int friendId)
+    {
+        int userid = HttpContext.GetSessionData().UserId;
+
+        return Ok(_accountService.RemoveFriend(userid, friendId));
+    }
+    
+    [RequireAuthentication]
+    [HttpDelete]
+    [Route("/api/account/CancelRequest{requestingId}")]
+    public IActionResult CancelRequest([FromRoute] int requestId)
+    {
+        int userid = HttpContext.GetSessionData().UserId;
+
+        
+        throw new NotImplementedException();
+    }
     
 }

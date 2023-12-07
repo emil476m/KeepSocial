@@ -273,12 +273,20 @@ export class ProfilePage implements OnInit{
     }
 
 
-    if(this.friendShipState === FriendStateEnum.RequestNotSend) {
+    else if(this.friendShipState === FriendStateEnum.RequestNotSend) {
 
     const call = this.http.post<FriendRequestResponse>(environment.baseURL+"account/SendFriendRequest"+this.profileId,"");
     const result = await firstValueFrom<FriendRequestResponse>(call);
 
     if (result.requestId > 0) this.friendShipState = FriendStateEnum.RequestSend;
+    }
+
+    else if(this.friendShipState === FriendStateEnum.Friend) {
+
+      const call = this.http.delete<boolean>(environment.baseURL+"account/RemoveFriend"+this.profileId);
+      const result = await firstValueFrom(call);
+
+      if(result) this.friendShipState = FriendStateEnum.RequestNotSend;
     }
   }
 
