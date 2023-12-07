@@ -24,7 +24,7 @@ import {Globalstate} from "./services/states/globalstate";
               <ion-icon name="person-outline"></ion-icon>
               Profile
             </ion-tab-button>
-            <ion-tab-button tab="Search" routerLink="search" [disabled]="!token.getToken()">
+            <ion-tab-button tab="search" routerLink="search" [disabled]="!token.getToken()">
               <ion-icon name="search-outline"></ion-icon>
               Search
             </ion-tab-button>

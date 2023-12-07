@@ -387,20 +387,25 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
         }
     }
 
-    public IEnumerable<Profile> profileSearch(int limit, int offset, string searchTerm)
+    public IEnumerable<SimpleUser> profileSearch(int limit, int offset, string searchTerm)
     {
+        Console.WriteLine("this is the searchterm: "+searchTerm);
         var sql = $@"
         select 
-            id as {nameof(Profile.userId)},
-            name as {nameof(Profile.userDisplayName)},
-            avatarurl as {nameof(Profile.avatarUrl)},
+            id as userId,
+            name as userDisplayName,
+            avatarurl as {nameof(SimpleUser.avatarUrl)}
         from keepsocial.users
-        where name LIKE @searchName AND isDeleted = false offset @offset limit @limit;
+        where name LIKE @searchTerm AND isDeleted = false offset @offset limit @limit;
         ";
 
         using (var conn = _dataSource.OpenConnection())
         {
-            return conn.Query<Profile>(sql, new {searchTerm = searchTerm + "%", limit, offset});
+            
+            var searchResult = conn.Query<SimpleUser>(sql, new {searchTerm = searchTerm + "%", limit, offset});
+            Console.WriteLine("this is the result: "+searchResult);
+
+            return searchResult;
         }
     }
     

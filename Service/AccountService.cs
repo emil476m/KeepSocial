@@ -225,7 +225,7 @@ public class AccountService
         }
     }
 
-    public IEnumerable<Profile> profileSearch(int limit, int offset, string searchTerm)
+    public IEnumerable<SimpleUser> profileSearch(int limit, int offset, string searchTerm)
     {
         return _accountRepository.profileSearch(limit, offset, searchTerm);
     }

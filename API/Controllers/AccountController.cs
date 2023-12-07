@@ -274,7 +274,7 @@ public class AccountController : ControllerBase
     
     [HttpGet]
     [Route("/api/Search/{searchTerm}")]
-    public IActionResult profileSearch([FromRoute] string searchTerm, [FromQuery] int limit, int offset)
+    public IActionResult profileSearch([FromRoute] string searchTerm, [FromQuery] int limit, [FromQuery]int offset)
     {
         try
         {
@@ -283,6 +283,7 @@ public class AccountController : ControllerBase
         }
         catch (Exception e)
         {
+            Console.WriteLine(e.StackTrace);
             return BadRequest("failed to get search results please try again");
         }
     }
