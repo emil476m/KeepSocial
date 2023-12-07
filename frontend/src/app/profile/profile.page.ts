@@ -261,12 +261,25 @@ export class ProfilePage implements OnInit{
   }
 
   async sendRequest(profileId: number) {
-    if(this.friendShipState !== FriendStateEnum.RequestNotSend) return;
+    if(this.friendShipState === FriendStateEnum.CantSend) {
+      this.toast.create({
+        color: "danger",
+        message: 'You have been denied to many times, and are no longer allowed to sen requests to this user',
+        duration: 2000,
+      }).then(res =>
+      {
+        res.present();
+      })
+    }
+
+
+    if(this.friendShipState === FriendStateEnum.RequestNotSend) {
 
     const call = this.http.post<FriendRequestResponse>(environment.baseURL+"account/SendFriendRequest"+this.profileId,"");
     const result = await firstValueFrom<FriendRequestResponse>(call);
 
     if (result.requestId > 0) this.friendShipState = FriendStateEnum.RequestSend;
+    }
   }
 
 
