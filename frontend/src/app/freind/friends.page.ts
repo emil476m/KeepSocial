@@ -47,7 +47,7 @@ import {Message} from "../models/Message.model";
             <!--Open chat with friend or create if they dont have one-->
             <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
           </ion-button>
-          <ion-button class="cardBtn" (click)="goFriend(friend.userId)"><!---view acccount--->
+          <ion-button class="cardBtn" (click)="goFriend(friend.userDisplayName)"><!---view acccount--->
             <ion-icon name="person-outline"></ion-icon>
           </ion-button>
         </ion-card>
@@ -126,9 +126,8 @@ export class FriendsPage implements OnInit {
     console.log(result);
   }
 
-  goFriend(userId: number) {
-    console.log("viewing user #" + userId);
-    //implement when user profile have been made
+  goFriend(displayname: string) {
+    this.router.navigate(['profile/'+displayname])
   }
 
   async Accept(requesterId: number, requestId: number) {
