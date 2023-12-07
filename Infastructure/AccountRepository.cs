@@ -368,7 +368,7 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
 
         using (var conn = _dataSource.OpenConnection())
         {
-            return conn.Execute(removeFriendSql, new { userId, friendId }) == 1;
+            return conn.Execute(removeFriendSql, new { userId, friendId }) != 0;
         }
     }
 }
