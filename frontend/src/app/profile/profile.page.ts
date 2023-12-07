@@ -263,8 +263,10 @@ export class ProfilePage implements OnInit{
   async sendRequest(profileId: number) {
     if(this.friendShipState !== FriendStateEnum.RequestNotSend) return;
 
-    const call = this.http.get<FriendRequestResponse>(environment.baseURL+"account/SendFriendRequest"+this.profileId);
+    const call = this.http.post<FriendRequestResponse>(environment.baseURL+"account/SendFriendRequest"+this.profileId,"");
     const result = await firstValueFrom<FriendRequestResponse>(call);
+
+    if (result.requestId > 0) this.friendShipState = FriendStateEnum.RequestSend;
   }
 
 
