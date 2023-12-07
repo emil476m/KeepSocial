@@ -28,6 +28,7 @@ create table if not exists keepsocial.users (
         primary key (id)
 );
  
+
 create table if not exists keepsocial.password_hash (
     user_id integer,
     hash VARCHAR(350) NOT NULL ,
@@ -256,6 +257,52 @@ insert into keepsocial.password_hash(user_id,hash,salt,algorithm) values (112,'U
             body.RequesterId.Should().Be(Checkrequestanwser.RequesterId);
             body.RequestId.Should().Be(Checkrequestanwser.RequestId);
             body.Response.Should().Be(Checkrequestanwser.Response);
+        }
+    }
+
+    [Test]
+    public async Task SendRequest()
+    {
+        string apicall = apirUrl + "account/SendFriendRequest112";
+        Helper.TriggerRebuild(resetbd);
+        
+        HttpResponseMessage responseMessage;
+        try
+        {
+            responseMessage = await _httpClient.PostAsJsonAsync(apicall,"");
+            TestContext.WriteLine("full body response: " + await responseMessage.Content.ReadAsStringAsync());
+        }
+        catch (Exception e)
+        {
+            throw new Exception("Failed to create resposne to request", e);
+        }
+        
+        FriendRequestResponse response;
+
+        try
+        {
+            response = JsonConvert.DeserializeObject<FriendRequestResponse>(await responseMessage.Content.ReadAsStringAsync()) ??
+                       throw new InvalidOperationException();
+        }
+        catch (Exception e)
+        {
+            throw new Exception(Helper.BadResponseBody("bad response"), e);
+        }
+        
+        var sql = @$"select request_id from keepsocial.friendRequestTable where requester = 111 AND requested = 112;";
+
+        int requestId = -117; // Yes this is a halo reference 
+        
+        using (var conn = Helper.DataSource.OpenConnection())
+        {
+            requestId = conn.QuerySingle<int>(sql);
+        }
+        
+        using (new AssertionScope())
+        {
+            responseMessage.StatusCode.Should().Be(HttpStatusCode.OK);
+            response.responseMessage.Should().Be("request have been created");
+            response.requestId.Should().Be(requestId);
         }
     }
 }

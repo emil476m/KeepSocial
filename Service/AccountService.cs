@@ -157,21 +157,21 @@ public class AccountService
 
     public Profile getProfile(string profileName, int currentUserId)
     {
-            var profile = _accountRepository.getProfile(profileName);
-            if (profile.userId == currentUserId)
-            {
-                profile.isSelf = true;
-                profile.isFriend = false;
-                profile.isFollowing = false;
-            }
-            else
-            {
-                profile.isSelf = false;
-                profile.isFollowing = _accountRepository.CheckIfFollowing(currentUserId, profile.userId);
-                profile.isFriend = _accountRepository.isFriends(currentUserId, profile.userId);
-            }
-            
-            return profile;
+        var profile = _accountRepository.getProfile(profileName);
+        if (profile.userId == currentUserId)
+        {
+            profile.isSelf = true;
+            profile.isFriend = false;
+            profile.isFollowing = false;
+        }
+        else
+        {
+            profile.isSelf = false;
+            profile.isFollowing = _accountRepository.CheckIfFollowing(currentUserId, profile.userId);
+            profile.isFriend = _accountRepository.isFriends(currentUserId, profile.userId);
+        }
+
+        return profile;
     }
 
     public void UpdateAvatar(SessionData session, string? avatarUrl)
@@ -221,6 +221,66 @@ public class AccountService
         {
             Console.WriteLine(e);
             throw new Exception("could not handle response to friend request");
+        }
+    }
+
+    public FriendRequestResponse HaveSendFriendRequest(int userid, int requestingId)
+    {
+        try
+        {
+            return _accountRepository.HaveSendFriendRequest(userid, requestingId);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+
+            if (e.Message == "You have sned to manny request to this user")
+                return new FriendRequestResponse()
+                {
+                    requestId = 0,
+                    responseMessage = "You have send to many request"
+                };
+            
+
+            throw new Exception("an Error Acoured while feching request");
+        }
+    }
+
+    public FriendRequestResponse SendFriendRequest(int userid, int requestingId)
+    {
+        try
+        {
+            var response = _accountRepository.HaveSendFriendRequest(userid, requestingId);
+
+            if (response.requestId <= 0)
+            {
+                return _accountRepository.SendFriendRequest(requestingId, userid);
+            }
+
+            return new FriendRequestResponse()
+            {
+                requestId = response.requestId,
+                responseMessage = "there is already an ongoing response"
+            };
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+
+            if (e.Message == "You have sned to manny request to this user")
+            {
+                return new FriendRequestResponse()
+                {
+                    requestId = 0,
+                    responseMessage = "You have send to many request"
+                };
+            }
+            else if (e.Message == "request might not have been created")
+            {
+                throw e;
+            }
+
+            throw new Exception("an error accused when sending request");
         }
     }
 }
