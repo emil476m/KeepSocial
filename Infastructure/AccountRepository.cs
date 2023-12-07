@@ -373,6 +373,9 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
         }
     }
 
+    /*
+     * gets the users that are following a user with the given id
+     */
     public IEnumerable<SimpleUser> getFollowing(int id, int offset, int limit)
     {
         var sql = $@"select users.id as {nameof(SimpleUser.userId)}, users.name as {nameof(SimpleUser.userDisplayname)}, users.avatarUrl as {nameof(SimpleUser.avatarUrl)}

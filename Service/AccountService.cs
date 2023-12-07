@@ -285,6 +285,9 @@ public class AccountService
         }
     }
 
+    /*
+     * sends id, offset and limit to the accountRepository and returns the users followers
+     */
     public IEnumerable<SimpleUser> getFollowers(int id, int offset, int limit)
     {
         try
@@ -298,6 +301,9 @@ public class AccountService
         }
     }
 
+    /*
+     * sends id, offset and limit to the accountRepository and returns the users following
+     */
     public IEnumerable<SimpleUser> getFollowing(int id, int offset, int limit)
     {
         try

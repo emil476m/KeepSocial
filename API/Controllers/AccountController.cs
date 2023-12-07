@@ -294,6 +294,9 @@ public class AccountController : ControllerBase
 
     }
     
+    /*
+     * sends id, offset and limit to the account service class and returns a list of SimpleUser objects
+     */
     [HttpGet]
     [RequireAuthentication]
     [Route("/api/account/getfollowers")]
@@ -309,6 +312,9 @@ public class AccountController : ControllerBase
         }
     }
     
+    /*
+     * sends id, offset and limit to the account service class and returns a list of SimpleUser objects
+     */
     [HttpGet]
     [RequireAuthentication]
     [Route("/api/account/getfollowing")]
