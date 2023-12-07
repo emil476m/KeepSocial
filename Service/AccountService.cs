@@ -1,3 +1,4 @@
+using System.Collections;
 using API;
 using Infastructure;
 using Microsoft.Extensions.Logging;
@@ -281,6 +282,38 @@ public class AccountService
             }
 
             throw new Exception("an error accused when sending request");
+        }
+    }
+
+    /*
+     * sends id, offset and limit to the accountRepository and returns the users followers
+     */
+    public IEnumerable<SimpleUser> getFollowers(int id, int offset, int limit)
+    {
+        try
+        {
+            return _accountRepository.getFollowers(id,offset,limit);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception("Failed to get followers for the user");
+        }
+    }
+
+    /*
+     * sends id, offset and limit to the accountRepository and returns the users following
+     */
+    public IEnumerable<SimpleUser> getFollowing(int id, int offset, int limit)
+    {
+        try
+        {
+            return _accountRepository.getFollowing(id,offset,limit);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception("Failed to get following for the user");
         }
     }
 }

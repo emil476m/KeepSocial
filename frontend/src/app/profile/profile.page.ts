@@ -112,7 +112,7 @@ import {FriendRequestResponse} from "../models/FriendRequestResponse";
                             </ion-avatar>
                             <ion-text style="padding-left: 10px;">{{post.authorName}}</ion-text>
                         </ion-buttons>
-                        <ion-buttons slot="end" *ngIf="profileId === post.authorId">
+                        <ion-buttons slot="end" *ngIf="this.isSelf">
                             <ion-button (click)="ismenueopenPost()">
                                 <ion-icon name="ellipsis-vertical-outline"></ion-icon>
                             </ion-button>
