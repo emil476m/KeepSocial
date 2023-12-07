@@ -332,7 +332,7 @@ insert into keepsocial.password_hash(user_id,hash,salt,algorithm) values (111,'6
             throw new Exception("Failed to update the post", e);
         }
 
-        var dbcheck = Helper.checkifexists(1, sqlcheck);
+        var dbcheck = Helper.checkifexists(sqlcheck);
         using (new AssertionScope())
         {
             responseMessage.StatusCode.Should().Be(HttpStatusCode.OK);
