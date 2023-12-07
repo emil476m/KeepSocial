@@ -302,4 +302,30 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
 
         return "denied Request";
     }
+
+
+    /*
+     * gets the users that follow a user with the given id
+     */
+    public IEnumerable<SimpleUser> getFollowers(int id, int offset, int limit)
+    {
+        var sql = $@"select users.id as {nameof(SimpleUser.userId)}, users.name as {nameof(SimpleUser.userDisplayname)}, users.avatarUrl as {nameof(SimpleUser.avatarUrl)}
+                        from keepsocial.users join keepsocial.followrelation f on users.id = f.follower_id where followed_id = @id offset @offset limit @limit";
+
+        using (var conn = _dataSource.OpenConnection())
+        {
+            return conn.Query<SimpleUser>(sql, new { id, offset, limit });
+        }
+    }
+
+    public IEnumerable<SimpleUser> getFollowing(int id, int offset, int limit)
+    {
+        var sql = $@"select users.id as {nameof(SimpleUser.userId)}, users.name as {nameof(SimpleUser.userDisplayname)}, users.avatarUrl as {nameof(SimpleUser.avatarUrl)}
+                        from keepsocial.users join keepsocial.followrelation f on users.id = f.follower_id where followed_id = @id offset @offset limit @limit";
+
+        using (var conn = _dataSource.OpenConnection())
+        {
+            return conn.Query<SimpleUser>(sql, new { id, offset, limit });
+        }
+    }
 }

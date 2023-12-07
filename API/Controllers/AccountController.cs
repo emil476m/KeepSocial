@@ -272,4 +272,34 @@ public class AccountController : ControllerBase
         };
     }
 
+    [HttpGet]
+    [RequireAuthentication]
+    [Route("/api/account/getfollowers")]
+    public IActionResult getfollowers([FromQuery] int id,int offset, int limit)
+    {
+        try
+        {
+            return Ok(_accountService.getFollowers(id, offset,limit));
+        }
+        catch (Exception e)
+        {
+            return NoContent();
+        }
+    }
+    
+    [HttpGet]
+    [RequireAuthentication]
+    [Route("/api/account/getfollowing")]
+    public IActionResult getfollowing([FromQuery] int id,int offset, int limit)
+    {
+        try
+        {
+            return Ok(_accountService.getFollowing(id, offset,limit));
+        }
+        catch (Exception e)
+        {
+            return NoContent();
+        }
+    }
+
 }

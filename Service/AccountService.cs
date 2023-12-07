@@ -1,3 +1,4 @@
+using System.Collections;
 using API;
 using Infastructure;
 using Microsoft.Extensions.Logging;
@@ -221,6 +222,32 @@ public class AccountService
         {
             Console.WriteLine(e);
             throw new Exception("could not handle response to friend request");
+        }
+    }
+
+    public IEnumerable<SimpleUser> getFollowers(int id, int offset, int limit)
+    {
+        try
+        {
+            return _accountRepository.getFollowers(id,offset,limit);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception("Failed to get followers for the user");
+        }
+    }
+
+    public IEnumerable<SimpleUser> getFollowing(int id, int offset, int limit)
+    {
+        try
+        {
+            return _accountRepository.getFollowing(id,offset,limit);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception("Failed to get following for the user");
         }
     }
 }

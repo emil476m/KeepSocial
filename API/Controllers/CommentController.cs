@@ -141,7 +141,7 @@ public class CommentController: ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest("Failed to upload image" + e);
+            return BadRequest("Failed to upload image");
         }
     }
 }
