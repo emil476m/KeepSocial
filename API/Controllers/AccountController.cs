@@ -287,4 +287,62 @@ public class AccountController : ControllerBase
         }
     }
 
+    [RequireAuthentication]
+    [HttpGet]
+    [Route("/api/account/haveSendFriendRequest{requestingId}")]
+    public IActionResult HaveSendFriendRequest([FromRoute]int requestingId)
+    {
+        int userid = HttpContext.GetSessionData().UserId;
+
+        return Ok(_accountService.HaveSendFriendRequest(userid, requestingId));
+        
+    }
+    
+    [RequireAuthentication]
+    [HttpPost]
+    [Route("/api/account/SendFriendRequest{requestingId}")]
+    public IActionResult SendFriendRequest([FromRoute]int requestingId)
+    {
+        int userid = HttpContext.GetSessionData().UserId;
+        
+        return Ok(_accountService.SendFriendRequest(userid, requestingId));
+
+    }
+    
+    /*
+     * sends id, offset and limit to the account service class and returns a list of SimpleUser objects
+     */
+    [HttpGet]
+    [RequireAuthentication]
+    [Route("/api/account/getfollowers")]
+    public IActionResult getfollowers([FromQuery] int id,int offset, int limit)
+    {
+        try
+        {
+            return Ok(_accountService.getFollowers(id, offset,limit));
+        }
+        catch (Exception e)
+        {
+            return NoContent();
+        }
+    }
+    
+    /*
+     * sends id, offset and limit to the account service class and returns a list of SimpleUser objects
+     */
+    [HttpGet]
+    [RequireAuthentication]
+    [Route("/api/account/getfollowing")]
+    public IActionResult getfollowing([FromQuery] int id,int offset, int limit)
+    {
+        try
+        {
+            return Ok(_accountService.getFollowing(id, offset,limit));
+        }
+        catch (Exception e)
+        {
+            return NoContent();
+        }
+    }
+
 }

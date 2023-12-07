@@ -1,3 +1,4 @@
+using System.Collections;
 using API;
 using Infastructure;
 using Microsoft.Extensions.Logging;
@@ -157,21 +158,21 @@ public class AccountService
 
     public Profile getProfile(string profileName, int currentUserId)
     {
-            var profile = _accountRepository.getProfile(profileName);
-            if (profile.userId == currentUserId)
-            {
-                profile.isSelf = true;
-                profile.isFriend = false;
-                profile.isFollowing = false;
-            }
-            else
-            {
-                profile.isSelf = false;
-                profile.isFollowing = _accountRepository.CheckIfFollowing(currentUserId, profile.userId);
-                profile.isFriend = _accountRepository.isFriends(currentUserId, profile.userId);
-            }
-            
-            return profile;
+        var profile = _accountRepository.getProfile(profileName);
+        if (profile.userId == currentUserId)
+        {
+            profile.isSelf = true;
+            profile.isFriend = false;
+            profile.isFollowing = false;
+        }
+        else
+        {
+            profile.isSelf = false;
+            profile.isFollowing = _accountRepository.CheckIfFollowing(currentUserId, profile.userId);
+            profile.isFriend = _accountRepository.isFriends(currentUserId, profile.userId);
+        }
+
+        return profile;
     }
 
     public void UpdateAvatar(SessionData session, string? avatarUrl)
@@ -227,5 +228,97 @@ public class AccountService
     public IEnumerable<Profile> profileSearch(int limit, int offset, string searchTerm)
     {
         return _accountRepository.profileSearch(limit, offset, searchTerm);
+    }
+
+    public FriendRequestResponse HaveSendFriendRequest(int userid, int requestingId)
+    {
+        try
+        {
+            return _accountRepository.HaveSendFriendRequest(userid, requestingId);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+
+            if (e.Message == "You have sned to manny request to this user")
+                return new FriendRequestResponse()
+                {
+                    requestId = 0,
+                    responseMessage = "You have send to many request"
+                };
+            
+
+            throw new Exception("an Error Acoured while feching request");
+        }
+    }
+
+    public FriendRequestResponse SendFriendRequest(int userid, int requestingId)
+    {
+        try
+        {
+            var response = _accountRepository.HaveSendFriendRequest(userid, requestingId);
+
+            if (response.requestId <= 0)
+            {
+                return _accountRepository.SendFriendRequest(requestingId, userid);
+            }
+
+            return new FriendRequestResponse()
+            {
+                requestId = response.requestId,
+                responseMessage = "there is already an ongoing response"
+            };
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+
+            if (e.Message == "You have sned to manny request to this user")
+            {
+                return new FriendRequestResponse()
+                {
+                    requestId = 0,
+                    responseMessage = "You have send to many request"
+                };
+            }
+            else if (e.Message == "request might not have been created")
+            {
+                throw e;
+            }
+
+            throw new Exception("an error accused when sending request");
+        }
+    }
+
+    /*
+     * sends id, offset and limit to the accountRepository and returns the users followers
+     */
+    public IEnumerable<SimpleUser> getFollowers(int id, int offset, int limit)
+    {
+        try
+        {
+            return _accountRepository.getFollowers(id,offset,limit);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception("Failed to get followers for the user");
+        }
+    }
+
+    /*
+     * sends id, offset and limit to the accountRepository and returns the users following
+     */
+    public IEnumerable<SimpleUser> getFollowing(int id, int offset, int limit)
+    {
+        try
+        {
+            return _accountRepository.getFollowing(id,offset,limit);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception("Failed to get following for the user");
+        }
     }
 }

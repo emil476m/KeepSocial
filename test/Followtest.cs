@@ -1,7 +1,5 @@
 ﻿using System.Net;
 using System.Net.Http.Headers;
-using System.Net.Http.Json;
-using Dapper;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Infastructure;
@@ -10,9 +8,10 @@ using Newtonsoft.Json;
 namespace test;
 
 [TestFixture]
-public class FriendTest
+public class Followtest
 {
-    private string resetbd = $@"
+
+    private string resetDb = $@"
 DROP SCHEMA IF EXISTS keepsocial CASCADE;
 CREATE SCHEMA keepsocial;
  
@@ -126,12 +125,11 @@ create table if not exists keepsocial.followrelation
 );
 
 insert into keepsocial.users(id,name,email,birthday,isdeleted) values (111,'test tester','test@email.com',date('2023-02-24'),false);
+insert into keepsocial.users(id,name,email,birthday,isdeleted) values (112,'test','isdeleted@email.com',date('2023-02-10'),false);
 insert into keepsocial.password_hash(user_id,hash,salt,algorithm) values (111,'6Po8CEcjkfC5Scoze2n5WoI7yLFePCZlEmQNPY9M0UFP0ghMegnM2t3k8HpcE/EkdYxOPJDj1XBM9J47eOdON6N9thahuXvlbY3D8Ag/y1JgHNw2ea6E5l1VWVSz7kCrQudnazfVTMQuce4emRjSLSAZAaoF55zXmBYjFOqZ5xX13TV5/UJUPkKf7uRKGNyTf1o/LlnZqmMsziF6unmCZTBgpn3W1oHr3zSh2Xm7dohmVN8+eDXPchVhUTha4u7QG75EFsILQfgALPDt3N/DUX/pHKBTVGcMAQWX1zAKyXdNPsp3MtiioBFnsJ+Zpn37mTRWNAPUMojvFekGGvb9zQ==','WwoEFhsDKJMTyb4GzbfV8inzImVI404JZSeQXWoptlUaZmuoTrKq5b/5WIqIXpeDuny7WbgDf3Hi3SuK1EmPNqTxGNbSJk3bPxufdhxwlaPXHa4vPOajEqdtLDqD+WpjvF5QK/oSTS/XB8Rj0oY0BOqW/k+KBiMTjyNc2fjJEpQ=','argon2id');
-insert into keepsocial.users(id,name,email,birthday,isdeleted) values (112,'test','secondtestUser@email.com',date('2023-02-10'),false);
 insert into keepsocial.password_hash(user_id,hash,salt,algorithm) values (112,'UhmSA3bJX5Owp8bm89NwO3V7VwSopx5vfBEFEAHnLKDSYzYxf7s/bNGG6VXLukD3N/hn+yUNJjnn120rrg7THpGf/8SzzrrSeMYWZ9xYA0bOfgR+lFl4zcrfy+vlgnudg1aHYVaj52VBodirzEg+cwg1JaXf51Rl8DRd+NFLO9OA1avvbkKwx+Ww2PX1nACHUqzKd/WzvSJLNYaRizLj95hRqRlRj44HyrID4unMCLIW87NN0j9UJ0Firo9u7xje1gZCz419IA1SABPRZcW+Gr6OIGPZeG2riTqluJuJgANyeIBPKAw7MXSO8Vz6THER5Jzbvl4Rwz/pMQ1eblmbJQ==','x4eVwCCfnM6132etvWCFHZV8ZN55E0h4BoR39AJRMeGoZ7xXUToBWjZoFSb9d1Ilu0wx3TN52dvh5qNo0cdodCaXREIWluHOv+ia+jfldvhTI9BQEsNKmEQSnV/TaAeBV1Kx+9GMICb0ZiZDxUTYMfjiHRByGGXK+dfRvoOIgcA=','argon2id');
-
 ";
-
+    
     private string apirUrl = "";
     private HttpClient _httpClient;
 
@@ -141,168 +139,73 @@ insert into keepsocial.password_hash(user_id,hash,salt,algorithm) values (112,'U
         _httpClient = new HttpClient();
         _httpClient.DefaultRequestHeaders.Authorization =
             new AuthenticationHeaderValue("Bearer", Environment.GetEnvironmentVariable("testToken"));
-        apirUrl = "http://localhost:5000/api/";
+        apirUrl = "http://localhost:5000/api/account/getfollowers";
     }
 
-    public class RequestUpdateDto
-    {
-        public required int RequesterId { get; set; }
-
-        public required int RequestId { get; set; }
-
-        public required bool Response { get; set; }
-    }
 
     [Test]
-    public async Task AcceptRequest()
+    public async Task getFollowers()
     {
-        string apicall = apirUrl + "account/FriendRequestsResponse";
-        Helper.TriggerRebuild(resetbd);
-
-        var sqlSetFriendrequest =
-            $@"INSERT INTO keepsocial.friendRequestTable(request_id, requester, requested) VALUES (101, 112, 111);";
-        using (var conn = Helper.DataSource.OpenConnection())
-        {
-            conn.Query(sqlSetFriendrequest);
-        }
-
-        var body = new RequestUpdateDto()
-        {
-            RequesterId = 112,
-            RequestId = 101,
-            Response = true
-        };
-
+        Helper.TriggerRebuild(resetDb + "INSERT INTO keepsocial.followrelation (followed_id, follower_id) VALUES(111, 112);");
+        apirUrl = apirUrl + "?id=111&offset=0&limit=10";
         HttpResponseMessage responseMessage;
         try
         {
-            responseMessage = await _httpClient.PutAsJsonAsync(apicall, body);
+            responseMessage = await _httpClient.GetAsync(apirUrl);
             TestContext.WriteLine("full body response: " + await responseMessage.Content.ReadAsStringAsync());
         }
         catch (Exception e)
         {
-            throw new Exception("Failed to create resposne to request", e);
+            throw new Exception("Failed to create the post", e);
         }
 
-        var sql = @$"SELECT count(user1_id) from keepsocial.friendRealeatioj 
-            where (user1_id = 111 and user2_id = 112) 
-        OR (user1_id = 112 and user2_id = 111);";
-        
-        var sql2 = @$"SELECT count(*) from keepsocial.friendRequestTable 
-            WHERE requested = 111 and requester = 112";
-
-        bool isFriends = false;
-        bool requestexist = false;
-        using (var conn = Helper.DataSource.OpenConnection())
-        {
-            isFriends = conn.ExecuteScalar<int>(sql) >= 1;
-            requestexist = conn.ExecuteScalar<int>(sql2) >= 1;
-        }
-
-        using (new AssertionScope())
-        {
-            responseMessage.StatusCode.Should().Be(HttpStatusCode.OK);
-
-            isFriends.Should().Be(true);
-            requestexist.Should().Be(false);
-        }
-    }
-
-    [Test]
-    public async Task DeclineRequest()
-    {
-        string apicall = apirUrl + "account/FriendRequestsResponse";
-        Helper.TriggerRebuild(resetbd);
-
-        var sqlSetFriendrequest =
-            $@"INSERT INTO keepsocial.friendRequestTable(request_id, requester, requested) VALUES (101, 112, 111);";
-        using (var conn = Helper.DataSource.OpenConnection())
-        {
-            conn.Query(sqlSetFriendrequest);
-        }
-
-        var body = new RequestUpdateDto()
-        {
-            RequesterId = 112,
-            RequestId = 101,
-            Response = false
-        };
-
-        HttpResponseMessage responseMessage;
+        List<SimpleUser> response;
         try
         {
-            responseMessage = await _httpClient.PutAsJsonAsync(apicall, body);
-            TestContext.WriteLine("full body response: " + await responseMessage.Content.ReadAsStringAsync());
-        }
-        catch (Exception e)
-        {
-            throw new Exception("Failed to create resposne to request", e);
-        }
-
-        var sql = $@"select request_id as {nameof(RequestUpdateDto.RequestId)},
-       requester as {nameof(RequestUpdateDto.RequesterId)},
-       response as {nameof(RequestUpdateDto.Response)}
-        from keepsocial.friendRequestTable where requested = 111";
-
-        RequestUpdateDto Checkrequestanwser = null;
-        using (var conn = Helper.DataSource.OpenConnection())
-        {
-            Checkrequestanwser = conn.QuerySingle<RequestUpdateDto>(sql);
-        }
-
-        using (new AssertionScope())
-        {
-            responseMessage.StatusCode.Should().Be(HttpStatusCode.OK);
-
-            body.RequesterId.Should().Be(Checkrequestanwser.RequesterId);
-            body.RequestId.Should().Be(Checkrequestanwser.RequestId);
-            body.Response.Should().Be(Checkrequestanwser.Response);
-        }
-    }
-
-    [Test]
-    public async Task SendRequest()
-    {
-        string apicall = apirUrl + "account/SendFriendRequest112";
-        Helper.TriggerRebuild(resetbd);
-        
-        HttpResponseMessage responseMessage;
-        try
-        {
-            responseMessage = await _httpClient.PostAsJsonAsync(apicall,"");
-            TestContext.WriteLine("full body response: " + await responseMessage.Content.ReadAsStringAsync());
-        }
-        catch (Exception e)
-        {
-            throw new Exception("Failed to create resposne to request", e);
-        }
-        
-        FriendRequestResponse response;
-
-        try
-        {
-            response = JsonConvert.DeserializeObject<FriendRequestResponse>(await responseMessage.Content.ReadAsStringAsync()) ??
+            response = JsonConvert.DeserializeObject<List<SimpleUser>>(await responseMessage.Content.ReadAsStringAsync()) ??
                        throw new InvalidOperationException();
         }
         catch (Exception e)
         {
             throw new Exception(Helper.BadResponseBody("bad response"), e);
         }
-        
-        var sql = @$"select request_id from keepsocial.friendRequestTable where requester = 111 AND requested = 112;";
-
-        int requestId = -117; // Yes this is a halo reference 
-        
-        using (var conn = Helper.DataSource.OpenConnection())
-        {
-            requestId = conn.QuerySingle<int>(sql);
-        }
-        
         using (new AssertionScope())
         {
             responseMessage.StatusCode.Should().Be(HttpStatusCode.OK);
-            response.responseMessage.Should().Be("request have been created");
-            response.requestId.Should().Be(requestId);
+            response.Count.Should().NotBe(0);
+        }
+    }
+    
+    [Test]
+    public async Task getFollowing()
+    {
+        Helper.TriggerRebuild(resetDb + "INSERT INTO keepsocial.followrelation (followed_id, follower_id) VALUES(111, 112)");
+        apirUrl = "http://localhost:5000/api/account/getfollowing?id=111&offset=0&limit=10";
+        HttpResponseMessage responseMessage;
+        try
+        {
+            responseMessage = await _httpClient.GetAsync(apirUrl);
+            TestContext.WriteLine("full body response: " + await responseMessage.Content.ReadAsStringAsync());
+        }
+        catch (Exception e)
+        {
+            throw new Exception("Failed to create the post", e);
+        }
+
+        List<SimpleUser> response;
+        try
+        {
+            response = JsonConvert.DeserializeObject<List<SimpleUser>>(await responseMessage.Content.ReadAsStringAsync()) ??
+                       throw new InvalidOperationException();
+        }
+        catch (Exception e)
+        {
+            throw new Exception(Helper.BadResponseBody("bad response"), e);
+        }
+        using (new AssertionScope())
+        {
+            responseMessage.StatusCode.Should().Be(HttpStatusCode.OK);
+            response.Count.Should().NotBe(0);
         }
     }
 }

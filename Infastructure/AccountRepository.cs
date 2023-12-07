@@ -12,7 +12,7 @@ public class AccountRepository
     {
         _dataSource = dataSource;
     }
-    
+
     public User CreateUser(string userDisplayName, string userEmail, DateTime userBirthday)
     {
         var sql =
@@ -69,7 +69,7 @@ UPDATE keepsocial.users SET name = @updatedValue  WHERE id = @id";
 
         using (var conn = _dataSource.OpenConnection())
         {
-            return conn.Execute(sql, new {id, updatedValue}) == 1;
+            return conn.Execute(sql, new { id, updatedValue }) == 1;
         }
     }
 
@@ -80,7 +80,7 @@ UPDATE keepsocial.users SET name = @updatedValue  WHERE id = @id";
 
         using (var conn = _dataSource.OpenConnection())
         {
-            return conn.Execute(sql, new { userId, validationNumber}) == 1;
+            return conn.Execute(sql, new { userId, validationNumber }) == 1;
         }
     }
 
@@ -91,7 +91,7 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
 
         using (var conn = _dataSource.OpenConnection())
         {
-            return conn.Execute(sql, new {id, updatedValue}) == 1;
+            return conn.Execute(sql, new { id, updatedValue }) == 1;
         }
     }
 
@@ -115,7 +115,7 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
 
         using (var conn = _dataSource.OpenConnection())
         {
-            return conn.Query<User>(sql, new {userId, offSetNumber});
+            return conn.Query<User>(sql, new { userId, offSetNumber });
         }
     }
 
@@ -128,8 +128,9 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
         ";
         using (var conn = _dataSource.OpenConnection())
         {
-            return conn.ExecuteScalar<int>(sql, new {userId, friendId}) >= 1;
+            return conn.ExecuteScalar<int>(sql, new { userId, friendId }) >= 1;
         }
+
         return false;
     }
 
@@ -140,7 +141,7 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
 
         using (var conn = _dataSource.OpenConnection())
         {
-            return conn.Execute(sql, new {id, updatedValue}) == 1;
+            return conn.Execute(sql, new { id, updatedValue }) == 1;
         }
     }
 
@@ -154,7 +155,7 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
             return conn.Execute(sql, new { userId, followedId }) == 1;
         }
     }
-    
+
     public bool UnFollowUser(int userId, int followedId)
     {
         var sql =
@@ -165,7 +166,7 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
             return conn.Execute(sql, new { userId, followedId }) == 1;
         }
     }
-    
+
     public bool CheckIfFollowing(int userId, int followedId)
     {
         var sql =
@@ -186,10 +187,10 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
            avatarUrl as {nameof(Profile.avatarUrl)},
            profileDescription as {nameof(Profile.profileDescription)}
            from keepsocial.users where name = @profileName and isDeleted = false;";
-        
+
         var sqlFollowing =
             $@"SELECT count(follower_id) FROM keepsocial.followrelation WHERE follower_id = @userId;";
-        
+
         var sqlFollower =
             $@"SELECT count(followed_id) FROM keepsocial.followrelation WHERE followed_id = @userId;";
         
@@ -197,7 +198,7 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
         
         using (var conn = _dataSource.OpenConnection())
         {
-            var profile =  conn.QueryFirst<Profile>(sql, new { profileName });
+            var profile = conn.QueryFirst<Profile>(sql, new { profileName });
             userId = profile.userId;
             profile.followers = conn.ExecuteScalar<int>(sqlFollower, new {userId});
             profile.following = conn.ExecuteScalar<int>(sqlFollowing, new {userId});
@@ -205,7 +206,7 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
             return profile;
         }
     }
-    
+
     public void updateAvatar(string? avatarUrl, int userId)
     {
         var sql = @$"
@@ -213,7 +214,7 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
 
         using (var conn = _dataSource.OpenConnection())
         {
-            conn.Execute(sql, new {avatarUrl, userId});
+            conn.Execute(sql, new { avatarUrl, userId });
         }
     }
     
@@ -230,8 +231,9 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
 
     public IEnumerable<FriendRequestModel> getFriendRequest(int userId, int offset)
     {
-        var check = $@"SELECT count(keepsocial.friendrequesttable.request_id) from keepsocial.friendRequestTable WHERE requested = @userId and response IS NULL;";
-        
+        var check =
+            $@"SELECT count(keepsocial.friendrequesttable.request_id) from keepsocial.friendRequestTable WHERE requested = @userId and response IS NULL;";
+
         var sql = $@"SELECT users.id as {nameof(FriendRequestModel.RequestersId)},
             f.request_id as {nameof(FriendRequestModel.RequestId)},
             users.name as {nameof(FriendRequestModel.RequesterName)},
@@ -241,17 +243,16 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
             WHERE(requested = @userId and response IS NULL)
             LIMIT 10 OFFSET @offset;
         ";
-        
+
         using (var conn = _dataSource.OpenConnection())
         {
             if (conn.Execute(check, new { userId }) == 0)
             {
                 return new List<FriendRequestModel>();
             }
-            
-            
-            return conn.Query<FriendRequestModel>(sql, new {userId, offset});
 
+
+            return conn.Query<FriendRequestModel>(sql, new { userId, offset });
         }
     }
 
@@ -269,15 +270,14 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
             var transaction = conn.BeginTransaction();
             try
             {
-                
-            conn.Execute(sql1, new { userId, requesterId, requestId });
-            conn.Query(sql2, new { userId, requesterId });
-            
-            transaction.Commit();
-            
-            return "Accepted request";
+                conn.Execute(sql1, new { userId, requesterId, requestId });
+                conn.Query(sql2, new { userId, requesterId });
 
-            }catch (Exception e)
+                transaction.Commit();
+
+                return "Accepted request";
+            }
+            catch (Exception e)
             {
                 transaction.Rollback();
                 throw e;
@@ -287,7 +287,6 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
 
     public string declineRequest(bool response, int requestId, int requesterId, int userId)
     {
-        
         var sql1 = $@" UPDATE keepsocial.friendRequestTable set response = @response 
                                       WHERE requested = @userId and requester = @requesterId 
                                         AND request_id = @requestId;
@@ -295,12 +294,97 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
 
         using (var conn = _dataSource.OpenConnection())
         {
-
             conn.Query(sql1, new { response, userId, requesterId, requestId });
         }
 
 
         return "denied Request";
+    }
+
+    public FriendRequestResponse HaveSendFriendRequest(int userid, int requestingId)
+    {
+        int requestLimit = 5;
+
+        var getRejectedAmounnt = @$"SELECT count(*) from keepsocial.friendRequestTable 
+            WHERE requested = @requestingId and requester = @userid AND response = false";
+
+        var getActiverequestID = @$"SELECT request_id from keepsocial.friendRequestTable 
+            WHERE response IS NULL and requested = @requestingId and requester = @userid";
+
+
+        using (var conn = _dataSource.OpenConnection())
+        {
+            int requestCount = conn.ExecuteScalar<int>(getRejectedAmounnt, new { requestingId, userid });
+
+            if (requestCount >= requestLimit) throw new Exception("You have sned to manny request to this user");
+
+            int requestID = -1;
+            requestID = conn.ExecuteScalar<int>(getActiverequestID, new { requestingId, userid });
+
+            if (requestID <= 0)
+                return new FriendRequestResponse()
+                {
+                    responseMessage = "There is no active request to user",
+                    requestId = -1
+                };
+
+            return new FriendRequestResponse()
+            {
+                responseMessage = "There is an active ongoing request",
+                requestId = requestID
+            };
+        }
+    }
+
+    public FriendRequestResponse SendFriendRequest(int requestingId, int userid)
+    {
+        var sendRequest = $@"INSERT INTO keepsocial.friendRequestTable( requester, requested) 
+            VALUES (@userid, @requestingId) 
+            returning request_id;
+        ";
+
+        using (var conn = _dataSource.OpenConnection())
+        {
+            int request_id =  conn.ExecuteScalar<int>(sendRequest, new { userid, requestingId });
+
+            if (request_id > 0) return new FriendRequestResponse()
+            {
+                responseMessage = "request have been created",
+                requestId = request_id
+            };
+            
+        }
+
+        throw new Exception("request might not have been created");
+    }
+
+
+    /*
+     * gets the users that follow a user with the given id
+     */
+    public IEnumerable<SimpleUser> getFollowers(int id, int offset, int limit)
+    {
+        var sql = $@"select users.id as {nameof(SimpleUser.userId)}, users.name as {nameof(SimpleUser.userDisplayname)}, users.avatarUrl as {nameof(SimpleUser.avatarUrl)}
+                        from keepsocial.users join keepsocial.followrelation f on users.id = f.follower_id where followed_id = @id offset @offset limit @limit";
+
+        using (var conn = _dataSource.OpenConnection())
+        {
+            return conn.Query<SimpleUser>(sql, new { id, offset, limit });
+        }
+    }
+
+    /*
+     * gets the users that are following a user with the given id
+     */
+    public IEnumerable<SimpleUser> getFollowing(int id, int offset, int limit)
+    {
+        var sql = $@"select users.id as {nameof(SimpleUser.userId)}, users.name as {nameof(SimpleUser.userDisplayname)}, users.avatarUrl as {nameof(SimpleUser.avatarUrl)}
+                        from keepsocial.users join keepsocial.followrelation f on users.id = f.follower_id where followed_id = @id offset @offset limit @limit";
+
+        using (var conn = _dataSource.OpenConnection())
+        {
+            return conn.Query<SimpleUser>(sql, new { id, offset, limit });
+        }
     }
 
     public IEnumerable<Profile> profileSearch(int limit, int offset, string searchTerm)
