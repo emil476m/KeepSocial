@@ -19,120 +19,127 @@ import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {TokenService} from "../services/token.service";
 import {FollowerslistModal} from "./FollowersList/Followerslist.modal";
 import {FollowingListModal} from "./followingList/followingList.modal";
+import {FriendRequestResponse} from "../models/FriendRequestResponse";
 
 @Component({
   styleUrls: ['profile.page.style.css'],
   template:
     `
-      <ion-content>
+        <ion-content>
 
-        <ion-card-header align="center">
-          <ion-card-title>{{profileName}}</ion-card-title>
-          <ion-card-subtitle>{{postAmount}} posts</ion-card-subtitle>
-        </ion-card-header>
+            <ion-card-header align="center">
+                <ion-card-title>{{profileName}}</ion-card-title>
+                <ion-card-subtitle>{{postAmount}} posts</ion-card-subtitle>
+            </ion-card-header>
 
             <ion-grid>
                 <ion-row>
-                  <ion-col size="1" >
-                      <ion-img style="width: 300px; height: 300px; text-align: left;" [src]="avatarUrl"></ion-img>
-                  </ion-col>
-                  <ion-col size="2" >
-                  </ion-col>
+                    <ion-col size="1">
+                        <ion-img style="width: 300px; height: 300px; text-align: left;" [src]="avatarUrl"></ion-img>
+                    </ion-col>
+                    <ion-col size="2">
+                    </ion-col>
 
-                  <ion-col size="9" style="vertical-align: text-bottom" >
-                    <ion-item lines="none">
-                      <ion-buttons slot="end">
-                        <ion-button class="btnEdit"  id="topButton" *ngIf="isSelf" (click)="edit()" >Edit</ion-button>
-                        <ion-button class="btnFriend" id="topButton" *ngIf="!isSelf"><ion-icon name="person-add-outline"></ion-icon></ion-button>
-                        <ion-button class="btnFollow" id="topButton" *ngIf="!isSelf" (click)="changeFollow()" [textContent]="btnFollow"></ion-button>
-                      </ion-buttons>
-                    </ion-item>
-                    <ion-card-title align="left">{{profileName}}</ion-card-title>
+                    <ion-col size="9" style="vertical-align: text-bottom">
+                        <ion-item lines="none">
+                            <ion-buttons slot="end">
+                                <ion-button class="btnEdit" id="topButton" *ngIf="isSelf" (click)="edit()">Edit
+                                </ion-button>
 
-                      <ion-label style="text-align: left">{{profileDescription}}</ion-label>
+                                <ion-button class="btnFriend" id="topButton" *ngIf="!isSelf" (click)="sendRequest(profileId)">
+                                    <ion-icon name="alert-outline" *ngIf="this.friendShipState === FriendStateEnum.CantSend"></ion-icon>
+                                    <ion-icon name="person-add-outline" *ngIf="this.friendShipState === FriendStateEnum.RequestNotSend"></ion-icon>
+                                    <ion-icon name="close-circle-outline" *ngIf="this.friendShipState === FriendStateEnum.RequestSend"></ion-icon>
+                                    <ion-icon name="person-remove-outline" *ngIf="this.friendShipState === FriendStateEnum.Friend"></ion-icon>
+                                </ion-button>
 
-                    <ion-item>
-                      <ion-label (click)="openFolowingList(this.profileId)">{{following}} Following</ion-label>
-                      <ion-label (click)="openFolowersList(this.profileId)">{{followers}} Followers</ion-label>
-                    </ion-item>
-                  </ion-col>
+                                <ion-button class="btnFollow" id="topButton" *ngIf="!isSelf" (click)="changeFollow()"
+                                            [textContent]="btnFollow"></ion-button>
+                            </ion-buttons>
+                        </ion-item>
+                        <ion-card-title align="left">{{profileName}}</ion-card-title>
+
+                        <ion-label style="text-align: left">{{profileDescription}}</ion-label>
+
+                        <ion-item>
+                            <ion-label (click)="openFolowingList(this.profileId)">{{following}} Following</ion-label>
+                            <ion-label (click)="openFolowersList(this.profileId)">{{followers}} Followers</ion-label>
+                        </ion-item>
+                    </ion-col>
                 </ion-row>
             </ion-grid>
 
-        <div *ngIf="isSelf">
-          <ion-card *ngIf="token.getToken()">
-            <ion-toolbar>
-              <ion-buttons>
-                <ion-avatar>
-                  <ion-img [src]="avatarUrl"/>
-                </ion-avatar>
-                <ion-text style="padding-left: 10px;">{{profileName}}</ion-text>
-              </ion-buttons>
-            </ion-toolbar>
-            <ion-textarea [counter]="true" [maxlength]="500" placeholder="what do you want your post to say?"
-                          [formControl]="textFC"></ion-textarea>
-            <div>
-              <ion-img
-                *ngIf="imgUrl && !imageChangedEvent"
-                [src]="imgUrl"
-              ></ion-img>
-              <ion-input
-                [formControl]="file"
-                [id]="img"
-                label="image"
-                type="file"
-                accept="image/png, image/jpeg"
-                (change)="saveEvent($event)"
-              ></ion-input>
+            <div *ngIf="isSelf">
+                <ion-card *ngIf="token.getToken()">
+                    <ion-toolbar>
+                        <ion-buttons>
+                            <ion-avatar>
+                                <ion-img [src]="avatarUrl"/>
+                            </ion-avatar>
+                            <ion-text style="padding-left: 10px;">{{profileName}}</ion-text>
+                        </ion-buttons>
+                    </ion-toolbar>
+                    <ion-textarea [counter]="true" [maxlength]="500" placeholder="what do you want your post to say?"
+                                  [formControl]="textFC"></ion-textarea>
+                    <div>
+                        <ion-img
+                                *ngIf="imgUrl && !imageChangedEvent"
+                                [src]="imgUrl"
+                        ></ion-img>
+                        <ion-input
+                                [formControl]="file"
+                                [id]="img"
+                                label="image"
+                                type="file"
+                                accept="image/png, image/jpeg"
+                                (change)="saveEvent($event)"
+                        ></ion-input>
+                    </div>
+                    <ion-buttons>
+                        <ion-button [disabled]="post.invalid" (click)="createPost()">post</ion-button>
+                    </ion-buttons>
+                </ion-card>
             </div>
-            <ion-buttons>
-              <ion-button [disabled]="post.invalid" (click)="createPost()">post</ion-button>
-            </ion-buttons>
-          </ion-card>
-        </div>
-        <ion-infinite-scroll (ionInfinite)="loadMore()">
-          <ion-card *ngFor="let post of profilePosts" (click)="gotopost(post.id)">
-          <ion-toolbar>
-            <ion-buttons slot="end">
-              <ion-text>created {{getLocalDate(post.created)}}</ion-text>
-            </ion-buttons>
-            <ion-buttons>
-              <ion-avatar>
-                <ion-img [src]="post.avatarUrl"/>
-              </ion-avatar>
-              <ion-text style="padding-left: 10px;">{{post.authorName}}</ion-text>
-            </ion-buttons>
-            <ion-buttons slot="end" *ngIf="isSelf">
-              <ion-button (click)="ismenueopenPost()">
-                <ion-icon name="ellipsis-vertical-outline"></ion-icon>
-              </ion-button>
-              <ion-popover [isOpen]="isopenPostMenu">
-                <ng-template>
+            <ion-infinite-scroll (ionInfinite)="loadMore()">
+                <ion-card *ngFor="let post of profilePosts" (click)="gotopost(post.id)">
+                    <ion-toolbar>
+                        <ion-buttons slot="end">
+                            <ion-text>created {{getLocalDate(post.created)}}</ion-text>
+                        </ion-buttons>
+                        <ion-buttons>
+                            <ion-avatar>
+                                <ion-img [src]="post.avatarUrl"/>
+                            </ion-avatar>
+                            <ion-text style="padding-left: 10px;">{{post.authorName}}</ion-text>
+                        </ion-buttons>
+                        <ion-buttons slot="end" *ngIf="profileId === post.authorId">
+                            <ion-button (click)="ismenueopenPost()">
+                                <ion-icon name="ellipsis-vertical-outline"></ion-icon>
+                            </ion-button>
+                            <ion-popover [isOpen]="isopenPostMenu">
+                                <ng-template>
 
-                  <ion-button fill="clear" (click)="openEditPost(post)">
-                    <ion-icon name="create-outline"></ion-icon>
-                    edit
-                  </ion-button>
-                  <br>
-                  <ion-button fill="clear" color="danger" (click)="DeleteAlertPost()">
-                    <ion-icon name="trash-outline"></ion-icon>
-                    delete
-                  </ion-button>
+                                    <ion-button fill="clear" (click)="openEditPost(post)">
+                                        <ion-icon name="create-outline"></ion-icon>
+                                        edit
+                                    </ion-button>
+                                    <br>
+                                    <ion-button fill="clear" color="danger" (click)="DeleteAlertPost()">
+                                        <ion-icon name="trash-outline"></ion-icon>
+                                        delete
+                                    </ion-button>
 
-                </ng-template>
-              </ion-popover>
-            </ion-buttons>
-          </ion-toolbar>
-          <ion-img *ngIf="post.imgUrl !== undefined" [src]="post.imgUrl" style="margin-left: 25%; margin-right: 25%; "/>
-          <ion-text>{{post.text}}</ion-text>
-        </ion-card>
-        </ion-infinite-scroll>
-
-
-      </ion-content>
-
-
-        `,
+                                </ng-template>
+                            </ion-popover>
+                        </ion-buttons>
+                    </ion-toolbar>
+                    <ion-img *ngIf="post.imgUrl !== undefined" [src]="post.imgUrl"
+                             style="margin-left: 25%; margin-right: 25%; "/>
+                    <ion-text>{{post.text}}</ion-text>
+                </ion-card>
+            </ion-infinite-scroll>
+        </ion-content>
+    `,
 })
 
 export class ProfilePage implements OnInit{
@@ -147,7 +154,6 @@ export class ProfilePage implements OnInit{
               public state: Globalstate,
               private modalcontroller: ModalController,
               public fb: FormBuilder,
-
   ){
     this.router.events.subscribe(event =>    {
       if(event instanceof NavigationStart) {
@@ -170,6 +176,7 @@ export class ProfilePage implements OnInit{
   isFriend = false;
   isSelf = false;
   isFollowing = false;
+  friendShipState = FriendStateEnum.Undefined;
 
   btnFriend = ""
   btnFollow = "Follow";
@@ -221,13 +228,58 @@ export class ProfilePage implements OnInit{
     this.profileDescription = result.profileDescription;
     this.postAmount = result.postAmount;
     this.isFriend = result.isFriend;
+    if(result.isFriend) this.friendShipState = FriendStateEnum.Friend;
     this.isSelf = result.isSelf;
     this.isFollowing = result.isFollowing;
     if (this.isFollowing){
       this.btnFollow = "UnFollow";
     }
+
+    if(this.isFriend !== true){
+      this.havesendRequest();
+    }
+
     this.getProfilePosts();
 
+  }
+
+  async havesendRequest()
+  {
+    const call = this.http.get<FriendRequestResponse>(environment.baseURL+"account/haveSendFriendRequest"+this.profileId);
+    const result = await firstValueFrom<FriendRequestResponse>(call);
+
+    if (result.requestId > 0 ){
+      //theyre not friends and theres no request
+      this.friendShipState = FriendStateEnum.RequestSend;
+    } else if(result.requestId === -1) {
+      // there is an ongoing request but they aint friends
+      this.friendShipState = FriendStateEnum.RequestNotSend;
+    } else {
+      //theyre unable to send a request
+      this.friendShipState = FriendStateEnum.CantSend;
+    }
+  }
+
+  async sendRequest(profileId: number) {
+    if(this.friendShipState === FriendStateEnum.CantSend) {
+      this.toast.create({
+        color: "danger",
+        message: 'You have been denied to many times, and are no longer allowed to sen requests to this user',
+        duration: 2000,
+      }).then(res =>
+      {
+        res.present();
+      })
+    }
+
+
+    if(this.friendShipState === FriendStateEnum.RequestNotSend) {
+
+    const call = this.http.post<FriendRequestResponse>(environment.baseURL+"account/SendFriendRequest"+this.profileId,"");
+    const result = await firstValueFrom<FriendRequestResponse>(call);
+
+    if (result.requestId > 0) this.friendShipState = FriendStateEnum.RequestSend;
+    }
   }
 
 
@@ -419,4 +471,15 @@ export class ProfilePage implements OnInit{
       res.present();
     })
   }
+
+  protected readonly FriendStateEnum = FriendStateEnum;
 }
+
+enum FriendStateEnum {
+  Friend,
+  RequestNotSend,
+  RequestSend,
+  CantSend,
+  Undefined,
+}
+
