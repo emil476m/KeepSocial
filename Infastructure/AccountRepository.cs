@@ -302,4 +302,23 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
 
         return "denied Request";
     }
+
+    public IEnumerable<Profile> profileSearch(int limit, int offset, string searchTerm)
+    {
+        var sql = $@"
+        select 
+            id as {nameof(Profile.userId)},
+            name as {nameof(Profile.userDisplayName)},
+            avatarurl as {nameof(Profile.avatarUrl)},
+        from keepsocial.users
+        where name LIKE @searchName AND isDeleted = false offset @offset limit @limit;
+        ";
+
+        using (var conn = _dataSource.OpenConnection())
+        {
+            return conn.Query<Profile>(sql, new {searchTerm = searchTerm + "%", limit, offset});
+        }
+    }
+    
+    
 }

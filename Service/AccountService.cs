@@ -223,4 +223,9 @@ public class AccountService
             throw new Exception("could not handle response to friend request");
         }
     }
+
+    public IEnumerable<Profile> profileSearch(int limit, int offset, string searchTerm)
+    {
+        return _accountRepository.profileSearch(limit, offset, searchTerm);
+    }
 }

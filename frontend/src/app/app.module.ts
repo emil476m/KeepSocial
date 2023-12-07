@@ -28,6 +28,7 @@ import {PostDetail} from "./PostDetailed/post.page";
 import {ProfilePage} from "./profile/profile.page";
 import {EditCommentModal} from "./PostDetailed/EditCommentModal/edit.comment.modal";
 import {EditPostModal} from "./PostDetailed/EditPostModal/edit.post.modal";
+import {SearchPage} from "./search/search.page";
 
 @NgModule({
   declarations:
@@ -45,6 +46,7 @@ import {EditPostModal} from "./PostDetailed/EditPostModal/edit.post.modal";
       EditCommentModal,
       EditPostModal,
       ProfilePage,
+      SearchPage,
   ],
     imports:
       [BrowserModule,
