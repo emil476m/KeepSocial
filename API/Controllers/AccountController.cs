@@ -346,4 +346,14 @@ public class AccountController : ControllerBase
         }
     }
 
+
+    [RequireAuthentication]
+    [HttpDelete]
+    [Route("/api/account/RemoveFriend{friendId}")]
+    public IActionResult RemoveFriend([FromRoute] int friendId)
+    {
+        int userid = HttpContext.GetSessionData().UserId;
+
+        return Ok(_accountService.RemoveFriend(userid, friendId));
+    }
 }

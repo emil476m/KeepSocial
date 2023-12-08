@@ -9,6 +9,7 @@ export class Globalstate
 {
   ishuman = false;
   posts : PostModel[] = [];
+  followedPosts: PostModel[] = [];
   currentPost : PostModel|any = {};
   currentComment : CommentModel|any = {}
   comments : CommentModel[] = [];

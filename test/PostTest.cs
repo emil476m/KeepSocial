@@ -191,7 +191,7 @@ insert into keepsocial.password_hash(user_id,hash,salt,algorithm) values (111,'6
     [Test]
     public async Task getPosts()
     {
-        apirUrl = "http://localhost:5000/api/getposts";
+        apirUrl = "http://localhost:5000/api/getposts?limit=10&offset=0";
         Helper.TriggerRebuild(resetDb+"insert into keepsocial.posts(id,author_id,text,img_url,created) values (2,111,'yes a test','qwderqdwefrfwf',date('2023-02-28'));");
         
         HttpResponseMessage responseMessage;
@@ -228,7 +228,7 @@ insert into keepsocial.password_hash(user_id,hash,salt,algorithm) values (111,'6
     [Test]
     public async Task getMorePosts()
     {
-        apirUrl = "http://localhost:5000/api/getmoreposts";
+        apirUrl = "http://localhost:5000/api/getposts";
         Helper.TriggerRebuild(resetDb + "insert into keepsocial.posts(id,author_id,text,img_url,created) values (3,111,'yes a test 2','qwderqdwefrfwf',date('2023-02-28'));" +
                               "insert into keepsocial.posts(id,author_id,text,img_url,created) values (4,111,'yes a test3','qwderqdwefrfwf',date('2023-02-28'));" +
                               "insert into keepsocial.posts(id,author_id,text,img_url,created) values (5,111,'yes a test4','qwderqdwefrfwf',date('2023-02-28'));" +
@@ -332,11 +332,94 @@ insert into keepsocial.password_hash(user_id,hash,salt,algorithm) values (111,'6
             throw new Exception("Failed to update the post", e);
         }
 
-        var dbcheck = Helper.checkifexists(1, sqlcheck);
+        var dbcheck = Helper.checkifexists(sqlcheck);
         using (new AssertionScope())
         {
             responseMessage.StatusCode.Should().Be(HttpStatusCode.OK);
             dbcheck.Should().Be(0);
+        }
+    }
+
+    [Test]
+    public async Task getFollowedPosts()
+    {
+        Helper.TriggerRebuild(resetDb + "insert into keepsocial.users(id,name,email,birthday,isdeleted) values (112,'test','isdeleted@email.com',date('2023-02-10'),true);" +
+                              "insert into keepsocial.password_hash(user_id,hash,salt,algorithm) values (112,'UhmSA3bJX5Owp8bm89NwO3V7VwSopx5vfBEFEAHnLKDSYzYxf7s/bNGG6VXLukD3N/hn+yUNJjnn120rrg7THpGf/8SzzrrSeMYWZ9xYA0bOfgR+lFl4zcrfy+vlgnudg1aHYVaj52VBodirzEg+cwg1JaXf51Rl8DRd+NFLO9OA1avvbkKwx+Ww2PX1nACHUqzKd/WzvSJLNYaRizLj95hRqRlRj44HyrID4unMCLIW87NN0j9UJ0Firo9u7xje1gZCz419IA1SABPRZcW+Gr6OIGPZeG2riTqluJuJgANyeIBPKAw7MXSO8Vz6THER5Jzbvl4Rwz/pMQ1eblmbJQ==','x4eVwCCfnM6132etvWCFHZV8ZN55E0h4BoR39AJRMeGoZ7xXUToBWjZoFSb9d1Ilu0wx3TN52dvh5qNo0cdodCaXREIWluHOv+ia+jfldvhTI9BQEsNKmEQSnV/TaAeBV1Kx+9GMICb0ZiZDxUTYMfjiHRByGGXK+dfRvoOIgcA=','argon2id');" +
+                              "INSERT INTO keepsocial.followrelation (followed_id, follower_id) VALUES(112, 111);" +
+                              "insert into keepsocial.posts(id,author_id,text,img_url,created) values (1,112,'yes a test','qwderqdwefrfwf',date('2023-02-28'))");
+        
+        apirUrl = "http://localhost:5000/api/getposts?limit=10&offset=0";
+        
+        HttpResponseMessage responseMessage;
+        try
+        {
+            responseMessage = await _httpClient.GetAsync(apirUrl);
+            TestContext.WriteLine("full body response: " + await responseMessage.Content.ReadAsStringAsync());
+        }
+        catch (Exception e)
+        {
+            throw new Exception("Failed to get posts", e);
+        }
+        
+        List<Post> result;
+        try
+        {
+            result = JsonConvert.DeserializeObject<List<Post>>(await responseMessage.Content.ReadAsStringAsync()) ??
+                     throw new InvalidOperationException();
+        }
+        catch (Exception e)
+        {
+            throw new Exception(Helper.BadResponseBody("bad response"), e);
+        }
+        
+        
+        using (new AssertionScope())
+        {
+            responseMessage.StatusCode.Should().Be(HttpStatusCode.OK);
+            result.Count.Should().NotBe(null);
+            result[0].id.Should().NotBe(0);
+        }
+    }
+    
+    [Test]
+    public async Task getMoreFollowedPosts()
+    {
+        Helper.TriggerRebuild(resetDb + "insert into keepsocial.users(id,name,email,birthday,isdeleted) values (112,'test','isdeleted@email.com',date('2023-02-10'),true);" +
+                              "insert into keepsocial.password_hash(user_id,hash,salt,algorithm) values (112,'UhmSA3bJX5Owp8bm89NwO3V7VwSopx5vfBEFEAHnLKDSYzYxf7s/bNGG6VXLukD3N/hn+yUNJjnn120rrg7THpGf/8SzzrrSeMYWZ9xYA0bOfgR+lFl4zcrfy+vlgnudg1aHYVaj52VBodirzEg+cwg1JaXf51Rl8DRd+NFLO9OA1avvbkKwx+Ww2PX1nACHUqzKd/WzvSJLNYaRizLj95hRqRlRj44HyrID4unMCLIW87NN0j9UJ0Firo9u7xje1gZCz419IA1SABPRZcW+Gr6OIGPZeG2riTqluJuJgANyeIBPKAw7MXSO8Vz6THER5Jzbvl4Rwz/pMQ1eblmbJQ==','x4eVwCCfnM6132etvWCFHZV8ZN55E0h4BoR39AJRMeGoZ7xXUToBWjZoFSb9d1Ilu0wx3TN52dvh5qNo0cdodCaXREIWluHOv+ia+jfldvhTI9BQEsNKmEQSnV/TaAeBV1Kx+9GMICb0ZiZDxUTYMfjiHRByGGXK+dfRvoOIgcA=','argon2id');" +
+                              "INSERT INTO keepsocial.followrelation (followed_id, follower_id) VALUES(112, 111);" +
+                              "insert into keepsocial.posts(id,author_id,text,img_url,created) values (1,112,'yes a test','qwderqdwefrfwf',date('2023-02-28'));" +
+                              "insert into keepsocial.posts(id,author_id,text,img_url,created) values (2,112,'yes a test','qwderqdwefrfwfewfwefwefwef',date('2023-02-28'))");
+        
+        apirUrl = "http://localhost:5000/api/getposts?limit=10&offset=0";
+        
+        HttpResponseMessage responseMessage;
+        try
+        {
+            responseMessage = await _httpClient.GetAsync(apirUrl);
+            TestContext.WriteLine("full body response: " + await responseMessage.Content.ReadAsStringAsync());
+        }
+        catch (Exception e)
+        {
+            throw new Exception("Failed to get posts", e);
+        }
+        
+        List<Post> result;
+        try
+        {
+            result = JsonConvert.DeserializeObject<List<Post>>(await responseMessage.Content.ReadAsStringAsync()) ??
+                     throw new InvalidOperationException();
+        }
+        catch (Exception e)
+        {
+            throw new Exception(Helper.BadResponseBody("bad response"), e);
+        }
+        
+        
+        using (new AssertionScope())
+        {
+            responseMessage.StatusCode.Should().Be(HttpStatusCode.OK);
+            result.Count.Should().NotBe(null);
+            result[0].id.Should().NotBe(0);
         }
     }
 }

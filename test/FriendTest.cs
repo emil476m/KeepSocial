@@ -305,4 +305,39 @@ insert into keepsocial.password_hash(user_id,hash,salt,algorithm) values (112,'U
             response.requestId.Should().Be(requestId);
         }
     }
+
+    [Test]
+    public async Task RemoveFriend()
+    {
+        string apicall = apirUrl + "account/RemoveFriend112";
+        Helper.TriggerRebuild(resetbd);
+
+        var sqlSetFriend = $@"INSERT INTO keepsocial.friendRealeatioj(user1_id, user2_id) VALUES (111, 112);";
+
+        using (var conn = Helper.DataSource.OpenConnection())
+        {
+            conn.Query(sqlSetFriend);
+        }
+        
+        HttpResponseMessage responseMessage;
+        try
+        {
+            responseMessage = await _httpClient.DeleteAsync(apicall);
+            TestContext.WriteLine("full body response: " + await responseMessage.Content.ReadAsStringAsync());
+        }
+        catch (Exception e)
+        {
+            throw new Exception("Failed to dellete friend", e);
+        }
+
+        var sqlCheck = @$"SELECT COUNT(*) FROM keepsocial.friendRealeatioj WHERE (user1_id = 111 and user2_id = 112);";
+        var dbcheck = Helper.checkifexists(sqlCheck);
+
+        using (new AssertionScope())
+        {
+            responseMessage.StatusCode.Should().Be(HttpStatusCode.OK);
+            dbcheck.Should().Be(0);
+        }
+
+    }
 }

@@ -52,13 +52,13 @@ public class Helper
     }
 
 
-    public static object? checkifexists(int id, string sql)
+    public static object? checkifexists(string sql)
     {
         using (var conn = DataSource.OpenConnection())
         {
             try
             {
-                return conn.ExecuteScalar<int>(sql, new{id});
+                return conn.ExecuteScalar<int>(sql);
             }
             catch (Exception e)
             {
