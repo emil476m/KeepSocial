@@ -10,6 +10,7 @@ import {AccountPage} from "./account/account.page";
 import {PostDetail} from "./PostDetailed/post.page";
 import {FriendsPage} from "./freind/friends.page";
 import {ProfilePage} from "./profile/profile.page";
+import {MyfeedPage} from "./home/MyfeedPage/Myfeed.page";
 
 const routes: Routes = [
   {
@@ -19,6 +20,10 @@ const routes: Routes = [
       {
         path: "home",
         component: HomePage,
+      },
+      {
+        path: "myfeed",
+        component: MyfeedPage,
       },
       {
 

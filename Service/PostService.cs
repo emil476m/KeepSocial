@@ -57,4 +57,12 @@ public class PostService
     {
         return _postRepository.getProfilePosts(limit, offset, profileId);
     }
+    
+    /*
+     * returns a list of posts from the users that the current user follows
+     */
+    public IEnumerable<Post> getFollowedPosts(int id, int limit, int offset)
+    {
+        return _postRepository.getFollowedPost(id, limit, offset);
+    }
 }

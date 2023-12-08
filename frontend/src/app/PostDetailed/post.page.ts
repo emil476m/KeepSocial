@@ -235,13 +235,13 @@ export class PostDetail implements OnInit {
   }
 
   private async loadComments() {
-    const call = this.http.get<CommentModel[]>(environment.baseURL + "getcomments", {params: {postId: this.state.currentPost.id}})
+    const call = this.http.get<CommentModel[]>(environment.baseURL + "getcomments", {params: {postId: this.state.currentPost.id, limit: this.limitFC.value!, offset: 0}})
     const result = await firstValueFrom<CommentModel[]>(call);
     this.state.comments = result;
   }
 
   async loadMore() {
-    const call = this.http.get<PostModel[]>(environment.baseURL + "getmorecomments", {
+    const call = this.http.get<PostModel[]>(environment.baseURL + "getcomments", {
       params: {
         limit: this.limitFC.value!,
         offset: this.state.comments.length,
