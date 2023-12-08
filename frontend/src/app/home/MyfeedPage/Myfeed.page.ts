@@ -1,17 +1,17 @@
-import {Component, OnInit} from '@angular/core';
-import {TokenService} from "../services/token.service";
+import {Component, OnInit} from "@angular/core";
+import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {TokenService} from "../../services/token.service";
 import {NavigationStart, Router} from "@angular/router";
 import {AlertController, ModalController, PopoverController, ToastController} from "@ionic/angular";
-import {AccountService} from "../services/account.service";
-import {firstValueFrom} from "rxjs";
-import {environment} from "../../environments/environment.prod";
+import {AccountService} from "../../services/account.service";
 import {HttpClient} from "@angular/common/http";
-import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
-import {Account} from "../accountInterface";
-import {PostModel} from '../models/PostModel';
-import {Globalstate} from "../services/states/globalstate";
+import {Globalstate} from "../../services/states/globalstate";
+import {Account} from "../../accountInterface";
+import {environment} from "../../../environments/environment.prod";
+import {firstValueFrom} from "rxjs";
+import {PostModel} from "../../models/PostModel";
 import * as ago from "s-ago";
-import {EditPostModal} from "../PostDetailed/EditPostModal/edit.post.modal";
+import {EditPostModal} from "../../PostDetailed/EditPostModal/edit.post.modal";
 
 @Component({
   selector: 'app-home',
@@ -63,7 +63,7 @@ import {EditPostModal} from "../PostDetailed/EditPostModal/edit.post.modal";
               </ion-buttons>
           </ion-card>
           <ion-infinite-scroll (ionInfinite)="loadMore()">
-              <ion-card *ngFor="let post of state.posts" (click)="gotopost(post.id)">
+              <ion-card *ngFor="let post of state.followedPosts" (click)="gotopost(post.id)">
 
                   <ion-toolbar>
                       <ion-buttons slot="end">
@@ -75,7 +75,7 @@ import {EditPostModal} from "../PostDetailed/EditPostModal/edit.post.modal";
                           </ion-avatar>
                           <ion-text style="padding-left: 10px;">{{post.authorName}}</ion-text>
                       </ion-buttons>
-                      <ion-buttons slot="end" *ngIf="userid === post.authorId">
+                      <ion-buttons slot="end" *ngIf="userid == post.authorId">
                           <ion-button (click)="ismenueopenPost()">
                               <ion-icon name="ellipsis-vertical-outline"></ion-icon>
                           </ion-button>
@@ -96,15 +96,14 @@ import {EditPostModal} from "../PostDetailed/EditPostModal/edit.post.modal";
                           </ion-popover>
                       </ion-buttons>
                   </ion-toolbar>
-                  <ion-img *ngIf="post.imgUrl !== undefined" [src]="post.imgUrl" style="margin-left: 25%; margin-right: 25%; "/>
+                  <ion-img *ngIf="post.imgUrl != undefined" [src]="post.imgUrl" style="margin-left: 25%; margin-right: 25%; "/>
                   <ion-text>{{post.text}}</ion-text>
               </ion-card>
           </ion-infinite-scroll>
       </ion-content>
   `,
-  styleUrls: ['home.page.scss'],
 })
-export class HomePage implements OnInit{
+export class MyfeedPage implements OnInit{
 
   displayName: string = "";
   profilepic: string = "";
@@ -121,10 +120,10 @@ export class HomePage implements OnInit{
   imageChangedEvent: Event | undefined;
 
   post = new FormGroup (
-      {
-        text: this.textFC,
-        imgurl: this.imgFC,
-      }
+    {
+      text: this.textFC,
+      imgurl: this.imgFC,
+    }
   )
 
   img = this.fb.group(
@@ -149,7 +148,7 @@ export class HomePage implements OnInit{
   {
     this.router.events.subscribe(event =>    {
       if(event instanceof NavigationStart) {
-        this.state.posts = [];
+        this.state.followedPosts = [];
         this.userid = 0;
         this.whoAmI();
         this.loadPosts();
@@ -163,26 +162,28 @@ export class HomePage implements OnInit{
   {
     if(this.token.getToken())
     {
-    const call = this.http.get<Account>(environment.baseURL+"whoami");
-    const result = await firstValueFrom<Account>(call);
-    this.displayName = result.userDisplayName;
-    this.profilepic = result.avatarUrl;
-    this.userid = result.userId;
-    this.state.currentUserName = result.userDisplayName;
+      const call = this.http.get<Account>(environment.baseURL+"whoami");
+      const result = await firstValueFrom<Account>(call);
+      this.displayName = result.userDisplayName;
+      this.profilepic = result.avatarUrl;
+      this.userid = result.userId;
+      this.state.currentUserName = result.userDisplayName;
     }
   }
 
 
   async logout() {
     try{
-    this.token.clearToken();
-    this.userid = 0;
+      this.router.navigate(['home']);
+      this.token.clearToken();
+      this.userid = 0;
 
-    (await this.toast.create({
-      message: "Logout successful",
-      duration: 5000,
-      color: 'success',
-    })).present()
+
+      (await this.toast.create({
+        message: "Logout successful",
+        duration: 5000,
+        color: 'success',
+      })).present()
     }
     catch (e)
     {
@@ -205,7 +206,7 @@ export class HomePage implements OnInit{
   async createPost() {
     try {
       if (this.eventchange) {
-       await  this.uploadimg(this.eventchange);
+        await  this.uploadimg(this.eventchange);
       }
       this.post.patchValue({imgurl: this.imgUrl});
       const call = this.http.post<PostModel>(environment.baseURL + "post", this.post.value);
@@ -217,39 +218,39 @@ export class HomePage implements OnInit{
 
       this.imgUrl = undefined;
       (await this.toast.create(
-          {
-            message: "Posted",
-            color: "success",
-            duration: 2000,
-          })).present()
+        {
+          message: "Posted",
+          color: "success",
+          duration: 2000,
+        })).present()
     }
     catch (e)
     {
       (await this.toast.create(
-          {
-            message: "failed to post please try again",
-            color: "danger",
-            duration: 2000,
-          }
+        {
+          message: "failed to post please try again",
+          color: "danger",
+          duration: 2000,
+        }
       )).present();
     }
   }
 
   async loadMore() {
-    const call = this.http.get<PostModel[]>(environment.baseURL + "getposts", {params: {limit: this.limitFC.value!, offset: this.state.posts.length}})
+    const call = this.http.get<PostModel[]>(environment.baseURL + "getfollowedposts", {params: {limit: this.limitFC.value!, offset: this.state.posts.length}})
     const result = await firstValueFrom<PostModel[]>(call);
-    this.state.posts = this.state.posts.concat(result)
+    this.state.followedPosts = this.state.followedPosts.concat(result)
   }
 
   private async loadPosts() {
-    const call = this.http.get<PostModel[]>(environment.baseURL + "getposts",{params: {limit: this.limitFC.value!, offset: 0}})
+    const call = this.http.get<PostModel[]>(environment.baseURL + "getfollowedposts",{params: {limit: this.limitFC.value!, offset: 0}})
     const result = await firstValueFrom<PostModel[]>(call);
-    this.state.posts = result;
+    this.state.followedPosts = result;
   }
 
   getLocalDate(UTCString: string) {
-let date = new Date(UTCString);
-date.setHours(date.getHours()+1)
+    let date = new Date(UTCString);
+    date.setHours(date.getHours()+1)
     return ago (date);
   }
 

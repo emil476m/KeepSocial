@@ -15,6 +15,11 @@ import {HttpClient} from "@angular/common/http";
                   Home
               </ion-tab-button>
 
+            <ion-tab-button tab="myfeed" [disabled]="!token.getToken()">
+              <ion-icon name="library-outline"></ion-icon>
+              My Feed
+            </ion-tab-button>
+
               <ion-tab-button tab="Chats" routerLink="rooms" [disabled]="!token.getToken()">
                 <ion-icon name="chatbubbles-outline"></ion-icon>
                     Chat

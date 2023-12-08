@@ -30,6 +30,7 @@ import {EditCommentModal} from "./PostDetailed/EditCommentModal/edit.comment.mod
 import {EditPostModal} from "./PostDetailed/EditPostModal/edit.post.modal";
 import {FollowerslistModal} from "./profile/FollowersList/Followerslist.modal";
 import {FollowingListModal} from "./profile/followingList/followingList.modal";
+import {MyfeedPage} from "./home/MyfeedPage/Myfeed.page";
 
 @NgModule({
   declarations:
@@ -49,6 +50,7 @@ import {FollowingListModal} from "./profile/followingList/followingList.modal";
       ProfilePage,
       FollowerslistModal,
       FollowingListModal,
+      MyfeedPage,
   ],
     imports:
       [BrowserModule,

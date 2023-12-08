@@ -189,7 +189,7 @@ insert into keepsocial.posts(id,author_id,text,img_url,created) values (1,111,'y
     public async Task getComments()
     {
         Helper.TriggerRebuild(resetDb + "insert into keepsocial.comments(post_id,author_id,text,img_url,created) values (1,111,'yes','no',date ('2023-11-11'));");
-        apirUrl = "http://localhost:5000/api/getcomments?postId=1";
+        apirUrl = "http://localhost:5000/api/getcomments?limit=10&offset=0&postId=1";
         
         HttpResponseMessage responseMessage;
         try
@@ -225,7 +225,7 @@ insert into keepsocial.posts(id,author_id,text,img_url,created) values (1,111,'y
     [Test]
     public async Task getMoreComents()
     {
-        apirUrl = "http://localhost:5000/api/getmorecomments?limit=10&offset=0&postId=1";
+        apirUrl = "http://localhost:5000/api/getcomments?limit=10&offset=0&postId=1";
         Helper.TriggerRebuild(resetDb + "insert into keepsocial.comments(post_id,author_id,text,img_url,created) values (1,111,'yes','no',date ('2023-11-11'));");
         
         HttpResponseMessage responseMessage;
