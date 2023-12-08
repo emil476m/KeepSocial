@@ -29,7 +29,7 @@ import {environment} from "../../environments/environment.prod";
 
         <ion-card id="textCard" *ngFor="let message of messages"
                   [ngClass]="{'left-card': !message.isSender, 'right-card': message.isSender}">
-          <ion-tab-bar [ngStyle]="{ 'background-color': message.isSender ? '#001087' : '#870000' }">
+          <ion-tab-bar [ngStyle]="{ 'background-color': message.isSender ? '#001087' : '#3A3B3C' }">
             <ion-text style="margin-left: 1%">{{ message.User_id }}</ion-text>
             <ion-title style="color: White">{{ message.message }}</ion-title>
           </ion-tab-bar>
