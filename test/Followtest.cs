@@ -179,7 +179,7 @@ insert into keepsocial.password_hash(user_id,hash,salt,algorithm) values (112,'U
     [Test]
     public async Task getFollowing()
     {
-        Helper.TriggerRebuild(resetDb + "INSERT INTO keepsocial.followrelation (followed_id, follower_id) VALUES(111, 112)");
+        Helper.TriggerRebuild(resetDb + "INSERT INTO keepsocial.followrelation (followed_id, follower_id) VALUES(112, 111)");
         apirUrl = "http://localhost:5000/api/account/getfollowing?id=111&offset=0&limit=10";
         HttpResponseMessage responseMessage;
         try
