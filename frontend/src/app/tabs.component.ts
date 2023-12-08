@@ -1,6 +1,10 @@
 import { Component } from "@angular/core";
 import {TokenService} from "./services/token.service";
 import {Globalstate} from "./services/states/globalstate";
+import {Account} from "./accountInterface";
+import {environment} from "../environments/environment.prod";
+import {firstValueFrom} from "rxjs";
+import {HttpClient} from "@angular/common/http";
 
 @Component({
   template: `
@@ -34,6 +38,19 @@ import {Globalstate} from "./services/states/globalstate";
 })
 export class TabsComponent
 {
-  constructor(public readonly token: TokenService, public readonly state :Globalstate) {
+  constructor(public readonly token: TokenService, public readonly state :Globalstate, private http : HttpClient,) {
+    if(this.state.currentUserName == null) this.whoAmI();
+  }
+
+  async whoAmI()
+  {
+    if (this.state.currentUserName != null) return;
+
+    if(this.token.getToken())
+    {
+      const call = this.http.get<Account>(environment.baseURL+"whoami");
+      const result = await firstValueFrom<Account>(call);
+      this.state.currentUserName = result.userDisplayName;
+    }
   }
 }
