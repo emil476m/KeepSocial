@@ -283,7 +283,6 @@ public class AccountController : ControllerBase
         }
         catch (Exception e)
         {
-            Console.WriteLine(e.StackTrace);
             return BadRequest("failed to get search results please try again");
         }
     }

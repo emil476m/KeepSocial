@@ -389,7 +389,6 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
 
     public IEnumerable<SimpleUser> profileSearch(int limit, int offset, string searchTerm)
     {
-        Console.WriteLine("this is the searchterm: "+searchTerm);
         var sql = $@"
         select 
             id as userId,
@@ -401,11 +400,7 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
 
         using (var conn = _dataSource.OpenConnection())
         {
-            
-            var searchResult = conn.Query<SimpleUser>(sql, new {searchTerm = searchTerm + "%", limit, offset});
-            Console.WriteLine("this is the result: "+searchResult);
-
-            return searchResult;
+            return conn.Query<SimpleUser>(sql, new {searchTerm = searchTerm + "%", limit, offset});
         }
     }
     

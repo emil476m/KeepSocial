@@ -25,7 +25,6 @@ export class ReCapchaV3Service
         const call = this.http.post(environment.baseURL + "ishuman", this.recaptcha.value)
         const response = await firstValueFrom<ResponsdtoModel>(call);
         this.state.ishuman = response.responseData.ishuman;
-        console.log(this.state.ishuman);
     }, {useGlobalDomain: false})
   }
 }

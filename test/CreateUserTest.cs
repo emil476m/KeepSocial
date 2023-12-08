@@ -206,34 +206,4 @@ create table if not exists keepsocial.followrelation
             responseObj.MessageToClient.Should().Be(expectedResponseDTO.MessageToClient);
         }
     }
-
-    /*private static DateTime testcase1Date = new DateTime(1999, 2, 2);
-    [TestCase("testingName1", "testingmail123@gmail.com", testcase1Date , "12345678", "url")]
-    public async Task ShouldFailDueToDataValidation(string name, string email, DateTime birthday, string password, string avatarUrl)
-    {
-        var user = new testUserObject()
-        {
-            userId =-101,
-            userDisplayName = "testingcreateName",
-            userEmail = "testingmail@gmail.com",
-            userBirthday = new DateTime(2000, 1, 1),
-    
-            AvatarUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png",
-    
-            isDeleted = false,
-        };
-
-        HttpResponseMessage response;
-        try
-        {
-            response = await _httpClient.PostAsJsonAsync("http://localhost:5000/api/account/createuser", user);
-            TestContext.WriteLine("THE FULL BODY RESPONSE: " + await response.Content.ReadAsStringAsync());
-        }
-        catch (Exception e)
-        {
-            throw new Exception(Helper.NoResponseMessage, e);
-        }
-        
-        response.IsSuccessStatusCode.Should().BeFalse();
-    }*/
 }

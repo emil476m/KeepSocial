@@ -81,7 +81,6 @@ export class ChatPage implements OnInit {
   }
 
   async sendMessage() {
-    console.log(this.message.value)
     if (this.message.value != null) {
       let text: Message = {
         room_id: this.chatroom_num, //TODO change this later

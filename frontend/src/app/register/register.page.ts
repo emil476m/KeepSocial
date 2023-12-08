@@ -108,7 +108,6 @@ export class RegisterPage implements OnInit{
 
   async createAccount() {
     try {
-      console.log("")
       const oberservable = this.http.post<newAccount>(environment.baseURL+'account/createuser', {
         userDisplayName: this.AName.value,
         userEmail: this.AEmail.value,
@@ -129,7 +128,6 @@ export class RegisterPage implements OnInit{
     }
     catch (error)
     {
-      console.log(error)
       this.toastControl.create(
         {
           color: "warning",
