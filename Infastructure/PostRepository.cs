@@ -121,6 +121,7 @@ public class PostRepository
                       posts.text as {nameof(Post.text)},
                       posts.img_url as {nameof(Post.imgUrl)},
                       posts.created as {nameof(Post.created)},
+                      u.avatarUrl  as {nameof(Post.avatarUrl)},
                       u.name as {nameof(Post.authorName)}
                       from keepsocial.posts join keepsocial.users u on u.id = posts.author_id where author_id = @profileId order by created desc offset @offset limit @limit";
         using (var conn = _dataSource.OpenConnection())
