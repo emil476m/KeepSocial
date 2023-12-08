@@ -75,7 +75,7 @@ import {EditPostModal} from "../PostDetailed/EditPostModal/edit.post.modal";
                           </ion-avatar>
                           <ion-text style="padding-left: 10px;">{{post.authorName}}</ion-text>
                       </ion-buttons>
-                      <ion-buttons slot="end" *ngIf="userid == post.authorId">
+                      <ion-buttons slot="end" *ngIf="userid === post.authorId">
                           <ion-button (click)="ismenueopenPost()">
                               <ion-icon name="ellipsis-vertical-outline"></ion-icon>
                           </ion-button>
@@ -96,7 +96,7 @@ import {EditPostModal} from "../PostDetailed/EditPostModal/edit.post.modal";
                           </ion-popover>
                       </ion-buttons>
                   </ion-toolbar>
-                  <ion-img *ngIf="post.imgUrl != undefined" [src]="post.imgUrl" style="margin-left: 25%; margin-right: 25%; "/>
+                  <ion-img *ngIf="post.imgUrl !== undefined" [src]="post.imgUrl" style="margin-left: 25%; margin-right: 25%; "/>
                   <ion-text>{{post.text}}</ion-text>
               </ion-card>
           </ion-infinite-scroll>
