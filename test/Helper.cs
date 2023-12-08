@@ -18,16 +18,17 @@ public class Helper
         var rawConnectionString = Environment.GetEnvironmentVariable(envVarKeyName)!;
         try
         {
-            var uri = new Uri(rawConnectionString);
+            /*var uri = new Uri(rawConnectionString);
             var properlyFormattedConnectionString = string.Format(
                 "Server={0};Database={1};User Id={2};Password={3};Port={4};Pooling=false;",
                 uri.Host,
                 uri.AbsolutePath.Trim('/'),
                 uri.UserInfo.Split(':')[0],
                 uri.UserInfo.Split(':')[1],
-                uri.Port > 0 ? uri.Port : 5432);
+                uri.Port > 0 ? uri.Port : 5432);*/
+            //change properlyformattedconnectionstring to raw because of issues with connection string format
             DataSource =
-                new NpgsqlDataSourceBuilder(properlyFormattedConnectionString).Build();
+                new NpgsqlDataSourceBuilder(rawConnectionString).Build();
             DataSource.OpenConnection().Close();
         }
         catch (Exception e)
