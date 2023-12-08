@@ -47,34 +47,16 @@ public class CommentController: ControllerBase
      */
     [HttpGet]
     [Route("/api/getcomments")]
-    public IActionResult getComments([FromQuery] int postId)
+    public IActionResult getComments([FromQuery] int postId, int limit, int offset)
     {
         try
         {
-            var posts = _commentService.getComments(10, 0, postId);
+            var posts = _commentService.getComments(limit, offset, postId);
             return Ok(posts);   
         }
         catch(Exception e)
         {
             return BadRequest("failed to get comments please try again");
-        }
-    }
-
-    /*
-     * gets more comments depending on the variables limit and offset 
-     */
-    [HttpGet]
-    [Route("/api/getmorecomments")]
-    public IActionResult getmoreComments([FromQuery] int limit, int offset, int postId)
-    {
-        try
-        {
-            var posts = _commentService.getComments(limit, offset, postId);
-            return Ok(posts);
-        }
-        catch(Exception e)
-        {
-            return BadRequest("failed to delete please try again");
         }
     }
 

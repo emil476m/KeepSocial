@@ -46,25 +46,7 @@ public class PostController : ControllerBase
      */
     [HttpGet]
     [Route("/api/getposts")]
-    public IActionResult getPosts()
-    {
-        try
-        {
-            var posts = _postService.getposts(10, 0);
-            return Ok(posts);
-        }
-        catch(Exception e)
-        {
-            return BadRequest("failed to get posts please try again");
-        }
-    }
-    
-    /*
-     * returns more posts to the user depending on the variables limit and off set
-     */
-    [HttpGet]
-    [Route("/api/getmoreposts")]
-    public IActionResult getmoreposts([FromQuery] int limit, int offset)
+    public IActionResult getPosts([FromQuery] int limit, int offset)
     {
         try
         {
@@ -73,9 +55,10 @@ public class PostController : ControllerBase
         }
         catch(Exception e)
         {
-            return BadRequest("failed to get more posts please try again");
+            return BadRequest("failed to get posts please try again");
         }
     }
+    
     
     /*
      * sends a posts id to the PostService and returns a post
@@ -199,4 +182,26 @@ public class PostController : ControllerBase
             return BadRequest("Failed to upload image");
         }
     }
+
+    /*
+     * sends the id of the current user, limit and offset to the PostService class
+     */
+    [HttpGet]
+    [RequireAuthentication]
+    [Route("/api/getfollowedposts")]
+    public IActionResult getFollowedposts([FromQuery] int limit, int offset)
+    {
+        try
+        {
+            var sessionData = HttpContext.GetSessionData();
+            if (sessionData == null) return BadRequest("User is not authenticated");
+            var posts = _postService.getFollowedPosts(sessionData.UserId, limit, offset);
+            return Ok(posts);
+        }
+        catch (Exception e)
+        {
+            return BadRequest("Failed to get followed posts");
+        }
+    }
+    
 }
