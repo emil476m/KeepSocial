@@ -225,6 +225,11 @@ public class AccountService
         }
     }
 
+    public IEnumerable<SimpleUser> profileSearch(int limit, int offset, string searchTerm)
+    {
+        return _accountRepository.profileSearch(limit, offset, searchTerm);
+    }
+
     public FriendRequestResponse HaveSendFriendRequest(int userid, int requestingId)
     {
         try

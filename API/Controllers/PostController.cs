@@ -116,11 +116,11 @@ public class PostController : ControllerBase
     
     [HttpGet]
     [Route("/api/userprofilepost/{id}")]
-    public IActionResult getAllUserPost([FromRoute] int id)
+    public IActionResult getUserPost([FromRoute] int id)
     {
         try
         {
-            var posts = _postService.getMoreProfileposts(10, 0, id);
+            var posts = _postService.getProfileposts(10, 0, id);
             return Ok(posts);
         }
         catch(Exception e)
@@ -132,11 +132,10 @@ public class PostController : ControllerBase
     [HttpGet]
     [Route("/api/getmoreprofileposts/{id}")]
     public IActionResult getMoreProfilePosts([FromRoute] int id, [FromQuery] int limit, int offset)
-
     {
         try
         {
-            var posts = _postService.getMoreProfileposts(limit, offset, id);
+            var posts = _postService.getProfileposts(limit, offset, id);
             return Ok(posts);
         }
         catch (Exception e)

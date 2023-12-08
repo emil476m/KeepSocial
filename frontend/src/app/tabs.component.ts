@@ -29,14 +29,19 @@ import {HttpClient} from "@angular/common/http";
                   <ion-icon name="people-outline"></ion-icon>
                   Friend
               </ion-tab-button>
-              <ion-tab-button tab="account" routerLink="account" [disabled]="!token.getToken()">
-                  <ion-icon name="settings-outline"></ion-icon>
-                  Settings
-              </ion-tab-button>
             <ion-tab-button tab="profile" routerLink="profile/{{state.currentUserName}}" [disabled]="!token.getToken()">
               <ion-icon name="person-outline"></ion-icon>
               Profile
             </ion-tab-button>
+            <ion-tab-button tab="search" routerLink="search" [disabled]="!token.getToken()">
+              <ion-icon name="search-outline"></ion-icon>
+              Search
+            </ion-tab-button>
+              <ion-tab-button tab="account" routerLink="account" [disabled]="!token.getToken()">
+                  <ion-icon name="settings-outline"></ion-icon>
+                  Settings
+              </ion-tab-button>
+
           </ion-tab-bar>
       </ion-tabs>
   `

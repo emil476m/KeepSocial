@@ -387,6 +387,30 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
         }
     }
 
+    public IEnumerable<SimpleUser> profileSearch(int limit, int offset, string searchTerm)
+    {
+        Console.WriteLine("this is the searchterm: "+searchTerm);
+        var sql = $@"
+        select 
+            id as userId,
+            name as userDisplayName,
+            avatarurl as {nameof(SimpleUser.avatarUrl)}
+        from keepsocial.users
+        where name LIKE @searchTerm AND isDeleted = false offset @offset limit @limit;
+        ";
+
+        using (var conn = _dataSource.OpenConnection())
+        {
+            
+            var searchResult = conn.Query<SimpleUser>(sql, new {searchTerm = searchTerm + "%", limit, offset});
+            Console.WriteLine("this is the result: "+searchResult);
+
+            return searchResult;
+        }
+    }
+    
+    
+
     public bool remoweFriend(int userId, int friendId)
     {
         var removeFriendSql = $@"

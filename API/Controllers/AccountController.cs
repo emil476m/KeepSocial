@@ -271,6 +271,22 @@ public class AccountController : ControllerBase
             MessageToClient = messageToClient
         };
     }
+    
+    [HttpGet]
+    [Route("/api/Search/{searchTerm}")]
+    public IActionResult profileSearch([FromRoute] string searchTerm, [FromQuery] int limit, [FromQuery]int offset)
+    {
+        try
+        {
+            var searchResult = _accountService.profileSearch(limit, offset,searchTerm);
+            return Ok(searchResult);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.StackTrace);
+            return BadRequest("failed to get search results please try again");
+        }
+    }
 
     [RequireAuthentication]
     [HttpGet]
