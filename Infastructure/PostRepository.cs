@@ -128,5 +128,30 @@ public class PostRepository
             return conn.Query<Post>(sql, new { offset = offset, limit, profileId });
         }
     }
-    
+
+
+    /*
+     * gets post from the users that a user followers
+     */
+    public IEnumerable<Post> getFollowedPost(int id, int limit, int offset)
+    {
+        var sql =
+            $@"select 
+                posts.id as {nameof(Post.id)},
+                posts.text as {nameof(Post.text)},
+                posts.author_id as {nameof(Post.authorId)},
+                posts.img_url as {nameof(Post.imgUrl)},
+                posts.created as {nameof(Post.created)},
+                u.name as {nameof(Post.authorName)},
+                u.avatarurl as {nameof(Post.avatarUrl)} 
+                from keepsocial.posts 
+                    join keepsocial.followrelation f on followed_id = posts.author_id 
+                    join keepsocial.users u on u.id = posts.author_id 
+                    where f.follower_id = @id order by created desc offset @offset limit @limit;";
+
+        using (var conn = _dataSource.OpenConnection())
+        {
+            return conn.Query<Post>(sql, new {id, limit, offset});
+        }
+    }
 }

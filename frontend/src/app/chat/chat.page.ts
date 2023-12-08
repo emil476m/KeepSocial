@@ -26,6 +26,7 @@ import {environment} from "../../environments/environment.prod";
       </ion-header>
 
       <ion-content #textWindow id="Textcontainer" [scrollEvents]="true" (ionScroll)="onScroll($event)">
+
         <ion-card id="textCard" *ngFor="let message of messages"
                   [ngClass]="{'left-card': !message.isSender, 'right-card': message.isSender}">
           <ion-tab-bar [ngStyle]="{ 'background-color': message.isSender ? '#001087' : '#870000' }">
