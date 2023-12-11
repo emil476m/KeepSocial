@@ -32,6 +32,7 @@ import {SearchPage} from "./search/search.page";
 import {FollowerslistModal} from "./profile/FollowersList/Followerslist.modal";
 import {FollowingListModal} from "./profile/followingList/followingList.modal";
 import {MyfeedPage} from "./home/MyfeedPage/Myfeed.page";
+import {TermsOfServicePage} from "./TermsofSerivcePage/termsOfService.page";
 
 @NgModule({
   declarations:
@@ -53,6 +54,7 @@ import {MyfeedPage} from "./home/MyfeedPage/Myfeed.page";
       FollowingListModal,
       MyfeedPage,
       SearchPage,
+      TermsOfServicePage
   ],
     imports:
       [BrowserModule,
