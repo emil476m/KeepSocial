@@ -1,5 +1,5 @@
 import {Component, OnInit} from "@angular/core";
-import {FormControl, Validators} from "@angular/forms";
+import {AbstractControl, FormControl, FormGroup, ValidatorFn, Validators} from "@angular/forms";
 import {firstValueFrom} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 import {newAccount} from "../accountInterface";
@@ -44,14 +44,13 @@ import {environment} from "../../environments/environment.prod";
                 </div>
               </ion-item>
               <ion-item >
-                <ion-input [formControl]="APasswordRepeat" data-testid="accountPasswordRepeat_" type="text" onpaste="return false;" ondrop="return false;" autocomplete="off" label-placement="floating" label="Repeat password" [type]="true ? 'password' : 'text'" required></ion-input>
-                <div *ngIf="APasswordRepeat.invalid && APasswordRepeat.touched" class="error">
+                <ion-input  [formControl]="APasswordRepeat" data-testid="accountPasswordRepeat_" type="text" onpaste="return false;" ondrop="return false;" autocomplete="off" label-placement="floating" label="Repeat password" [type]="true ? 'password' : 'text'" required></ion-input>
+                <div *ngIf="APasswordRepeat.invalid && APasswordRepeat.touched && APassword.value!=APasswordRepeat.value" class="error">
                   Both passwords must match
                 </div>
               </ion-item>
               <ion-item>
-                <ion-button (click)="createAccount()" data-testid="accountCreateBTN_"
-                            *ngIf="APassword.valid && APasswordRepeat.valid && ADate.valid && AEmail.valid && AName.valid"
+                <ion-button [disabled]="APasswordRepeat.value!=APassword.value && !(APassword.valid && APasswordRepeat.valid && ADate.valid && AEmail.valid && AName.valid)" (click)="createAccount()" data-testid="accountCreateBTN_"
                 >Create Account</ion-button>
               </ion-item>
             </ion-col>
@@ -79,7 +78,7 @@ import {environment} from "../../environments/environment.prod";
       </ion-content>
         `,
 })
-export class RegisterPage implements OnInit{
+export class RegisterPage {
 
   hide = true;
   defaultAvatarUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png";
@@ -89,25 +88,11 @@ export class RegisterPage implements OnInit{
   AName = new FormControl("",[Validators.required,Validators.minLength(1),Validators.maxLength(100)]);
   AEmail = new FormControl("",[Validators.required, Validators.email]);
   ADate = new FormControl(Date,[Validators.required,Validators.minLength(1),Validators.maxLength(31)]);
-  APassword = new FormControl("",[Validators.required,Validators.minLength(8),Validators.maxLength(32)]);
-  APasswordRepeat = new FormControl("",[Validators.required]);
-
-  //TODO implement this
-  private MatchPassword(): boolean {
-      const password = this.APassword.value as string;
-      const passwordRepeat = this.APasswordRepeat.value as string;
-
-      if (password == passwordRepeat) {
-        return true;
-      }
-      else {return false}
-
-  }
+  APassword = new FormControl("",[Validators.required, Validators.minLength(8),Validators.maxLength(32)]);
+  APasswordRepeat: FormControl = new FormControl("", [Validators.required]);
 
 
-  constructor(private http: HttpClient, public toastControl: ToastController, private router: Router) {
-
-  }
+  constructor(private http: HttpClient, public toastControl: ToastController, private router: Router) {}
 
   async createAccount() {
     try {
@@ -144,9 +129,5 @@ export class RegisterPage implements OnInit{
     }
     this.router.navigateByUrl("login");
   }
-
-  ngOnInit() {
-  }
-
 
 }

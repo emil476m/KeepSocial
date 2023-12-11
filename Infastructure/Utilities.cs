@@ -3,9 +3,7 @@ namespace Infastructure;
 using Npgsql;
 
 public class Utilities
-{
-    public static readonly Uri Uri;
-
+{ 
     public static readonly string ProperlyFormattedConnectionString;
 
 
@@ -16,29 +14,5 @@ public class Utilities
 
         rawConnectionString = Environment.GetEnvironmentVariable(envVarKeyName)!;
         ProperlyFormattedConnectionString = rawConnectionString;
-        return;
-        if (rawConnectionString == null)
-        {
-            throw new Exception($@"
-YOUR CONN STRING {envVarKeyName} IS EMPTY.
-");
-        }
-
-        try
-        {
-            Uri = new Uri(rawConnectionString);
-            ProperlyFormattedConnectionString = string.Format(
-                "Host={0};Database={1};User Id={2};Password={3};Port={4};",
-                Uri.Host,
-                Uri.AbsolutePath.Trim('/'),
-                Uri.UserInfo.Split(':')[0],
-                Uri.UserInfo.Split(':')[1],
-                Uri.Port > 0 ? Uri.Port : 5432);
-            new NpgsqlDataSourceBuilder(ProperlyFormattedConnectionString).Build().OpenConnection().Close();
-        }
-        catch (Exception e)
-        {
-            throw new Exception($@"Connection string not found", e);
-        }
     }
 }
