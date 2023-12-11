@@ -44,14 +44,13 @@ import {environment} from "../../environments/environment.prod";
                 </div>
               </ion-item>
               <ion-item >
-                <ion-input [formControl]="APasswordRepeat" data-testid="accountPasswordRepeat_" type="text" onpaste="return false;" ondrop="return false;" autocomplete="off" label-placement="floating" label="Repeat password" [type]="true ? 'password' : 'text'" required></ion-input>
-                <div *ngIf="APasswordRepeat.invalid && APasswordRepeat.touched" class="error">
+                <ion-input  [formControl]="APasswordRepeat" data-testid="accountPasswordRepeat_" type="text" onpaste="return false;" ondrop="return false;" autocomplete="off" label-placement="floating" label="Repeat password" [type]="true ? 'password' : 'text'" required></ion-input>
+                <div *ngIf="APasswordRepeat.invalid && APasswordRepeat.touched && APassword.value!=APasswordRepeat.value" class="error">
                   Both passwords must match
                 </div>
               </ion-item>
               <ion-item>
-                <ion-button (click)="createAccount()" data-testid="accountCreateBTN_"
-                            *ngIf="APassword.valid && APasswordRepeat.valid && ADate.valid && AEmail.valid && AName.valid"
+                <ion-button [disabled]="APasswordRepeat.value!=APassword.value && !(APassword.valid && APasswordRepeat.valid && ADate.valid && AEmail.valid && AName.valid)" (click)="createAccount()" data-testid="accountCreateBTN_"
                 >Create Account</ion-button>
               </ion-item>
             </ion-col>
@@ -90,22 +89,10 @@ export class RegisterPage {
   AEmail = new FormControl("",[Validators.required, Validators.email]);
   ADate = new FormControl(Date,[Validators.required,Validators.minLength(1),Validators.maxLength(31)]);
   APassword = new FormControl("",[Validators.required, Validators.minLength(8),Validators.maxLength(32)]);
-  APasswordRepeat: FormControl = new FormControl("", [Validators.required, this.isPasswordMatching()]);
-
-  private isPasswordMatching(): ValidatorFn {
-    return (control: AbstractControl): { [key: string]: boolean } | null => {
-      if (this.APassword.value === this.APasswordRepeat.value) {
-        return null;
-      } else {
-        return { 'passwordMismatch': true };
-      }
-    }
-  }
+  APasswordRepeat: FormControl = new FormControl("", [Validators.required]);
 
 
-  constructor(private http: HttpClient, public toastControl: ToastController, private router: Router) {
-
-  }
+  constructor(private http: HttpClient, public toastControl: ToastController, private router: Router) {}
 
   async createAccount() {
     try {
