@@ -12,6 +12,7 @@ import {FriendsPage} from "./freind/friends.page";
 import {ProfilePage} from "./profile/profile.page";
 import {MyfeedPage} from "./home/MyfeedPage/Myfeed.page";
 import {SearchPage} from "./search/search.page";
+import {TermsOfServicePage} from "./TermsofSerivcePage/termsOfService.page";
 
 const routes: Routes = [
   {
@@ -82,7 +83,11 @@ const routes: Routes = [
     path: '',
     redirectTo: '/home',
     pathMatch: 'full',
-  }
+  },
+  {
+    path: "termsofservice",
+    component: TermsOfServicePage,
+  },
 ];
 
 @NgModule({

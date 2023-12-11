@@ -73,6 +73,9 @@ import {environment} from "../../environments/environment.prod";
             </ion-col>
           </ion-row>
         </ion-grid>
+        <ion-item lines="none" style="top: 30%; --background: none;">
+          <a href="termsofservice">read our terms of service here</a>
+        </ion-item>
       </ion-content>
         `,
 })

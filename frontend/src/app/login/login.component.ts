@@ -35,7 +35,10 @@ import {NavigationStart, Router} from "@angular/router";
       </ion-item>
       <ion-item lines="none" class="buttonitem">
         <ion-button color="primary" shape="round" (click)="login()" [disabled]="input.invalid && !this.state.ishuman || !this.state.ishuman || input.invalid">Login</ion-button>
-        <ion-button routerLink="register" color="primary" shape="round">sign-up</ion-button>
+        <ion-button (click)="goToRegister()" color="primary" shape="round">sign-up</ion-button>
+      </ion-item>
+      <ion-item lines="none" style="top: 30%; --background: none; left: 25%">
+        <a href="termsofservice">read our terms of service here</a>
       </ion-item>
 
 
@@ -115,4 +118,8 @@ export class LoginComponent {
         }
       }
     }
+
+  goToRegister() {
+    this.router.navigate(['register'])
+  }
 }
