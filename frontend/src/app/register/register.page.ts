@@ -1,5 +1,5 @@
 import {Component, OnInit} from "@angular/core";
-import {FormControl, Validators} from "@angular/forms";
+import {AbstractControl, FormControl, FormGroup, ValidatorFn, Validators} from "@angular/forms";
 import {firstValueFrom} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 import {newAccount} from "../accountInterface";
@@ -76,7 +76,7 @@ import {environment} from "../../environments/environment.prod";
       </ion-content>
         `,
 })
-export class RegisterPage implements OnInit{
+export class RegisterPage {
 
   hide = true;
   defaultAvatarUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png";
@@ -86,19 +86,17 @@ export class RegisterPage implements OnInit{
   AName = new FormControl("",[Validators.required,Validators.minLength(1),Validators.maxLength(100)]);
   AEmail = new FormControl("",[Validators.required, Validators.email]);
   ADate = new FormControl(Date,[Validators.required,Validators.minLength(1),Validators.maxLength(31)]);
-  APassword = new FormControl("",[Validators.required,Validators.minLength(8),Validators.maxLength(32)]);
-  APasswordRepeat = new FormControl("",[Validators.required]);
+  APassword = new FormControl("",[Validators.required, Validators.minLength(8),Validators.maxLength(32)]);
+  APasswordRepeat: FormControl = new FormControl("", [Validators.required, this.isPasswordMatching()]);
 
-  //TODO implement this
-  private MatchPassword(): boolean {
-      const password = this.APassword.value as string;
-      const passwordRepeat = this.APasswordRepeat.value as string;
-
-      if (password == passwordRepeat) {
-        return true;
+  private isPasswordMatching(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: boolean } | null => {
+      if (this.APassword.value === this.APasswordRepeat.value) {
+        return null;
+      } else {
+        return { 'passwordMismatch': true };
       }
-      else {return false}
-
+    }
   }
 
 
@@ -141,9 +139,5 @@ export class RegisterPage implements OnInit{
     }
     this.router.navigateByUrl("login");
   }
-
-  ngOnInit() {
-  }
-
 
 }
