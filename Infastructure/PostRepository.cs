@@ -146,7 +146,7 @@ public class PostRepository
                 u.name as {nameof(Post.authorName)},
                 u.avatarurl as {nameof(Post.avatarUrl)} 
                 from keepsocial.posts 
-                    join keepsocial.followrelation f on followed_id = posts.author_id 
+                    join keepsocial.follow_relation f on followed_id = posts.author_id 
                     join keepsocial.users u on u.id = posts.author_id 
                     where f.follower_id = @id order by created desc offset @offset limit @limit;";
 

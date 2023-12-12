@@ -76,7 +76,7 @@ UPDATE keepsocial.users SET name = @updatedValue  WHERE id = @id";
     public bool StoreValidation(int userId, int validationNumber)
     {
         var sql =
-            $@"INSERT INTO keepsocial.validationnumbers (user_id, validation_number) VALUES(@userId, @validationNumber)";
+            $@"INSERT INTO keepsocial.validation_numbers (user_id, validation_number) VALUES(@userId, @validationNumber)";
 
         using (var conn = _dataSource.OpenConnection())
         {
@@ -108,7 +108,7 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
         where id != @userId
         and id in (select distinct u.id
         from keepsocial.users as u
-        join keepsocial.friendRealeatioj as f on u.id = f.user1_id or u.id = f.user2_id
+        join keepsocial.friend_relation as f on u.id = f.user1_id or u.id = f.user2_id
         where (f.user1_id = @userId or f.user2_id = @userId))
         LIMIT 10 OFFSET @offSetNumber;
         ";
@@ -122,7 +122,7 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
     public bool isFriends(int userId, int friendId)
     {
         var sql = $@"
-           SELECT count(user1_id) from keepsocial.friendRealeatioj 
+           SELECT count(user1_id) from keepsocial.friend_relation 
             where (user1_id = @userId and user2_id = @friendId) 
             OR (user1_id = @friendId and user2_id = @userId);
         ";
@@ -148,7 +148,7 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
     public bool FollowUser(int userId, int followedId)
     {
         var sql =
-            $@"INSERT INTO keepsocial.followrelation (followed_id, follower_id) VALUES(@followedid, @userId)";
+            $@"INSERT INTO keepsocial.follow_relation (followed_id, follower_id) VALUES(@followedid, @userId)";
 
         using (var conn = _dataSource.OpenConnection())
         {
@@ -159,7 +159,7 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
     public bool UnFollowUser(int userId, int followedId)
     {
         var sql =
-            $@"DELETE FROM keepsocial.followrelation WHERE followed_id = @followedId AND follower_id = @userId;";
+            $@"DELETE FROM keepsocial.follow_relation WHERE followed_id = @followedId AND follower_id = @userId;";
 
         using (var conn = _dataSource.OpenConnection())
         {
@@ -170,7 +170,7 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
     public bool CheckIfFollowing(int userId, int followedId)
     {
         var sql =
-            $@"SELECT count(follower_id) FROM keepsocial.followrelation WHERE followed_id = @followedId AND follower_id = @userId;";
+            $@"SELECT count(follower_id) FROM keepsocial.follow_relation WHERE followed_id = @followedId AND follower_id = @userId;";
 
         using (var conn = _dataSource.OpenConnection())
         {
@@ -189,10 +189,10 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
            from keepsocial.users where name = @profileName and isDeleted = false;";
 
         var sqlFollowing =
-            $@"SELECT count(follower_id) FROM keepsocial.followrelation WHERE follower_id = @userId;";
+            $@"SELECT count(follower_id) FROM keepsocial.follow_relation WHERE follower_id = @userId;";
 
         var sqlFollower =
-            $@"SELECT count(followed_id) FROM keepsocial.followrelation WHERE followed_id = @userId;";
+            $@"SELECT count(followed_id) FROM keepsocial.follow_relation WHERE followed_id = @userId;";
         
         var sqlPostAmount = $@"select count(author_id) FROM keepsocial.posts WHERE author_id = @userId";
         
@@ -232,14 +232,14 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
     public IEnumerable<FriendRequestModel> getFriendRequest(int userId, int offset)
     {
         var check =
-            $@"SELECT count(keepsocial.friendrequesttable.request_id) from keepsocial.friendRequestTable WHERE requested = @userId and response IS NULL;";
+            $@"SELECT count(keepsocial.friend_request_table.request_id) from keepsocial.friendRequestTable WHERE requested = @userId and response IS NULL;";
 
         var sql = $@"SELECT users.id as {nameof(FriendRequestModel.RequestersId)},
             f.request_id as {nameof(FriendRequestModel.RequestId)},
             users.name as {nameof(FriendRequestModel.RequesterName)},
             users.avatarurl as {nameof(FriendRequestModel.RequesterAvatarurl)}
             from keepsocial.users 
-            JOIN keepsocial.friendrequesttable f on users.id = f.requester  
+            JOIN keepsocial.friend_request_table f on users.id = f.requester  
             WHERE(requested = @userId and response IS NULL)
             LIMIT 10 OFFSET @offset;
         ";
@@ -258,12 +258,12 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
 
     public string acceptRequest(bool response, int requestId, int requesterId, int userId)
     {
-        var sql1 = $@" DELETE from keepsocial.friendRequestTable 
+        var sql1 = $@" DELETE from keepsocial.friend_request_table 
                                       WHERE requested = @userId AND requester = @requesterId 
                                         AND request_id = @requestId;
         ";
 
-        var sql2 = $@"INSERT INTO keepsocial.friendRealeatioj(user1_id, user2_id) VALUES (@userId, @requesterId)";
+        var sql2 = $@"INSERT INTO keepsocial.friend_relation(user1_id, user2_id) VALUES (@userId, @requesterId)";
 
         using (var conn = _dataSource.OpenConnection())
         {
@@ -287,7 +287,7 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
 
     public string declineRequest(bool response, int requestId, int requesterId, int userId)
     {
-        var sql1 = $@" UPDATE keepsocial.friendRequestTable set response = @response 
+        var sql1 = $@" UPDATE keepsocial.friend_request_table set response = @response 
                                       WHERE requested = @userId and requester = @requesterId 
                                         AND request_id = @requestId;
         ";
@@ -305,10 +305,10 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
     {
         int requestLimit = 5;
 
-        var getRejectedAmounnt = @$"SELECT count(*) from keepsocial.friendRequestTable 
+        var getRejectedAmounnt = @$"SELECT count(*) from keepsocial.friend_request_table 
             WHERE requested = @requestingId and requester = @userid AND response = false";
 
-        var getActiverequestID = @$"SELECT request_id from keepsocial.friendRequestTable 
+        var getActiverequestID = @$"SELECT request_id from keepsocial.friend_request_table 
             WHERE response IS NULL and requested = @requestingId and requester = @userid";
 
 
@@ -338,7 +338,7 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
 
     public FriendRequestResponse SendFriendRequest(int requestingId, int userid)
     {
-        var sendRequest = $@"INSERT INTO keepsocial.friendRequestTable( requester, requested) 
+        var sendRequest = $@"INSERT INTO keepsocial.friend_request_table( requester, requested) 
             VALUES (@userid, @requestingId) 
             returning request_id;
         ";
@@ -365,7 +365,7 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
     public IEnumerable<SimpleUser> getFollowers(int id, int offset, int limit)
     {
         var sql = $@"select users.id as {nameof(SimpleUser.userId)}, users.name as {nameof(SimpleUser.userDisplayname)}, users.avatarUrl as {nameof(SimpleUser.avatarUrl)}
-                        from keepsocial.users join keepsocial.followrelation f on users.id = f.follower_id where followed_id = @id offset @offset limit @limit";
+                        from keepsocial.users join keepsocial.follow_relation f on users.id = f.follower_id where followed_id = @id offset @offset limit @limit";
 
         using (var conn = _dataSource.OpenConnection())
         {
@@ -379,7 +379,7 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
     public IEnumerable<SimpleUser> getFollowing(int id, int offset, int limit)
     {
         var sql = $@"select users.id as {nameof(SimpleUser.userId)}, users.name as {nameof(SimpleUser.userDisplayname)}, users.avatarUrl as {nameof(SimpleUser.avatarUrl)}
-                        from keepsocial.users join keepsocial.followrelation f on users.id = f.followed_id where follower_id = @id offset @offset limit @limit";
+                        from keepsocial.users join keepsocial.follow_relation f on users.id = f.followed_id where follower_id = @id offset @offset limit @limit";
 
         using (var conn = _dataSource.OpenConnection())
         {
@@ -409,7 +409,7 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
     public bool remoweFriend(int userId, int friendId)
     {
         var removeFriendSql = $@"
-           DELETE from keepsocial.friendRealeatioj
+           DELETE from keepsocial.friend_relation
             where (user1_id = @userId and user2_id = @friendId)
             OR (user1_id = @friendId and user2_id = @userId);
         ";

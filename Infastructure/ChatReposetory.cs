@@ -37,7 +37,7 @@ public class ChatReposetory
     public bool isUserInRoom(int roomId, int userId)
     {
         var sql = $@"
-            SELECT rom_id from keepsocial.chatroomUsersRealation where rom_id = @roomId AND user_id = @userId;
+            SELECT rom_id from keepsocial.chatroom_users_relation where rom_id = @roomId AND user_id = @userId;
         ";
 
         using (var conn = _dataSource.OpenConnection())
@@ -75,7 +75,7 @@ public class ChatReposetory
             select 
             keepsocial.chatrooms.rom_id as {nameof(Rooms.rom_id)},
             rom_name as {nameof(Rooms.rom_name)}
-            FROM keepsocial.chatrooms JOIN keepsocial.chatroomUsersRealation ON chatroomUsersRealation.rom_id = chatrooms.rom_id
+            FROM keepsocial.chatrooms JOIN keepsocial.chatroom_users_relation ON chatroom_users_relation.rom_id = chatrooms.rom_id
             WHERE user_id = @userId
             LIMIT 10 OFFSET @offset;
         ";
@@ -92,13 +92,13 @@ public class ChatReposetory
         
         var sql1 = $@"
             SELECT b.rom_id
-            FROM keepsocial.chatroomusersrealation as b
-            JOIN keepsocial.chatroomusersrealation as c ON c.rom_id = b.rom_id
+            FROM keepsocial.chatroom_users_relation as b
+            JOIN keepsocial.chatroom_users_relation as c ON c.rom_id = b.rom_id
             WHERE b.user_id = @userId AND c.user_id = @friendId;
         ";
 
         var sql2 = $@"
-        SELECT user_id FROM keepsocial.chatroomUsersRealation WHERE rom_id = @roomId;
+        SELECT user_id FROM keepsocial.chatroom_users_relation WHERE rom_id = @roomId;
         ";
         
 
@@ -127,7 +127,7 @@ public class ChatReposetory
         ";
 
         var sql2 = $@"
-                INSERT INTO keepsocial.chatroomUsersRealation(rom_id, user_id)
+                INSERT INTO keepsocial.chatroom_users_relation(rom_id, user_id)
                 values (@roomId, @personId);
         ";
         using (var conn = _dataSource.OpenConnection())

@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.ComponentModel.DataAnnotations;
 
 namespace Infastructure;
 
@@ -16,9 +17,15 @@ public class Rooms
 
 public class Message
 {
+    [Required]
     public int room_id { get; set; }
+    
+    [MinLength(1)]
+    [MaxLength(90)]
     public string message { get; set; }
     public bool isSender { get; set; }
+    
+    [Required]
     public int User_id { get; set; }
     public DateTime sendAt { get; set; }
 }
