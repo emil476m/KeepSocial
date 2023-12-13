@@ -124,7 +124,13 @@ public class AccountService
         }
 
         _mailService.SendEmail(message, email);
-        return _accountRepository.StoreValidation(userId, validationNumber);
+        var created = DateTimeOffset.UtcNow;
+        return _accountRepository.StoreValidation(userId, validationNumber, created);
+    }
+    
+    public bool ValidateNumber(int userId, int validationNumber)
+    {
+        return _accountRepository.validateNumber(userId, validationNumber);
     }
 
     public IEnumerable<User> getFriends(int userId, int pageNumber)
@@ -337,4 +343,6 @@ public class AccountService
             throw new Exception("an error have been encounter while removing friend");
         }
     }
+
+    
 }

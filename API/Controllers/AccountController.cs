@@ -146,10 +146,34 @@ public class AccountController : ControllerBase
         {
             return new ResponseDto
             {
-                MessageToClient = "Failed to update"
+                MessageToClient = "Failed to send validation"
             };
         }
     }
+    
+    
+    [RequireAuthentication]
+    [HttpPost]
+    [Route("/api/account/validationConfirmation")]
+    public ResponseDto ValidationConfirmation([FromBody] int validationNumber)
+    {
+        bool success = _accountService.ValidateNumber(HttpContext.GetSessionData().UserId, validationNumber);
+        if (success)
+        {
+            return new ResponseDto
+            {
+                MessageToClient = "Successfully validated code"
+            };
+        }
+        else
+        {
+            return new ResponseDto
+            {
+                MessageToClient = "Failed to validate"
+            };
+        }
+    }
+    
     
     [RequireAuthentication]
     [HttpPost]
