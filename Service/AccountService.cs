@@ -205,6 +205,7 @@ public class AccountService
 
     public string handleFriendRequest(bool response, int requestId, int requesterId, int userId)
     {
+        if (_accountRepository.isFriends(requesterId, userId)) return "your already friends";
         try
         {
             if (response)
@@ -246,7 +247,7 @@ public class AccountService
                     requestId = 0,
                     responseMessage = "You have send to many request"
                 };
-            
+
 
             throw new Exception("an Error Acoured while feching request");
         }
@@ -254,6 +255,7 @@ public class AccountService
 
     public FriendRequestResponse SendFriendRequest(int userid, int requestingId)
     {
+        if (_accountRepository.isFriends(userid, requestingId)) throw new Exception("your already friends");
         try
         {
             var response = _accountRepository.HaveSendFriendRequest(userid, requestingId);
@@ -295,7 +297,7 @@ public class AccountService
     {
         try
         {
-            return _accountRepository.getFollowers(id,offset,limit);
+            return _accountRepository.getFollowers(id, offset, limit);
         }
         catch (Exception e)
         {
@@ -311,7 +313,7 @@ public class AccountService
     {
         try
         {
-            return _accountRepository.getFollowing(id,offset,limit);
+            return _accountRepository.getFollowing(id, offset, limit);
         }
         catch (Exception e)
         {
