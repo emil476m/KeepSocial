@@ -120,13 +120,12 @@ public class AccountController : ControllerBase
         };
     }
 
-    //[RequireAuthentication]
+    [RequireAuthentication]
     [HttpGet]
     [Route("/api/freinds")]
     public IEnumerable<SimpleUser> GetFreinds(int pageNumber)
     {
-        //int userId = HttpContext.GetSessionData().UserId!;
-        int userId = 111;
+        int userId = HttpContext.GetSessionData().UserId!;
         return _accountService.getFriends(userId, pageNumber);
     }
 

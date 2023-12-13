@@ -103,12 +103,12 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
              name as {nameof(SimpleUser.userDisplayname)},
              avatarUrl as {nameof(SimpleUser.avatarUrl)}
         from keepsocial.users
-        where id != 111
+        where id != @userId
           and id in (select distinct u.id
                      from keepsocial.users as u
                               join keepsocial.friend_relation as f on u.id = f.user1_id or u.id = f.user2_id
-                     where (f.user1_id = 111 or f.user2_id = 111))
-         LIMIT 10 OFFSET 0;
+                     where (f.user1_id = @userId or f.user2_id = @userId))
+         LIMIT 10 OFFSET @offSetNumber;
         ";
 
         using (var conn = _dataSource.OpenConnection())
