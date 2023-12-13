@@ -127,7 +127,7 @@ public class AccountService
         return _accountRepository.StoreValidation(userId, validationNumber);
     }
 
-    public IEnumerable<User> getFriends(int userId, int pageNumber)
+    public IEnumerable<SimpleUser> getFriends(int userId, int pageNumber)
     {
         int offset = (10 * pageNumber) - 10;
         try
