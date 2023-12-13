@@ -95,27 +95,25 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
         }
     }
 
-    public IEnumerable<User> getFriends(int userId, int offSetNumber)
+    public IEnumerable<SimpleUser> getFriends(int userId, int offSetNumber)
     {
         var sql = $@"
         select 
-            id as {nameof(User.userId)},
-            name as {nameof(User.userDisplayName)},
-            email as {nameof(User.userEmail)},
-            birthday as {nameof(User.userBirthday)}
-            
+             id as {nameof(SimpleUser.userId)},
+             name as {nameof(SimpleUser.userDisplayname)},
+             avatarUrl as {nameof(SimpleUser.avatarUrl)}
         from keepsocial.users
         where id != @userId
-        and id in (select distinct u.id
-        from keepsocial.users as u
-        join keepsocial.friend_relation as f on u.id = f.user1_id or u.id = f.user2_id
-        where (f.user1_id = @userId or f.user2_id = @userId))
-        LIMIT 10 OFFSET @offSetNumber;
+          and id in (select distinct u.id
+                     from keepsocial.users as u
+                              join keepsocial.friend_relation as f on u.id = f.user1_id or u.id = f.user2_id
+                     where (f.user1_id = @userId or f.user2_id = @userId))
+         LIMIT 10 OFFSET @offSetNumber;
         ";
 
         using (var conn = _dataSource.OpenConnection())
         {
-            return conn.Query<User>(sql, new { userId, offSetNumber });
+            return conn.Query<SimpleUser>(sql, new { userId, offSetNumber });
         }
     }
 
