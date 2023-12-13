@@ -37,7 +37,8 @@ public class GlobalExeptionHandeler
             exception is ArgumentException ||
             exception is ArgumentNullException ||
             exception is ArgumentOutOfRangeException ||
-            exception is InvalidCredentialException)
+            exception is InvalidCredentialException ||
+            exception is Exception)
         {
             http.Response.StatusCode = StatusCodes.Status400BadRequest;
         }
