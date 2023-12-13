@@ -27,6 +27,7 @@ public class AccountService
         var hashAlgorithm = PasswordHashAlgorithm.Create();
         var salt = hashAlgorithm.GenerateSalt();
         var hash = hashAlgorithm.HashPassword(password, salt);
+        
         var user = _accountRepository.CreateUser(userDisplayName, userEmail, userBirthday);
         _passwordHashRepository.Create(user.userId, hash, salt, hashAlgorithm.GetName());
         return user;
@@ -117,15 +118,20 @@ public class AccountService
         string message =
             "This is your validation code for KeepSocial please enter it to continue to make changes to your account: " +
             validationNumber;
-
+        
+        _mailService.SendEmail(message, email);
+        var created = DateTimeOffset.UtcNow;
+        var success = false;
         if (mes != "" && mes != null)
         {
             message = mes;
         }
-
-        _mailService.SendEmail(message, email);
-        var created = DateTimeOffset.UtcNow;
-        return _accountRepository.StoreValidation(userId, validationNumber, created);
+        else
+        {
+            success = _accountRepository.StoreValidation(userId, validationNumber, created);
+        }
+        
+        return success;
     }
     
     public bool ValidateNumber(int userId, int validationNumber)

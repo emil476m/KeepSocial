@@ -25,7 +25,15 @@ public class AccountRepository
 
         using (var conn = _dataSource.OpenConnection())
         {
-            return conn.QueryFirst<User>(sql, new { userDisplayName, userEmail, userBirthday });
+            try
+            {
+                return conn.QueryFirst<User>(sql, new { userDisplayName, userEmail, userBirthday });
+
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Could now create user");
+            }
         }
     }
 
@@ -87,20 +95,22 @@ UPDATE keepsocial.users SET name = @updatedValue  WHERE id = @id";
     public bool validateNumber(int userId, int validationNumber)
     {
         var sql =
-            $@"SELECT created FROM keepsocial.validation_numbers WHERE validation_number = @validationNumber AND user_id = @userId
-            RETURNING user_id as {nameof(ValidationModel.userId)}, 
+            $@"SELECT user_id as {nameof(ValidationModel.userId)}, 
             validation_number as {nameof(ValidationModel.validationNumber)},
-            created as {nameof(ValidationModel.created)},";
+            created as {nameof(ValidationModel.created)} FROM keepsocial.validation_numbers WHERE validation_number = @validationNumber AND user_id = @userId;";
 
         using (var conn = _dataSource.OpenConnection())
         {
-            var validation = conn.QueryFirst<ValidationModel>(sql, new { userId, validationNumber });
-
-            if (!(DateTime.UtcNow > validation.created.AddMinutes(10)))
+            ValidationModel validation = conn.QueryFirstOrDefault<ValidationModel>(sql, new { userId, validationNumber });
+            if (validation != null)
             {
-                if (validation.userId.Equals(userId) && validation.validationNumber.Equals(validationNumber))
+                if (!(DateTime.UtcNow > validation.created.AddMinutes(10)))
                 {
-                    return true;
+                    if (validation.userId.Equals(userId) && validation.validationNumber.Equals(validationNumber))
+                    {
+                        deleteValidations(userId);
+                        return true;
+                    }
                 }
             }
             
@@ -111,7 +121,7 @@ UPDATE keepsocial.users SET name = @updatedValue  WHERE id = @id";
     public bool deleteValidations(int userId)
     {
         var sql =
-            $@"DELETE * FROM keepsocial.validation_numbers WHERE user_id = @userId";
+            $@"DELETE FROM keepsocial.validation_numbers WHERE user_id = @userId";
 
         using (var conn = _dataSource.OpenConnection())
         {

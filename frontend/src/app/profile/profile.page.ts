@@ -62,8 +62,8 @@ import {FriendRequestResponse} from "../models/FriendRequestResponse";
                         <ion-label style="text-align: left">{{profileDescription}}</ion-label>
 
                         <ion-item>
-                            <ion-label (click)="openFolowingList(this.profileId)">{{following}} Following</ion-label>
-                            <ion-label (click)="openFolowersList(this.profileId)">{{followers}} Followers</ion-label>
+                            <ion-label (click)="openFollowingList(this.profileId)">{{following}} Following</ion-label>
+                            <ion-label (click)="openFollowersList(this.profileId)">{{followers}} Followers</ion-label>
                         </ion-item>
                     </ion-col>
                 </ion-row>
@@ -460,7 +460,7 @@ export class ProfilePage implements OnInit{
     this.eventchange = $event;
   }
 
-  openFolowingList(id:number) {
+  openFollowingList(id:number) {
     this.state.profileId = id;
     this.modalcontroller.create(
       {
@@ -470,7 +470,7 @@ export class ProfilePage implements OnInit{
     })
   }
 
-  openFolowersList(id: number) {
+  openFollowersList(id: number) {
     this.state.profileId = id;
     this.modalcontroller.create(
       {

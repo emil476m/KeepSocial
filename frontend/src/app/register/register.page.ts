@@ -77,13 +77,6 @@ import {environment} from "../../environments/environment.prod";
                     <ion-img class="profile-img" style="width: 30%" [src]="currentAvatarUrl"/>
                   </ion-col>
                 </ion-row>
-                <ion-row>
-                  <ion-col class="grid-item">
-                    <ion-button>
-                      Change Picture
-                    </ion-button>
-                  </ion-col>
-                </ion-row>
               </ion-grid>
             </ion-col>
           </ion-row>

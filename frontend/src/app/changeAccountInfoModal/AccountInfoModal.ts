@@ -17,12 +17,21 @@ import {Globalstate} from "../services/states/globalstate";
         </ion-toolbar>
       </ion-header>
       <ion-content>
-        <ion-item>
+        <ion-item *ngIf="IsValidated">
           <ion-input [formControl]="UserInput" type="text" label-placement="floating" [label]="InputLabel" [type]="hide ? 'password' : 'text'"></ion-input>
           <div *ngIf="UserInput.invalid && UserInput.touched" class="error"  [textContent]="'Invalid '+this.globalstate.updatingWhatAccountItem"> Invalid
           </div>
         </ion-item>
-        <ion-button [disabled]="UserInput.invalid" (click)="updateAccount()">Confirm</ion-button>
+        <ion-button *ngIf="IsValidated" [disabled]="UserInput.invalid" (click)="updateAccount()">Confirm</ion-button>
+          <ion-item *ngIf="!IsValidated">
+              <ion-label>Please validate enter validation code from email</ion-label>
+              <ion-input [formControl]="ValidationNumber" type="number" label-placement="floating" label="ValidationCode"></ion-input>
+
+          </ion-item>
+          <ion-item *ngIf="!IsValidated">
+              <ion-button (click)="sendCode()">Send Code</ion-button>
+              <ion-button *ngIf="IsCodeSent" (click)="sendCode()">Confirm Code</ion-button>
+          </ion-item>
       </ion-content>
     `,
 })
@@ -31,6 +40,9 @@ export class NewAccountInfoModal implements OnInit
 
   UserInput : FormControl= new FormControl("");
   InputLabel = this.globalstate.updatingWhatAccountItem;
+  IsValidated = false;
+  ValidationNumber : FormControl= new FormControl(Number,[Validators.required, Validators.minLength(8),Validators.maxLength(8)]);
+  IsCodeSent = false;
 
 
   ngOnInit(): void {
@@ -40,6 +52,7 @@ export class NewAccountInfoModal implements OnInit
   setup(){
     if (this.globalstate.updatingWhatAccountItem == "Account Name"){
       this.UserInput.setValidators([Validators.required, Validators.minLength(1),Validators.maxLength(100)])
+      this.IsValidated = true;
 
     }else if (this.globalstate.updatingWhatAccountItem == "Account Email"){
       this.UserInput.setValidators([Validators.required, Validators.email])
@@ -49,9 +62,11 @@ export class NewAccountInfoModal implements OnInit
       this.hide=true;
     }else if (this.globalstate.updatingWhatAccountItem == "Account Avatar"){
       this.UserInput.setValidators([Validators.required])
+      this.IsValidated = true;
     }
     else if (this.globalstate.updatingWhatAccountItem == "Profile Description"){
       this.UserInput.setValidators([Validators.required, Validators.maxLength(500)])
+      this.IsValidated = true;
     }
 
 
@@ -64,6 +79,10 @@ export class NewAccountInfoModal implements OnInit
   dismissModal() {
     this.globalstate.updatingWhatAccountItem=null;
     this.modalController.dismiss();
+  }
+
+  async sendCode(){
+    this.IsCodeSent = true;
   }
 
 
