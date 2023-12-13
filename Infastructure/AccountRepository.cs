@@ -369,7 +369,14 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
 
         using (var conn = _dataSource.OpenConnection())
         {
-            return conn.Query<SimpleUser>(sql, new { id, offset, limit });
+            try
+            {
+                return conn.Query<SimpleUser>(sql, new { id, offset, limit });
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Failed to get followers",e);
+            }
         }
     }
 
@@ -383,7 +390,14 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
 
         using (var conn = _dataSource.OpenConnection())
         {
-            return conn.Query<SimpleUser>(sql, new { id, offset, limit });
+            try
+            {
+                return conn.Query<SimpleUser>(sql, new { id, offset, limit });
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Failed to get following", e);
+            }
         }
     }
 

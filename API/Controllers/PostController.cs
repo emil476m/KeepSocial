@@ -48,15 +48,9 @@ public class PostController : ControllerBase
     [Route("/api/getposts")]
     public IActionResult getPosts([FromQuery] int limit, int offset)
     {
-        try
-        {
-            var posts = _postService.getposts(limit, offset);
-            return Ok(posts);
-        }
-        catch(Exception e)
-        {
-            return BadRequest("failed to get posts please try again");
-        }
+        
+        var posts = _postService.getposts(limit, offset);
+        return Ok(posts);
     }
     
     
@@ -67,15 +61,8 @@ public class PostController : ControllerBase
     [Route("/api/post/{id}")]
     public IActionResult getFullPost([FromRoute] int id)
     {
-        try
-        {
-            var post = _postService.getpost(id);
-            return Ok(post);
-        }
-        catch(Exception e)
-        {
-            return BadRequest("Failed to get the post you wanted please try again");
-        }
+        var post = _postService.getpost(id);
+        return Ok(post);
     }
     
     /*
@@ -85,16 +72,8 @@ public class PostController : ControllerBase
     [Route("/api/deletepost")]
     public IActionResult deletePost([FromQuery] int id)
     {
-        try
-        {
             _postService.deletePost(id);
             return Ok();
-        }
-        catch(Exception e)
-       
-        { 
-            return BadRequest("Failed to delete comment try again");
-        }
     }
     
     /*
@@ -104,44 +83,23 @@ public class PostController : ControllerBase
     [Route("/api/post/{id}")]
     public IActionResult UpdatePost(PostDto dto, [FromRoute] int id)
     {
-        try
-        {
             return Ok(_postService.UpdatePost(id, dto.text, dto.imgurl));
-        }
-        catch (Exception e)
-        {
-            return BadRequest("Failed to update post");
-        }
     }
     
     [HttpGet]
     [Route("/api/userprofilepost/{id}")]
     public IActionResult getUserPost([FromRoute] int id)
     {
-        try
-        {
-            var posts = _postService.getProfileposts(10, 0, id);
-            return Ok(posts);
-        }
-        catch(Exception e)
-        {
-            return BadRequest("Failed to get the posts for the user");
-        }
+        var posts = _postService.getProfileposts(10, 0, id);
+        return Ok(posts);
     }
 
     [HttpGet]
     [Route("/api/getmoreprofileposts/{id}")]
     public IActionResult getMoreProfilePosts([FromRoute] int id, [FromQuery] int limit, int offset)
     {
-        try
-        {
-            var posts = _postService.getProfileposts(limit, offset, id);
-            return Ok(posts);
-        }
-        catch (Exception e)
-        {
-            return BadRequest("failed to get posts please try again");
-        }
+        var posts = _postService.getProfileposts(limit, offset, id);
+        return Ok(posts);
     }
     
     /*
@@ -156,30 +114,27 @@ public class PostController : ControllerBase
         {
             url = null;
         }
-
-        try
-        {
             if (image?.Length > 10 * 1024 * 1024) return StatusCode(StatusCodes.Status413PayloadTooLarge);
             string? imgUrl = url;
             if (image != null)
             {
-             
+                try
+                {
                     using var imageTransform = new ImageTransform(image.OpenReadStream())
                         .Resize(900, 450)
                         .RemoveMetadata()
                         .Jpeg();
                     // "postimages" is the container name
                     imgUrl = _blobService.Save("postimages", imageTransform.ToStream(), imgUrl);
-                
+                }
+                catch (Exception e)
+                {
+                    throw new Exception("failed to upload image", e);
+                }
             }
 
             var res = new ResponseDto { MessageToClient = imgUrl };
             return Ok(res);
-        }
-        catch (Exception e)
-        {
-            return BadRequest("Failed to upload image");
-        }
     }
 
     /*
@@ -190,17 +145,10 @@ public class PostController : ControllerBase
     [Route("/api/getfollowedposts")]
     public IActionResult getFollowedposts([FromQuery] int limit, int offset)
     {
-        try
-        {
-            var sessionData = HttpContext.GetSessionData();
-            if (sessionData == null) return BadRequest("User is not authenticated");
-            var posts = _postService.getFollowedPosts(sessionData.UserId, limit, offset);
-            return Ok(posts);
-        }
-        catch (Exception e)
-        {
-            return BadRequest("Failed to get followed posts");
-        }
+        var sessionData = HttpContext.GetSessionData();
+        if (sessionData == null) return BadRequest("User is not authenticated");
+        var posts = _postService.getFollowedPosts(sessionData.UserId, limit, offset);
+        return Ok(posts);
     }
     
 }
