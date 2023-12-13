@@ -328,7 +328,7 @@ public class AccountService
         {
             if (!_accountRepository.isFriends(userid, friendId)) throw new Exception("Your not friends");
 
-            return _accountRepository.remoweFriend(userid, friendId);
+            return _accountRepository.removeFriend(userid, friendId);
         }
         catch (Exception e)
         {
