@@ -155,23 +155,13 @@ public class AccountController : ControllerBase
     [RequireAuthentication]
     [HttpPost]
     [Route("/api/account/validationConfirmation")]
-    public ResponseDto ValidationConfirmation([FromBody] int validationNumber)
+    public ReturnBoolDto ValidationConfirmation([FromBody] int validationCode)
     {
-        bool success = _accountService.ValidateNumber(HttpContext.GetSessionData().UserId, validationNumber);
-        if (success)
+        bool isValid = _accountService.ValidateCode(HttpContext.GetSessionData().UserId, validationCode);
+        return new ReturnBoolDto
         {
-            return new ResponseDto
-            {
-                MessageToClient = "Successfully validated code"
-            };
-        }
-        else
-        {
-            return new ResponseDto
-            {
-                MessageToClient = "Failed to validate"
-            };
-        }
+            isTrue = isValid
+        };
     }
     
     

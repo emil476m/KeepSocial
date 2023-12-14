@@ -134,9 +134,9 @@ public class AccountService
         return success;
     }
     
-    public bool ValidateNumber(int userId, int validationNumber)
+    public bool ValidateCode(int userId, int validationCode)
     {
-        return _accountRepository.validateNumber(userId, validationNumber);
+        return _accountRepository.validateCode(userId, validationCode);
     }
 
     public IEnumerable<User> getFriends(int userId, int pageNumber)

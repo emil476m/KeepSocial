@@ -33,3 +33,9 @@ export interface SimpleUser
   userDisplayname: string
   avatarUrl?: string
 }
+
+
+export interface BoolResponse
+{
+  isTrue: boolean
+}

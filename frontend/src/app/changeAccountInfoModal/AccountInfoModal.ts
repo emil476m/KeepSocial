@@ -4,6 +4,8 @@ import {ModalController, ToastController} from "@ionic/angular";
 import {FormControl, Validators} from "@angular/forms";
 import {firstValueFrom} from "rxjs";
 import {Globalstate} from "../services/states/globalstate";
+import {BoolResponse, Profile} from "../accountInterface";
+import {environment} from "../../environments/environment.prod";
 
 @Component({
   template:
@@ -25,12 +27,12 @@ import {Globalstate} from "../services/states/globalstate";
         <ion-button *ngIf="IsValidated" [disabled]="UserInput.invalid" (click)="updateAccount()">Confirm</ion-button>
           <ion-item *ngIf="!IsValidated">
               <ion-label>Please validate enter validation code from email</ion-label>
-              <ion-input [formControl]="ValidationNumber" type="number" label-placement="floating" label="ValidationCode"></ion-input>
+              <ion-input [formControl]="ValidationCode" type="Number" label-placement="floating" label="ValidationCode"></ion-input>
 
           </ion-item>
           <ion-item *ngIf="!IsValidated">
               <ion-button (click)="sendCode()">Send Code</ion-button>
-              <ion-button *ngIf="IsCodeSent" (click)="sendCode()">Confirm Code</ion-button>
+              <ion-button *ngIf="IsCodeSent" (click)="validateCode()">Confirm Code</ion-button>
           </ion-item>
       </ion-content>
     `,
@@ -40,8 +42,8 @@ export class NewAccountInfoModal implements OnInit
 
   UserInput : FormControl= new FormControl("");
   InputLabel = this.globalstate.updatingWhatAccountItem;
-  IsValidated = false;
-  ValidationNumber : FormControl= new FormControl(Number,[Validators.required, Validators.minLength(8),Validators.maxLength(8)]);
+  IsValidated : boolean = false;
+  ValidationCode : FormControl= new FormControl(Number,[Validators.required, Validators.minLength(8),Validators.maxLength(8)]);
   IsCodeSent = false;
 
 
@@ -82,13 +84,26 @@ export class NewAccountInfoModal implements OnInit
   }
 
   async sendCode(){
+    const call = this.http.post(environment.baseURL+"account/validationGeneration", {});
+    const result = await firstValueFrom(call);
     this.IsCodeSent = true;
+  }
+
+  async validateCode(){
+    const call = this.http.post<BoolResponse>(environment.baseURL+"account/validationConfirmation",
+      this.ValidationCode.value
+    );
+    const result = await firstValueFrom<BoolResponse>(call);
+    this.IsValidated = result.isTrue;
+
+
   }
 
 
   async updateAccount() {
+    if (!this.IsValidated){return}
     try {
-      const oberservable = this.http.post<string>('http://localhost:5000/api/account/updateAccount', {
+      const oberservable = this.http.post<string>(environment.baseURL+'account/updateAccount', {
         updatedValue: this.UserInput.value,
         updatedValueName: this.globalstate.updatingWhatAccountItem
       });

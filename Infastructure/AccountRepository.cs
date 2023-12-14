@@ -92,21 +92,21 @@ UPDATE keepsocial.users SET name = @updatedValue  WHERE id = @id";
         }
     }
     
-    public bool validateNumber(int userId, int validationNumber)
+    public bool validateCode(int userId, int validationCode)
     {
         var sql =
             $@"SELECT user_id as {nameof(ValidationModel.userId)}, 
             validation_number as {nameof(ValidationModel.validationNumber)},
-            created as {nameof(ValidationModel.created)} FROM keepsocial.validation_numbers WHERE validation_number = @validationNumber AND user_id = @userId;";
+            created as {nameof(ValidationModel.created)} FROM keepsocial.validation_numbers WHERE validation_number = @validationCode AND user_id = @userId;";
 
         using (var conn = _dataSource.OpenConnection())
         {
-            ValidationModel validation = conn.QueryFirstOrDefault<ValidationModel>(sql, new { userId, validationNumber });
+            ValidationModel validation = conn.QueryFirstOrDefault<ValidationModel>(sql, new { userId, validationCode });
             if (validation != null)
             {
                 if (!(DateTime.UtcNow > validation.created.AddMinutes(10)))
                 {
-                    if (validation.userId.Equals(userId) && validation.validationNumber.Equals(validationNumber))
+                    if (validation.userId.Equals(userId) && validation.validationNumber.Equals(validationCode))
                     {
                         deleteValidations(userId);
                         return true;
