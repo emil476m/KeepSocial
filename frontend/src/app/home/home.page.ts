@@ -96,7 +96,7 @@ import {EditPostModal} from "../PostDetailed/EditPostModal/edit.post.modal";
                           </ion-popover>
                       </ion-buttons>
                   </ion-toolbar>
-                  <ion-img *ngIf="post.imgUrl !== undefined" [src]="post.imgUrl" style="margin-left: 25%; margin-right: 25%; "/>
+                  <ion-img *ngIf="post.imgUrl != undefined" [src]="post.imgUrl" style="margin-left: 25%; margin-right: 25%; "/>
                   <ion-text>{{post.text}}</ion-text>
               </ion-card>
           </ion-infinite-scroll>

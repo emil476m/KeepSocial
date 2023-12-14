@@ -8,6 +8,7 @@ import {BoolResponse, Profile} from "../accountInterface";
 import {environment} from "../../environments/environment.prod";
 
 @Component({
+  styleUrls: ["AccountInfoModal.style.css"],
   template:
     `
       <ion-header>
@@ -27,24 +28,28 @@ import {environment} from "../../environments/environment.prod";
         <ion-button *ngIf="IsValidated" [disabled]="UserInput.invalid" (click)="updateAccount()">Confirm</ion-button>
           <ion-item *ngIf="!IsValidated">
               <ion-label>Please validate enter validation code from email</ion-label>
-              <ion-input [formControl]="ValidationCode" type="Number" label-placement="floating" label="ValidationCode"></ion-input>
-
+              <ion-input class="numberInput" [formControl]="ValidationCode" type="number" label-placement="floating" label="ValidationCode"></ion-input>
           </ion-item>
           <ion-item *ngIf="!IsValidated">
               <ion-button (click)="sendCode()">Send Code</ion-button>
-              <ion-button *ngIf="IsCodeSent" (click)="validateCode()">Confirm Code</ion-button>
+              <ion-button *ngIf="IsCodeSent" [disabled]="!is8long()" (click)="validateCode()">Confirm Code</ion-button>
+              <div *ngIf="!is8long() && ValidationCode.touched">must be 8 characters long</div>
           </ion-item>
       </ion-content>
     `,
 })
+
 export class NewAccountInfoModal implements OnInit
 {
 
   UserInput : FormControl= new FormControl("");
   InputLabel = this.globalstate.updatingWhatAccountItem;
   IsValidated : boolean = false;
-  ValidationCode : FormControl= new FormControl(Number,[Validators.required, Validators.minLength(8),Validators.maxLength(8)]);
+
   IsCodeSent = false;
+
+  hide = false;
+  ValidationCode: FormControl = new FormControl(Number, []);
 
 
   ngOnInit(): void {
@@ -70,12 +75,18 @@ export class NewAccountInfoModal implements OnInit
       this.UserInput.setValidators([Validators.required, Validators.maxLength(500)])
       this.IsValidated = true;
     }
-
-
   }
 
 
   constructor(private modalController: ModalController, private http: HttpClient, private toastControl: ToastController, public globalstate: Globalstate) {
+  }
+
+  is8long()  {
+    if (!this.IsCodeSent) return false
+    if (this.ValidationCode.value.toString().length == 8){
+      return true;
+    }
+    else return false
   }
 
   dismissModal() {
@@ -134,6 +145,4 @@ export class NewAccountInfoModal implements OnInit
     this.dismissModal();
   }
 
-
-  hide = false;
 }
