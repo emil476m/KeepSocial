@@ -34,9 +34,16 @@ public class CommentRepository
 
         using (var conn = _dataSource.OpenConnection())
         {
-            var id =  conn.ExecuteScalar<int>(insert, new {postid = comment.postId, authorid = comment.authorId, text = comment.text, imgurl = comment.imgUrl, created = DateTimeOffset.UtcNow });
-           
-            return  conn.QueryFirst<Comment>(select, new  {id});;
+            try
+            {
+                var id =  conn.ExecuteScalar<int>(insert, new {postid = comment.postId, authorid = comment.authorId, text = comment.text, imgurl = comment.imgUrl, created = DateTimeOffset.UtcNow });
+                           
+                            return  conn.QueryFirst<Comment>(select, new  {id});
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Failed to create comment", e);
+            }
         }
     }
 
@@ -57,7 +64,14 @@ public class CommentRepository
                     order by created desc offset @offset limit @limit";
         using (var conn = _dataSource.OpenConnection())
         {
-            return conn.Query<Comment>(sql, new { offset, limit, postId});
+            try
+            {
+                return conn.Query<Comment>(sql, new { offset, limit, postId });
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Failed to get comments",e);
+            }
         }
     }
 
@@ -70,7 +84,15 @@ public class CommentRepository
 
         using (var conn = _dataSource.OpenConnection())
         {
-            conn.Execute(sql, new { id });
+            try
+            {
+                conn.Execute(sql, new { id });
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Failed to delete comment",e);
+            }
+            
         }
     }
 
@@ -91,8 +113,16 @@ public class CommentRepository
                     from keepsocial.comments join keepsocial.users u on u.id = comments.author_id where comments.id = @id;";
         using (var conn = _dataSource.OpenConnection())
         {
-            conn.Execute(update, new { id, text, imgurl, created = DateTimeOffset.UtcNow });
-            return conn.QueryFirst<Comment>(select, new {id});
+            try
+            {
+                conn.Execute(update, new { id, text, imgurl, created = DateTimeOffset.UtcNow });
+                return conn.QueryFirst<Comment>(select, new { id });
+            }
+            catch (Exception e)
+            {
+                throw new Exception("failed to update comment",e);
+            }
+           
         }
     }
 }

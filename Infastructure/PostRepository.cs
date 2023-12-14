@@ -34,8 +34,20 @@ public class PostRepository
 
         using (var conn = _dataSource.OpenConnection())
         {
-            var id =  conn.ExecuteScalar<int>(insert, new { authorid = post.authorId, text = post.text, imgurl = post.imgUrl, created = DateTimeOffset.UtcNow });
-            return conn.QueryFirst<Post>(select, new  {id});
+            try
+            {
+                var id = conn.ExecuteScalar<int>(insert,
+                    new
+                    {
+                        authorid = post.authorId, text = post.text, imgurl = post.imgUrl,
+                        created = DateTimeOffset.UtcNow
+                    });
+                return conn.QueryFirst<Post>(select, new { id });
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Failed to create post", e);
+            }
         }
     }
 
@@ -54,7 +66,15 @@ public class PostRepository
                       from keepsocial.posts join keepsocial.users u on u.id = posts.author_id order by created desc offset @offset limit @limit";
         using (var conn = _dataSource.OpenConnection())
         {
-            return conn.Query<Post>(sql, new { offset = offset, limit });
+            try
+            {
+                return conn.Query<Post>(sql, new { offset = offset, limit });
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Failed to get follower posts");
+            }
+            
         }
     }
 
@@ -74,7 +94,14 @@ public class PostRepository
                       from keepsocial.posts join keepsocial.users u on u.id = posts.author_id where posts.id = @id;";
         using (var conn = _dataSource.OpenConnection())
         {
-            return conn.QueryFirst<Post>(sql, new { id });
+            try
+            {
+                return conn.QueryFirst<Post>(sql, new { id });
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Failed to get post", e);
+            }
         }
     }
 
@@ -88,8 +115,16 @@ public class PostRepository
 
         using (var conn = _dataSource.OpenConnection())
         {
-            conn.Execute(deleteCommentsOnPost, new { id });
-            conn.Execute(deletePost, new { id });
+            try
+            {
+                conn.Execute(deleteCommentsOnPost, new { id });
+                conn.Execute(deletePost, new { id });
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Failed to delete post", e);
+            }
+            
         }
     }
 
@@ -109,8 +144,15 @@ public class PostRepository
                     from keepsocial.posts join keepsocial.users u on u.id = posts.author_id where posts.id = @id;";
         using (var conn = _dataSource.OpenConnection())
         {
-            conn.Execute(update, new { id, text, imgurl, created = DateTimeOffset.UtcNow });
-            return conn.QueryFirst<Post>(select, new {id});
+            try
+            {
+                conn.Execute(update, new { id, text, imgurl, created = DateTimeOffset.UtcNow });
+                return conn.QueryFirst<Post>(select, new { id });
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Failed to update post", e);
+            }
         }
     }
     
@@ -126,7 +168,14 @@ public class PostRepository
                       from keepsocial.posts join keepsocial.users u on u.id = posts.author_id where author_id = @profileId order by created desc offset @offset limit @limit";
         using (var conn = _dataSource.OpenConnection())
         {
-            return conn.Query<Post>(sql, new { offset = offset, limit, profileId });
+            try
+            {
+                return conn.Query<Post>(sql, new { offset = offset, limit, profileId });
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Failed to get follower posts");
+            }
         }
     }
 
@@ -152,7 +201,14 @@ public class PostRepository
 
         using (var conn = _dataSource.OpenConnection())
         {
-            return conn.Query<Post>(sql, new {id, limit, offset});
+            try
+            {
+                return conn.Query<Post>(sql, new {id, limit, offset});
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Failed to get follower posts");
+            }
         }
     }
 }

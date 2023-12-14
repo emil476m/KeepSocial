@@ -367,7 +367,14 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
 
         using (var conn = _dataSource.OpenConnection())
         {
-            return conn.Query<SimpleUser>(sql, new { id, offset, limit });
+            try
+            {
+                return conn.Query<SimpleUser>(sql, new { id, offset, limit });
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Failed to get followers",e);
+            }
         }
     }
 
@@ -381,7 +388,14 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
 
         using (var conn = _dataSource.OpenConnection())
         {
-            return conn.Query<SimpleUser>(sql, new { id, offset, limit });
+            try
+            {
+                return conn.Query<SimpleUser>(sql, new { id, offset, limit });
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Failed to get following", e);
+            }
         }
     }
 
@@ -398,13 +412,21 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
 
         using (var conn = _dataSource.OpenConnection())
         {
-            return conn.Query<SimpleUser>(sql, new {searchTerm = searchTerm + "%", limit, offset});
+            try
+            {
+                return conn.Query<SimpleUser>(sql, new {searchTerm = searchTerm + "%", limit, offset});
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Failed to find any users for the search", e);
+            }
+           
         }
     }
     
     
 
-    public bool remoweFriend(int userId, int friendId)
+    public bool removeFriend(int userId, int friendId)
     {
         var removeFriendSql = $@"
            DELETE from keepsocial.friend_relation

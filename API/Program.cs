@@ -60,4 +60,5 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 app.UseMiddleware<JwtBearerHandler>();
+app.UseMiddleware<GlobalExeptionHandeler>();
 app.Run();
