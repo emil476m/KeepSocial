@@ -286,6 +286,7 @@ public class AccountController : ControllerBase
         };
     }
     
+    [RequireAuthentication]
     [HttpGet]
     [Route("/api/Search/{searchTerm}")]
     public IActionResult profileSearch([FromRoute] string searchTerm, [FromQuery] int limit, [FromQuery]int offset)

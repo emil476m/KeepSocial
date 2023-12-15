@@ -68,6 +68,7 @@ public class PostController : ControllerBase
     /*
      * sends a posts id to the Post service class
      */
+    [RequireAuthentication]
     [HttpDelete]
     [Route("/api/deletepost")]
     public IActionResult deletePost([FromQuery] int id)
@@ -79,6 +80,7 @@ public class PostController : ControllerBase
     /*
      * sends data from a PostDto to the Post service class
      */
+    [RequireAuthentication]
     [HttpPut]
     [Route("/api/post/{id}")]
     public IActionResult UpdatePost(PostDto dto, [FromRoute] int id)
