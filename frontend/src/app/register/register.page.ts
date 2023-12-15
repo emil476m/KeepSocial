@@ -64,7 +64,7 @@ import {environment} from "../../environments/environment.prod";
               </ion-item>
               <ion-item>
                 <ion-button
-                  [disabled]="APasswordRepeat.value!=APassword.value && !(APassword.valid && APasswordRepeat.valid && ADate.valid && AEmail.valid && AName.valid && haveRead) "
+                  [disabled]=" !(APasswordRepeat.value == APassword.value && APassword.valid && APasswordRepeat.valid && ADate.valid && AEmail.valid && AName.valid && haveRead) "
                   (click)="createAccount()" data-testid="accountCreateBTN_"
                 >Create Account
                 </ion-button>
