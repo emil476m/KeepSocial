@@ -7,10 +7,9 @@ using Service;
 
 namespace API.Controllers;
 
-
 [ApiController]
 [Route("api/[controller]")]
-public class CommentController: ControllerBase
+public class CommentController : ControllerBase
 {
     private readonly CommentService _commentService;
     private BlobService _blobService;
@@ -21,14 +20,14 @@ public class CommentController: ControllerBase
         _blobService = blobService;
     }
 
-    
+
     /*
      * sends data from a CommentDto to the CommentService class along with the id to the post the comment belongs to and returns that comment
      */
     [HttpPost]
     [Route("/api/comment/")]
     [RequireAuthentication]
-    public IActionResult createComment([FromBody] CommentDto dto, [FromQuery]int postId)
+    public IActionResult createComment([FromBody] CommentDto dto, [FromQuery] int postId)
     {
         var comment = new Comment
         {
@@ -41,23 +40,16 @@ public class CommentController: ControllerBase
         var commentdb = _commentService.createComment(comment);
         return Ok(commentdb);
     }
-    
+
     /*
-     * gets an initial amount of comments 
+     * gets an initial amount of comments
      */
     [HttpGet]
     [Route("/api/getcomments")]
     public IActionResult getComments([FromQuery] int postId, int limit, int offset)
     {
-        try
-        {
-            var posts = _commentService.getComments(limit, offset, postId);
-            return Ok(posts);   
-        }
-        catch(Exception e)
-        {
-            return BadRequest("failed to get comments please try again");
-        }
+        var posts = _commentService.getComments(limit, offset, postId);
+        return Ok(posts);
     }
 
     /*
@@ -67,18 +59,10 @@ public class CommentController: ControllerBase
     [Route("/api/deletecomment")]
     public IActionResult deletecomment([FromQuery] int id)
     {
-        try
-        {
-            _commentService.deleteComment(id);
-            return Ok();
-        }
-        catch(Exception e)
-       
-        { 
-            return BadRequest("Failed to delete comment try again");
-        }
+        _commentService.deleteComment(id);
+        return Ok();
     }
-    
+
     /*
      * sends new data from a CommentDto to the CommentService class
      */
@@ -102,28 +86,26 @@ public class CommentController: ControllerBase
             url = null;
         }
 
-        try
+        if (image?.Length > 10 * 1024 * 1024) return StatusCode(StatusCodes.Status413PayloadTooLarge);
+        string? imgUrl = url;
+        if (image != null)
         {
-            if (image?.Length > 10 * 1024 * 1024) return StatusCode(StatusCodes.Status413PayloadTooLarge);
-            string? imgUrl = url;
-            if (image != null)
+            try
             {
-             
-                using var imageTransform = new ImageTransform(image.OpenReadStream())
-                    .Resize(900, 450)
-                    .RemoveMetadata()
-                    .Jpeg();
-                // "postimages" is the container name
-                imgUrl = _blobService.Save("commentimages", imageTransform.ToStream(), imgUrl);
-                
+            using var imageTransform = new ImageTransform(image.OpenReadStream())
+                .Resize(900, 450)
+                .RemoveMetadata()
+                .Jpeg();
+            // "postimages" is the container name
+            imgUrl = _blobService.Save("commentimages", imageTransform.ToStream(), imgUrl);
             }
+            catch (Exception e)
+            {
+                throw new Exception("Failed to upload image",e);
+            }
+        }
 
-            var res = new ResponseDto { MessageToClient = imgUrl };
-            return Ok(res);
-        }
-        catch (Exception e)
-        {
-            return BadRequest("Failed to upload image");
-        }
+        var res = new ResponseDto { MessageToClient = imgUrl };
+        return Ok(res);
     }
 }

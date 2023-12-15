@@ -1,12 +1,12 @@
 import {Component, OnInit} from "@angular/core";
 import {Rooms} from "../models/Rooms.model";
-import {User} from "../models/User.model";
 import {Router} from "@angular/router";
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../environments/environment.prod";
 import {firstValueFrom} from "rxjs";
 import {FriendRequestModel, RequestUpdateDto} from "../models/friendRequest";
 import {Message} from "../models/Message.model";
+import {SimpleUser} from "../accountInterface";
 
 @Component({
   selector: 'friend',
@@ -37,7 +37,7 @@ import {Message} from "../models/Message.model";
 
         <ion-card *ngFor="let friend of friendliest">
           <ion-title style="margin-left: 0.2%">
-            {{friend.userDisplayName}}
+            {{friend.userDisplayname}}
           </ion-title>
           <ion-text style="margin-left: 1.5%">
             @user #{{friend.userId}}
@@ -47,7 +47,7 @@ import {Message} from "../models/Message.model";
             <!--Open chat with friend or create if they dont have one-->
             <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
           </ion-button>
-          <ion-button class="cardBtn" (click)="goFriend(friend.userDisplayName)"><!---view acccount--->
+          <ion-button class="cardBtn" (click)="goFriend(friend.userDisplayname)">
             <ion-icon name="person-outline"></ion-icon>
           </ion-button>
         </ion-card>
@@ -74,7 +74,7 @@ export class FriendsPage implements OnInit {
   page: number = 1;
   upcomingPage: number = 2;
 
-  friendliest: User[] = [];
+  friendliest: SimpleUser[] = [];
   requestList: FriendRequestModel [] = [];
 
   ngOnInit(): void {
@@ -88,8 +88,8 @@ export class FriendsPage implements OnInit {
 
   async getFriends() {
     try {
-      const call = this.http.get<User[]>(environment.baseURL + "freinds?pageNumber=" + this.page);
-      call.subscribe((resData: User[]) => {
+      const call = this.http.get<SimpleUser[]>(environment.baseURL + "freinds?pageNumber=" + this.page);
+      call.subscribe((resData: SimpleUser[]) => {
         this.friendliest = resData;
       })
     } catch (error) {

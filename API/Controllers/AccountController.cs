@@ -123,7 +123,7 @@ public class AccountController : ControllerBase
     [RequireAuthentication]
     [HttpGet]
     [Route("/api/freinds")]
-    public IEnumerable<User> GetFreinds(int pageNumber)
+    public IEnumerable<SimpleUser> GetFreinds(int pageNumber)
     {
         int userId = HttpContext.GetSessionData().UserId!;
         return _accountService.getFriends(userId, pageNumber);
@@ -290,15 +290,8 @@ public class AccountController : ControllerBase
     [Route("/api/Search/{searchTerm}")]
     public IActionResult profileSearch([FromRoute] string searchTerm, [FromQuery] int limit, [FromQuery]int offset)
     {
-        try
-        {
-            var searchResult = _accountService.profileSearch(limit, offset,searchTerm);
-            return Ok(searchResult);
-        }
-        catch (Exception e)
-        {
-            return BadRequest("failed to get search results please try again");
-        }
+        var searchResult = _accountService.profileSearch(limit, offset,searchTerm);
+        return Ok(searchResult);
     }
 
     [RequireAuthentication]
@@ -331,14 +324,7 @@ public class AccountController : ControllerBase
     [Route("/api/account/getfollowers")]
     public IActionResult getfollowers([FromQuery] int id,int offset, int limit)
     {
-        try
-        {
-            return Ok(_accountService.getFollowers(id, offset,limit));
-        }
-        catch (Exception e)
-        {
-            return NoContent();
-        }
+        return Ok(_accountService.getFollowers(id, offset,limit));
     }
     
     /*
@@ -349,14 +335,7 @@ public class AccountController : ControllerBase
     [Route("/api/account/getfollowing")]
     public IActionResult getfollowing([FromQuery] int id,int offset, int limit)
     {
-        try
-        {
-            return Ok(_accountService.getFollowing(id, offset,limit));
-        }
-        catch (Exception e)
-        {
-            return NoContent();
-        }
+        return Ok(_accountService.getFollowing(id, offset,limit));
     }
 
 
