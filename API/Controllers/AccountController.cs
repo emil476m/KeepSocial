@@ -146,10 +146,24 @@ public class AccountController : ControllerBase
         {
             return new ResponseDto
             {
-                MessageToClient = "Failed to update"
+                MessageToClient = "Failed to send validation"
             };
         }
     }
+    
+    
+    [RequireAuthentication]
+    [HttpPost]
+    [Route("/api/account/validationConfirmation")]
+    public ReturnBoolDto ValidationConfirmation([FromBody] int validationCode)
+    {
+        bool isValid = _accountService.ValidateCode(HttpContext.GetSessionData().UserId, validationCode);
+        return new ReturnBoolDto
+        {
+            isTrue = isValid
+        };
+    }
+    
     
     [RequireAuthentication]
     [HttpPost]
@@ -272,6 +286,7 @@ public class AccountController : ControllerBase
         };
     }
     
+    [RequireAuthentication]
     [HttpGet]
     [Route("/api/Search/{searchTerm}")]
     public IActionResult profileSearch([FromRoute] string searchTerm, [FromQuery] int limit, [FromQuery]int offset)

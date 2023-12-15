@@ -133,7 +133,7 @@ import {FriendRequestResponse} from "../models/FriendRequestResponse";
                             </ion-popover>
                         </ion-buttons>
                     </ion-toolbar>
-                    <ion-img *ngIf="post.imgUrl !== undefined" [src]="post.imgUrl"
+                    <ion-img *ngIf="post.imgUrl != undefined" [src]="post.imgUrl"
                              style="margin-left: 25%; margin-right: 25%; "/>
                     <ion-text>{{post.text}}</ion-text>
                 </ion-card>

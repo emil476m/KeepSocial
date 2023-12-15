@@ -25,7 +25,15 @@ public class AccountRepository
 
         using (var conn = _dataSource.OpenConnection())
         {
-            return conn.QueryFirst<User>(sql, new { userDisplayName, userEmail, userBirthday });
+            try
+            {
+                return conn.QueryFirst<User>(sql, new { userDisplayName, userEmail, userBirthday });
+
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Could now create user");
+            }
         }
     }
 
@@ -73,14 +81,51 @@ UPDATE keepsocial.users SET name = @updatedValue  WHERE id = @id";
         }
     }
 
-    public bool StoreValidation(int userId, int validationNumber)
+    public bool StoreValidation(int userId, int validationNumber, DateTimeOffset created)
     {
         var sql =
-            $@"INSERT INTO keepsocial.validation_numbers (user_id, validation_number) VALUES(@userId, @validationNumber)";
+            $@"INSERT INTO keepsocial.validation_numbers (user_id, validation_number, created) VALUES(@userId, @validationNumber, @created)";
 
         using (var conn = _dataSource.OpenConnection())
         {
-            return conn.Execute(sql, new { userId, validationNumber }) == 1;
+            return conn.Execute(sql, new { userId, validationNumber, created }) == 1;
+        }
+    }
+    
+    public bool validateCode(int userId, int validationCode)
+    {
+        var sql =
+            $@"SELECT user_id as {nameof(ValidationModel.userId)}, 
+            validation_number as {nameof(ValidationModel.validationNumber)},
+            created as {nameof(ValidationModel.created)} FROM keepsocial.validation_numbers WHERE validation_number = @validationCode AND user_id = @userId;";
+
+        using (var conn = _dataSource.OpenConnection())
+        {
+            ValidationModel validation = conn.QueryFirstOrDefault<ValidationModel>(sql, new { userId, validationCode });
+            if (validation != null)
+            {
+                if (!(DateTime.UtcNow > validation.created.AddMinutes(10)))
+                {
+                    if (validation.userId.Equals(userId) && validation.validationNumber.Equals(validationCode))
+                    {
+                        deleteValidations(userId);
+                        return true;
+                    }
+                }
+            }
+            
+            return false;
+        }
+    }
+    
+    public bool deleteValidations(int userId)
+    {
+        var sql =
+            $@"DELETE FROM keepsocial.validation_numbers WHERE user_id = @userId";
+
+        using (var conn = _dataSource.OpenConnection())
+        {
+            return conn.Execute(sql, new { userId }) == 1;
         }
     }
 
@@ -439,4 +484,6 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
             return conn.Execute(removeFriendSql, new { userId, friendId }) != 0;
         }
     }
+
+    
 }

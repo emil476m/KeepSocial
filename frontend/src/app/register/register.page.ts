@@ -64,7 +64,7 @@ import {environment} from "../../environments/environment.prod";
               </ion-item>
               <ion-item>
                 <ion-button
-                  [disabled]="APasswordRepeat.value!=APassword.value && !(APassword.valid && APasswordRepeat.valid && ADate.valid && AEmail.valid && AName.valid && haveRead) "
+                  [disabled]=" !(APasswordRepeat.value == APassword.value && APassword.valid && APasswordRepeat.valid && ADate.valid && AEmail.valid && AName.valid && haveRead) "
                   (click)="createAccount()" data-testid="accountCreateBTN_"
                 >Create Account
                 </ion-button>
@@ -75,13 +75,6 @@ import {environment} from "../../environments/environment.prod";
                 <ion-row>
                   <ion-col class="grid-item">
                     <ion-img class="profile-img" style="width: 30%" [src]="currentAvatarUrl"/>
-                  </ion-col>
-                </ion-row>
-                <ion-row>
-                  <ion-col class="grid-item">
-                    <ion-button>
-                      Change Picture
-                    </ion-button>
                   </ion-col>
                 </ion-row>
               </ion-grid>

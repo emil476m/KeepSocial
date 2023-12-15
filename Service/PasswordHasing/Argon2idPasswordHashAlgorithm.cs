@@ -15,7 +15,7 @@ public class Argon2idPasswordHashAlgorithm : PasswordHashAlgorithm
         {
             Salt = Decode(salt),
             MemorySize = 12288,
-            Iterations = 3,
+            Iterations = 10,
             DegreeOfParallelism = 1,
         };
         return Encode(hashAlgo.GetBytes(256));

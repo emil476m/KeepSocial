@@ -55,6 +55,7 @@ public class CommentController : ControllerBase
     /*
      * sends the id to a comment to the CommentService class
      */
+    [RequireAuthentication]
     [HttpDelete]
     [Route("/api/deletecomment")]
     public IActionResult deletecomment([FromQuery] int id)
@@ -66,6 +67,7 @@ public class CommentController : ControllerBase
     /*
      * sends new data from a CommentDto to the CommentService class
      */
+    [RequireAuthentication]
     [HttpPut]
     [Route("/api/comment/{id}")]
     public Comment UpdateComment(CommentDto dto, [FromRoute] int id)
