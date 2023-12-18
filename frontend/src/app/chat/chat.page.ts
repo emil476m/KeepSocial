@@ -1,7 +1,7 @@
 import {Component, OnInit, ViewChild} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {FormControl, Validators} from "@angular/forms";
-import {firstValueFrom, max} from "rxjs";
+import {firstValueFrom} from "rxjs";
 import {IonContent} from "@ionic/angular";
 import {Message} from "../models/Message.model";
 import {ActivatedRoute} from "@angular/router";

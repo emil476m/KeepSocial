@@ -1,6 +1,5 @@
 import {Component, OnInit} from "@angular/core";
 import {Router} from "@angular/router";
-import {Message} from "../models/Message.model";
 import {HttpClient} from "@angular/common/http";
 import {Rooms} from "../models/Rooms.model";
 import {environment} from "../../environments/environment.prod";

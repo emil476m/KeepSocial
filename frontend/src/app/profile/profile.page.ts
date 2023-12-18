@@ -1,10 +1,5 @@
 import {Component, OnInit} from "@angular/core";
-import {
-  AlertController,
-  ModalController,
-  PopoverController,
-  ToastController
-} from "@ionic/angular";
+import {AlertController, ModalController, PopoverController, ToastController} from "@ionic/angular";
 import {firstValueFrom} from "rxjs";
 import {ActivatedRoute, NavigationStart, Router} from "@angular/router";
 import {HttpClient} from "@angular/common/http";

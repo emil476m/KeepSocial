@@ -6,8 +6,7 @@ import {Globalstate} from "../../services/states/globalstate";
 import {firstValueFrom} from "rxjs";
 import {environment} from "../../../environments/environment.prod";
 import {HttpClient} from "@angular/common/http";
-import {NavigationStart, Route, Router} from "@angular/router";
-import {logoFacebook} from "ionicons/icons";
+import {NavigationStart, Router} from "@angular/router";
 
 @Component({
   template:

@@ -2,7 +2,7 @@ import {NgModule} from '@angular/core';
 import {PreloadAllModules, RouterModule, Routes} from '@angular/router';
 import {HomePage} from './home/home.page';
 import {ChatPage} from './chat/chat.page';
-import { RoomsPage } from './chat/rooms.page';
+import {RoomsPage} from './chat/rooms.page';
 import {TabsComponent} from "./tabs.component";
 import {LoginComponent} from "./login/login.component";
 import {RegisterPage} from "./register/register.page";

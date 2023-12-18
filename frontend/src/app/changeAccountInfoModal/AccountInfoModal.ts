@@ -4,7 +4,7 @@ import {ModalController, ToastController} from "@ionic/angular";
 import {FormControl, Validators} from "@angular/forms";
 import {firstValueFrom} from "rxjs";
 import {Globalstate} from "../services/states/globalstate";
-import {BoolResponse, Profile} from "../accountInterface";
+import {BoolResponse} from "../accountInterface";
 import {environment} from "../../environments/environment.prod";
 
 @Component({

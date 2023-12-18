@@ -7,7 +7,7 @@ import {environment} from "../../environments/environment.prod";
 import {Globalstate} from "../services/states/globalstate";
 import * as ago from "s-ago";
 import {TokenService} from "../services/token.service";
-import {Account, SimpleUser} from "../accountInterface";
+import {SimpleUser} from "../accountInterface";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {AlertController, ModalController, PopoverController, ToastController} from "@ionic/angular";
 import {CommentModel} from "../models/CommentModel";

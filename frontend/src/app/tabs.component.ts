@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 import {TokenService} from "./services/token.service";
 import {Globalstate} from "./services/states/globalstate";
-import {Account, SimpleUser} from "./accountInterface";
+import {SimpleUser} from "./accountInterface";
 import {environment} from "../environments/environment.prod";
 import {firstValueFrom} from "rxjs";
 import {HttpClient} from "@angular/common/http";

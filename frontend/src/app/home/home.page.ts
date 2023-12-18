@@ -7,7 +7,7 @@ import {firstValueFrom} from "rxjs";
 import {environment} from "../../environments/environment.prod";
 import {HttpClient} from "@angular/common/http";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
-import {Account, SimpleUser} from "../accountInterface";
+import {SimpleUser} from "../accountInterface";
 import {PostModel} from '../models/PostModel';
 import {Globalstate} from "../services/states/globalstate";
 import * as ago from "s-ago";

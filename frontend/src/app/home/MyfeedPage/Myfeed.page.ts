@@ -6,7 +6,7 @@ import {AlertController, ModalController, PopoverController, ToastController} fr
 import {AccountService} from "../../services/account.service";
 import {HttpClient} from "@angular/common/http";
 import {Globalstate} from "../../services/states/globalstate";
-import {Account, SimpleUser} from "../../accountInterface";
+import {SimpleUser} from "../../accountInterface";
 import {environment} from "../../../environments/environment.prod";
 import {firstValueFrom} from "rxjs";
 import {PostModel} from "../../models/PostModel";
