@@ -160,8 +160,6 @@ export class MyfeedPage implements OnInit{
 
   async whoAmI()
   {
-    if(this.token.getToken())
-    {
       if(this.token.getToken())
       {
         const call = this.http.get<SimpleUser>(environment.baseURL+"account/simpleuser");
@@ -171,7 +169,6 @@ export class MyfeedPage implements OnInit{
         this.userid = result.userId;
         this.state.currentUserName = result.userDisplayname;
       }
-    }
   }
 
 
