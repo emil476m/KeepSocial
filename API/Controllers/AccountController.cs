@@ -349,4 +349,14 @@ public class AccountController : ControllerBase
 
         return Ok(_accountService.RemoveFriend(userid, friendId));
     }
+    
+    [RequireAuthentication]
+    [HttpGet]
+    [Route("/api/account/simpleuser")]
+    public IActionResult getSimpleUser()
+    {
+        int userid = HttpContext.GetSessionData().UserId;
+
+        return Ok(_accountService.getSimpleUser(userid));
+    }
 }

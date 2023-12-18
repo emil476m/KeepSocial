@@ -7,7 +7,7 @@ import {firstValueFrom} from "rxjs";
 import {environment} from "../../environments/environment.prod";
 import {HttpClient} from "@angular/common/http";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
-import {Account} from "../accountInterface";
+import {SimpleUser} from "../accountInterface";
 import {PostModel} from '../models/PostModel';
 import {Globalstate} from "../services/states/globalstate";
 import * as ago from "s-ago";
@@ -107,7 +107,7 @@ import {EditPostModal} from "../PostDetailed/EditPostModal/edit.post.modal";
 export class HomePage implements OnInit{
 
   displayName: string = "";
-  profilepic: string = "";
+  profilepic: string | undefined = "";
   userid: number = 0;
   isopenPostMenu = false;
   eventchange: Event|null = null;
@@ -163,12 +163,12 @@ export class HomePage implements OnInit{
   {
     if(this.token.getToken())
     {
-    const call = this.http.get<Account>(environment.baseURL+"whoami");
-    const result = await firstValueFrom<Account>(call);
-    this.displayName = result.userDisplayName;
+    const call = this.http.get<SimpleUser>(environment.baseURL+"account/simpleuser");
+    const result = await firstValueFrom<SimpleUser>(call);
+    this.displayName = result.userDisplayname;
     this.profilepic = result.avatarUrl;
     this.userid = result.userId;
-    this.state.currentUserName = result.userDisplayName;
+    this.state.currentUserName = result.userDisplayname;
     }
   }
 
@@ -177,6 +177,7 @@ export class HomePage implements OnInit{
     try{
     this.token.clearToken();
     this.userid = 0;
+    this.state.currentUserName = "";
 
     (await this.toast.create({
       message: "Logout successful",
@@ -249,7 +250,6 @@ export class HomePage implements OnInit{
 
   getLocalDate(UTCString: string) {
 let date = new Date(UTCString);
-date.setHours(date.getHours()+1)
     return ago (date);
   }
 

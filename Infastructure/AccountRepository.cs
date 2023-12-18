@@ -485,5 +485,25 @@ UPDATE keepsocial.users SET email = @updatedValue  WHERE id = @id";
         }
     }
 
-    
+    /*
+     * gets simple user data
+     */
+    public SimpleUser getSimpleUser(int id)
+    {
+        var sql = $@"select users.id as {nameof(SimpleUser.userId)}, users.name as {nameof(SimpleUser.userDisplayname)}, users.avatarUrl as {nameof(SimpleUser.avatarUrl)}
+                        from keepsocial.users where id = @id";
+
+        using (var conn = _dataSource.OpenConnection())
+        {
+            try
+            {
+                return conn.QueryFirst<SimpleUser>(sql, new { id });
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Failed to get simple user data", e);
+            }
+            
+        }
+    }
 }

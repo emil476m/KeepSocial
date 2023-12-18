@@ -1,10 +1,5 @@
 import {Component, OnInit} from "@angular/core";
-import {
-  AlertController,
-  ModalController,
-  PopoverController,
-  ToastController
-} from "@ionic/angular";
+import {AlertController, ModalController, PopoverController, ToastController} from "@ionic/angular";
 import {firstValueFrom} from "rxjs";
 import {ActivatedRoute, NavigationStart, Router} from "@angular/router";
 import {HttpClient} from "@angular/common/http";
@@ -371,7 +366,6 @@ export class ProfilePage implements OnInit{
 
   getLocalDate(UTCString: string) {
     let date = new Date(UTCString);
-    date.setHours(date.getHours()+1)
     return ago (date);
   }
 

@@ -7,7 +7,7 @@ import {environment} from "../../environments/environment.prod";
 import {Globalstate} from "../services/states/globalstate";
 import * as ago from "s-ago";
 import {TokenService} from "../services/token.service";
-import {Account} from "../accountInterface";
+import {SimpleUser} from "../accountInterface";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {AlertController, ModalController, PopoverController, ToastController} from "@ionic/angular";
 import {CommentModel} from "../models/CommentModel";
@@ -127,7 +127,7 @@ import {EditPostModal} from "./EditPostModal/edit.post.modal";
 })
 export class PostDetail implements OnInit {
   displayName: string = "";
-  profilepic: string = "";
+  profilepic: string | undefined = "";
   userid: number = 0;
   isopenCommentMenu = false;
   isopenPostMenu = false;
@@ -176,10 +176,11 @@ export class PostDetail implements OnInit {
 
 
   async whoAmI() {
-    if (this.token.getToken()) {
-      const call = this.http.get<Account>(environment.baseURL + "whoami");
-      const result = await firstValueFrom<Account>(call);
-      this.displayName = result.userDisplayName;
+    if(this.token.getToken())
+    {
+      const call = this.http.get<SimpleUser>(environment.baseURL+"account/simpleuser");
+      const result = await firstValueFrom<SimpleUser>(call);
+      this.displayName = result.userDisplayname;
       this.profilepic = result.avatarUrl;
       this.userid = result.userId;
     }
@@ -201,7 +202,6 @@ export class PostDetail implements OnInit {
 
   getLocalDate(UTCString: string) {
     let date = new Date(UTCString);
-    date.setHours(date.getHours() + 1)
     return ago(date);
   }
 

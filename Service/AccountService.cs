@@ -119,7 +119,6 @@ public class AccountService
             "This is your validation code for KeepSocial please enter it to continue to make changes to your account: " +
             validationNumber;
         
-        _mailService.SendEmail(message, email);
         var created = DateTimeOffset.UtcNow;
         var success = false;
         if (mes != "" && mes != null)
@@ -130,7 +129,7 @@ public class AccountService
         {
             success = _accountRepository.StoreValidation(userId, validationNumber, created);
         }
-        
+        _mailService.SendEmail(message, email);
         return success;
     }
     
@@ -352,5 +351,11 @@ public class AccountService
         }
     }
 
-    
+    /*
+     * gets simple user data from the database
+     */
+    public SimpleUser getSimpleUser(int id)
+    {
+        return _accountRepository.getSimpleUser(id);
+    }
 }
