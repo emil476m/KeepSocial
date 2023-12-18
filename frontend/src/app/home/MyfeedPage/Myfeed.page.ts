@@ -6,7 +6,7 @@ import {AlertController, ModalController, PopoverController, ToastController} fr
 import {AccountService} from "../../services/account.service";
 import {HttpClient} from "@angular/common/http";
 import {Globalstate} from "../../services/states/globalstate";
-import {Account} from "../../accountInterface";
+import {Account, SimpleUser} from "../../accountInterface";
 import {environment} from "../../../environments/environment.prod";
 import {firstValueFrom} from "rxjs";
 import {PostModel} from "../../models/PostModel";
@@ -106,7 +106,7 @@ import {EditPostModal} from "../../PostDetailed/EditPostModal/edit.post.modal";
 export class MyfeedPage implements OnInit{
 
   displayName: string = "";
-  profilepic: string = "";
+  profilepic: string | undefined = "";
   userid: number = 0;
   isopenPostMenu = false;
   eventchange: Event|null = null;
@@ -162,12 +162,15 @@ export class MyfeedPage implements OnInit{
   {
     if(this.token.getToken())
     {
-      const call = this.http.get<Account>(environment.baseURL+"whoami");
-      const result = await firstValueFrom<Account>(call);
-      this.displayName = result.userDisplayName;
-      this.profilepic = result.avatarUrl;
-      this.userid = result.userId;
-      this.state.currentUserName = result.userDisplayName;
+      if(this.token.getToken())
+      {
+        const call = this.http.get<SimpleUser>(environment.baseURL+"account/simpleuser");
+        const result = await firstValueFrom<SimpleUser>(call);
+        this.displayName = result.userDisplayname;
+        this.profilepic = result.avatarUrl;
+        this.userid = result.userId;
+        this.state.currentUserName = result.userDisplayname;
+      }
     }
   }
 
@@ -177,6 +180,7 @@ export class MyfeedPage implements OnInit{
       this.router.navigate(['home']);
       this.token.clearToken();
       this.userid = 0;
+      this.state.currentUserName = "";
 
 
       (await this.toast.create({
@@ -250,7 +254,6 @@ export class MyfeedPage implements OnInit{
 
   getLocalDate(UTCString: string) {
     let date = new Date(UTCString);
-    date.setHours(date.getHours()+1)
     return ago (date);
   }
 

@@ -7,6 +7,7 @@ import {ModalController, ToastController} from "@ionic/angular";
 import {FormControl, Validators} from "@angular/forms";
 import {NewAccountInfoModal} from "../changeAccountInfoModal/AccountInfoModal";
 import {Globalstate} from "../services/states/globalstate";
+import {NavigationStart, Router} from "@angular/router";
 
 @Component({
   template:
@@ -85,8 +86,13 @@ export class AccountPage implements OnInit{
   AName = new FormControl("",[Validators.required,Validators.minLength(1),Validators.maxLength(100)]);
   AEmail = "";
   ADate = "";
-  constructor(private http: HttpClient, public toastControl: ToastController, private modalcontroller: ModalController, private globalstate: Globalstate) {
-  }
+  constructor(private http: HttpClient, public toastControl: ToastController, private modalcontroller: ModalController, private globalstate: Globalstate, public router: Router)
+  {
+    this.router.events.subscribe(event =>    {
+      if(event instanceof NavigationStart) {
+        this.getAccountInfo();
+      }})
+    }
 
   protected readonly window = window;
 
