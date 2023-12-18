@@ -4,7 +4,7 @@ import {NavigationStart, Router} from "@angular/router";
 import {AlertController, ModalController, PopoverController, ToastController} from "@ionic/angular";
 import {AccountService} from "../services/account.service";
 import {firstValueFrom} from "rxjs";
-import {environment} from "../../environments/environment.prod";
+import {environment} from "../../environments/environment";
 import {HttpClient} from "@angular/common/http";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {SimpleUser} from "../accountInterface";

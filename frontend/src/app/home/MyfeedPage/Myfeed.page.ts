@@ -7,7 +7,7 @@ import {AccountService} from "../../services/account.service";
 import {HttpClient} from "@angular/common/http";
 import {Globalstate} from "../../services/states/globalstate";
 import {SimpleUser} from "../../accountInterface";
-import {environment} from "../../../environments/environment.prod";
+import {environment} from "../../../environments/environment";
 import {firstValueFrom} from "rxjs";
 import {PostModel} from "../../models/PostModel";
 import * as ago from "s-ago";

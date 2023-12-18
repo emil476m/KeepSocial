@@ -4,7 +4,7 @@ import {firstValueFrom} from "rxjs";
 import {ActivatedRoute, NavigationStart, Router} from "@angular/router";
 import {HttpClient} from "@angular/common/http";
 import {Profile} from "../accountInterface";
-import {environment} from "../../environments/environment.prod";
+import {environment} from "../../environments/environment";
 import {Globalstate} from "../services/states/globalstate";
 import {NewAccountInfoModal} from "../changeAccountInfoModal/AccountInfoModal";
 import {PostModel} from "../models/PostModel";

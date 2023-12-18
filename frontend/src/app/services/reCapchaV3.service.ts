@@ -2,7 +2,7 @@ import {ReCaptchaV3Service} from "ngx-captcha";
 import {Injectable} from "@angular/core";
 import {Globalstate} from "./states/globalstate";
 import {HttpClient} from "@angular/common/http";
-import {environment} from "../../environments/environment.prod";
+import {environment} from "../../environments/environment";
 import {firstValueFrom} from "rxjs";
 import {ResponsdtoModel} from "../models/responsdto.model";
 import {FormControl} from "@angular/forms";

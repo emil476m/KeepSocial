@@ -3,7 +3,7 @@ import {ActivatedRoute, NavigationStart, Router} from "@angular/router";
 import {firstValueFrom} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 import {PostModel} from "../models/PostModel";
-import {environment} from "../../environments/environment.prod";
+import {environment} from "../../environments/environment";
 import {Globalstate} from "../services/states/globalstate";
 import * as ago from "s-ago";
 import {TokenService} from "../services/token.service";

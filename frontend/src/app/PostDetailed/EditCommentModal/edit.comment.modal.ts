@@ -4,7 +4,7 @@ import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {CommentModel} from "../../models/CommentModel";
 import {Globalstate} from "../../services/states/globalstate";
 import {firstValueFrom} from "rxjs";
-import {environment} from "../../../environments/environment.prod";
+import {environment} from "../../../environments/environment";
 import {HttpClient} from "@angular/common/http";
 import {NavigationStart, Router} from "@angular/router";
 

@@ -2,7 +2,7 @@ import {Component, OnInit} from "@angular/core";
 import {Rooms} from "../models/Rooms.model";
 import {Router} from "@angular/router";
 import {HttpClient} from "@angular/common/http";
-import {environment} from "../../environments/environment.prod";
+import {environment} from "../../environments/environment";
 import {firstValueFrom} from "rxjs";
 import {FriendRequestModel, RequestUpdateDto} from "../models/friendRequest";
 import {Message} from "../models/Message.model";
