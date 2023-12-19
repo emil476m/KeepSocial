@@ -75,26 +75,6 @@ import {EditPostModal} from "../../PostDetailed/EditPostModal/edit.post.modal";
                           </ion-avatar>
                           <ion-text style="padding-left: 10px;">{{post.authorName}}</ion-text>
                       </ion-buttons>
-                      <ion-buttons slot="end" *ngIf="userid == post.authorId">
-                          <ion-button (click)="ismenueopenPost()">
-                              <ion-icon name="ellipsis-vertical-outline"></ion-icon>
-                          </ion-button>
-                          <ion-popover [isOpen]="isopenPostMenu">
-                              <ng-template>
-
-                                  <ion-button fill="clear" (click)="openEditPost(post)">
-                                      <ion-icon name="create-outline"></ion-icon>
-                                      edit
-                                  </ion-button>
-                                  <br>
-                                  <ion-button fill="clear" color="danger" (click)="DeleteAlertPost()">
-                                      <ion-icon name="trash-outline"></ion-icon>
-                                      delete
-                                  </ion-button>
-
-                              </ng-template>
-                          </ion-popover>
-                      </ion-buttons>
                   </ion-toolbar>
                   <ion-img *ngIf="post.imgUrl != undefined" [src]="post.imgUrl" style="margin-left: 25%; margin-right: 25%; "/>
                   <ion-text>{{post.text}}</ion-text>
@@ -108,7 +88,6 @@ export class MyfeedPage implements OnInit{
   displayName: string = "";
   profilepic: string | undefined = "";
   userid: number = 0;
-  isopenPostMenu = false;
   eventchange: Event|null = null;
 
   textFC = new FormControl("",[Validators.required, Validators.maxLength(500), Validators.minLength(3)]);
@@ -259,71 +238,6 @@ export class MyfeedPage implements OnInit{
     this.router.navigate(['post/'+id]);
   }
 
-  ismenueopenPost() {
-    if(this.isopenPostMenu == false)
-    {
-      this.isopenPostMenu = true;
-    }
-    else {
-      this.isopenPostMenu = false;
-    }
-  }
-
-  DeleteAlertPost() {
-    this.alertcontroller.create({
-      message: "do you want to delete this post?",
-      buttons: [
-        {
-          role: "cancel",
-          text: "no"
-        },
-        {
-          role: "confirm",
-          text: "yes",
-          handler: async () => {
-            try{
-              const call = this.http.delete(environment.baseURL+'deletepost', {params:{id: this.state.currentPost.id}});
-              const result = await firstValueFrom(call);
-              this.state.posts = this.state.posts.filter(e => e.id != this.state.currentPost.id);
-              this.popoverCtrl.dismiss();
-              this.router.navigate(['home']);
-              this.toast.create({
-                color: "success",
-                message: ' successfully deleted.',
-                duration: 2000,
-              }).then(res =>
-              {
-                res.present();
-              })
-
-            }
-            catch (e)
-            {
-              ((await this.toast.create({
-                message: 'Failed to delete post',
-                color: "danger",
-                duration: 2000,
-              }))).present
-            }}
-        }
-      ]}).then(res =>
-    {
-      res.present();
-    })
-  }
-
-
-  openEditPost(post: PostModel){
-    this.state.currentPost = post;
-    this.modalcontroller.create({
-      component: EditPostModal,
-      componentProps: {
-        copyOfPost: {...this.state.currentPost}
-      }
-    }).then(res => {
-      res.present();
-    })
-  }
 
   async uploadimg($event: Event) {
     // The event contains all/any selected files
