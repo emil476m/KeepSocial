@@ -203,6 +203,7 @@ export class PostDetail implements OnInit {
 
   getLocalDate(UTCString: string) {
     let date = new Date(UTCString);
+    date.setHours(date.getHours()-1)
     return ago(date);
   }
 
