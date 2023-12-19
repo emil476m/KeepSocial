@@ -168,6 +168,7 @@ export class PostDetail implements OnInit {
       if (event instanceof NavigationStart) {
         this.userid = 0;
         this.whoAmI();
+        this.getPost();
         this.comment.reset();
         this.file.reset();
       }
