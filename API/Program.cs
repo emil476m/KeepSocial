@@ -41,13 +41,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors(options =>
-{
-    options.SetIsOriginAllowed(origin => true)
+var frontendOrigin = app.Services.GetService<IConfiguration>()!["FrontendOrigin"];
+
+app.UseCors(policy =>
+
+    policy.SetIsOriginAllowed(origin => origin == frontendOrigin)
         .AllowAnyMethod()
         .AllowAnyHeader()
-        .AllowCredentials();
-});
+);
 
 app.UseSpaStaticFiles();
 app.UseSpa(conf =>
