@@ -168,6 +168,7 @@ export class PostDetail implements OnInit {
       if (event instanceof NavigationStart) {
         this.userid = 0;
         this.whoAmI();
+        this.getPost();
         this.comment.reset();
         this.file.reset();
       }
@@ -202,6 +203,7 @@ export class PostDetail implements OnInit {
 
   getLocalDate(UTCString: string) {
     let date = new Date(UTCString);
+    date.setHours(date.getHours()-1)
     return ago(date);
   }
 
