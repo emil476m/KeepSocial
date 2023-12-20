@@ -2,7 +2,7 @@ import {Component} from "@angular/core";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {ReCapchaV3Service} from "../services/reCapchaV3.service";
 import {HttpClient} from "@angular/common/http";
-import {environment} from "../../environments/environment.prod";
+import {environment} from "../../environments/environment";
 import {firstValueFrom} from "rxjs";
 import {ResponsdtoModel} from "../models/responsdto.model";
 import {Globalstate} from "../services/states/globalstate";

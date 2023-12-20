@@ -3,7 +3,7 @@ import {ActivatedRoute, NavigationStart, Router} from "@angular/router";
 import {firstValueFrom} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 import {PostModel} from "../models/PostModel";
-import {environment} from "../../environments/environment.prod";
+import {environment} from "../../environments/environment";
 import {Globalstate} from "../services/states/globalstate";
 import * as ago from "s-ago";
 import {TokenService} from "../services/token.service";
@@ -168,6 +168,7 @@ export class PostDetail implements OnInit {
       if (event instanceof NavigationStart) {
         this.userid = 0;
         this.whoAmI();
+        this.getPost();
         this.comment.reset();
         this.file.reset();
       }
@@ -202,6 +203,7 @@ export class PostDetail implements OnInit {
 
   getLocalDate(UTCString: string) {
     let date = new Date(UTCString);
+    date.setHours(date.getHours()-1)
     return ago(date);
   }
 

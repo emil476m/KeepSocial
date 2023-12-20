@@ -4,6 +4,7 @@
 
 export const environment = {
   production: false,
+  baseURL: "https://keepsocial.azurewebsites.net/api/"
 };
 
 /*

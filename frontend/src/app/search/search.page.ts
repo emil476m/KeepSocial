@@ -1,6 +1,6 @@
 import {Component, OnInit} from "@angular/core";
 import {Profile, SimpleUser} from "../accountInterface";
-import {environment} from "../../environments/environment.prod";
+import {environment} from "../../environments/environment";
 import {firstValueFrom} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 import {FormControl, Validators} from "@angular/forms";

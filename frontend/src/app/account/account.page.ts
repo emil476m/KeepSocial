@@ -2,7 +2,7 @@ import {Component, OnInit} from "@angular/core";
 import {Account} from "../accountInterface";
 import {firstValueFrom, window} from "rxjs";
 import {HttpClient} from "@angular/common/http";
-import {environment} from "../../environments/environment.prod";
+import {environment} from "../../environments/environment";
 import {ModalController, ToastController} from "@ionic/angular";
 import {FormControl, Validators} from "@angular/forms";
 import {NewAccountInfoModal} from "../changeAccountInfoModal/AccountInfoModal";

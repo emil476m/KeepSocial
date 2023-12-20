@@ -5,7 +5,7 @@ import {HttpClient} from "@angular/common/http";
 import {newAccount} from "../accountInterface";
 import {ToastController} from "@ionic/angular";
 import {Router, UrlTree} from "@angular/router";
-import {environment} from "../../environments/environment.prod";
+import {environment} from "../../environments/environment";
 
 @Component({
   selector: 'app-register',

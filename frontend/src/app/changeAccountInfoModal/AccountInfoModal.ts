@@ -5,7 +5,7 @@ import {FormControl, Validators} from "@angular/forms";
 import {firstValueFrom} from "rxjs";
 import {Globalstate} from "../services/states/globalstate";
 import {BoolResponse} from "../accountInterface";
-import {environment} from "../../environments/environment.prod";
+import {environment} from "../../environments/environment";
 
 @Component({
   styleUrls: ["AccountInfoModal.style.css"],

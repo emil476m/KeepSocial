@@ -4,7 +4,7 @@ import {Globalstate} from "../../services/states/globalstate";
 import {HttpClient} from "@angular/common/http";
 import {NavigationStart, Router} from "@angular/router";
 import {SimpleUser} from "../../accountInterface";
-import {environment} from "../../../environments/environment.prod";
+import {environment} from "../../../environments/environment";
 import {firstValueFrom} from "rxjs";
 import {FormControl, Validators} from "@angular/forms";
 

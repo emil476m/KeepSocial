@@ -5,7 +5,7 @@ import {firstValueFrom} from "rxjs";
 import {IonContent} from "@ionic/angular";
 import {Message} from "../models/Message.model";
 import {ActivatedRoute} from "@angular/router";
-import {environment} from "../../environments/environment.prod";
+import {environment} from "../../environments/environment";
 
 @Component({
   selector: 'app-chat',
